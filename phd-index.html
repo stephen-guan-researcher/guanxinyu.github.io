@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Xinyu Guan | AI Agent Researcher</title>
+  <meta name="description" content="Personal academic homepage of Xinyu Guan – AI Agent Researcher at Alibaba TaoTian, specializing in AI Agents, LLMs, time-series forecasting, and multilingual NLP." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="phd-styles.css" />
+</head>
+<body>
+
+  <!-- ========== Navigation ========== -->
+  <header class="site-header" id="siteHeader">
+    <div class="nav-inner">
+      <a href="#top" class="nav-logo">Xinyu Guan</a>
+      <nav class="site-nav" id="siteNav">
+        <a href="#about">About</a>
+        <a href="#news">News</a>
+        <a href="#publications">Publications</a>
+        <a href="#experience">Experience</a>
+        <a href="#research">Research</a>
+        <a href="#education">Education</a>
+      </nav>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== Hero / Profile ========== -->
+  <section class="hero" id="top">
+    <canvas id="auroraCanvas" aria-hidden="true"></canvas>
+    <div class="container hero-inner">
+      <div class="hero-avatar">
+        <div class="avatar-ring">
+          <img src="images/avatar.jpg" alt="Xinyu Guan" class="avatar-img">
+        </div>
+        <!-- Social icons: Scholar / LinkedIn / GitHub / WeChat / Phone -->
+        <div class="avatar-socials">
+          <a href="https://scholar.google.com/citations?user=iIMa-mkAAAAJ&hl=zh-CN" target="_blank" rel="noopener" class="avatar-social-btn" title="Google Scholar">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5.242 13.769L0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269zM12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/xinyu-guan-uofgstudent/" target="_blank" rel="noopener" class="avatar-social-btn" title="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://github.com/stephen-guan-researcher" target="_blank" rel="noopener" class="avatar-social-btn" title="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.73.083-.73 1.205.085 1.838 1.237 1.838 1.237 1.07 1.834 2.809 1.304 3.495.997.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.694.825.576C20.565 21.795 24 17.295 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          </a>
+          <a href="javascript:void(0)" class="avatar-social-btn" title="Copy WeChat ID" id="wechatCopyBtn" data-wechat="18018735289">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 2C4.36 2 1 5.13 1 9c0 2.07 1.02 3.91 2.62 5.19L3 17l2.93-1.47C6.57 15.83 7.52 16 8.5 16c.17 0 .34 0 .5-.02A5.96 5.96 0 0 1 9 14c0-3.31 2.91-6 6.5-6 .17 0 .34 0 .5.01C15.23 5.05 12.14 2 8.5 2zM6 7.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm5 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm3.5 3c-2.76 0-5 1.79-5 4s2.24 4 5 4c.62 0 1.21-.1 1.76-.27L19 19.5l-.45-2.3C19.6 16.43 20 15.26 20 14c0-2.21-2.24-3.5-5-3.5zm-1.5 2.5a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5zm3 0a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z"/></svg>
+          </a>
+          <a href="javascript:void(0)" class="avatar-social-btn" title="Copy Phone Number" id="phoneCopyBtn" data-phone="+8618018735289">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.77a16 16 0 0 0 6.06 6.06l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7a2 2 0 0 1 1.72 2z"/></svg>
+          </a>
+        </div>
+        <!-- Quick stats -->
+        <div class="avatar-stats">
+          <div class="avatar-stat">
+            <span class="stat-num">2</span>
+            <span class="stat-label">Papers</span>
+          </div>
+          <div class="avatar-stat-divider"></div>
+          <div class="avatar-stat">
+            <span class="stat-num">3</span>
+            <span class="stat-label">Patents</span>
+          </div>
+          <div class="avatar-stat-divider"></div>
+          <div class="avatar-stat">
+            <span class="stat-num">5+</span>
+            <span class="stat-label">Yrs Exp</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-content">
+        <p class="hero-badge">AI Agent Researcher · TaoTian Group @ Alibaba</p>
+        <div class="collab-badge">Open to Collaborate</div>
+        <h1 class="hero-name"><span id="heroNameText"></span><span class="hero-name-cn">关鑫宇</span></h1>
+        <p class="hero-tagline">
+          AI Agent · Time-Series Forecasting · LLMs · Multilingual NLP · RLHF Alignment
+        </p>
+        <p class="hero-bio">
+          I am an AI Agent Researcher at <strong>Alibaba TaoTian Group</strong>,
+          building predictive AI Agents for logistics &amp; supply-chain optimization. Previously at
+          <strong>Tencent Hunyuan</strong>, where I worked on MMLU, CMMLU and other benchmark improvements,
+          and <strong>Baidu ERNIE Core Team</strong>, where I focused on multilingual capabilities and LLM Arena rankings.
+        </p>
+        <p class="hero-bio">
+          I hold an <strong>MSc in Computer Science</strong> from the
+          <strong>University of Glasgow</strong> (USNews #62), where I worked with Prof. David
+          Manlove (University of Oxford) on efficient text search algorithms. My research
+          interests lie at the intersection of AI Agents, scalable LLM training, alignment techniques,
+          and multilingual NLP.
+        </p>
+        <div class="hero-links">
+          <a href="javascript:void(0)" class="hero-link hero-link-primary" id="contactMeBtn" data-email="xinyuguanphd@outlook.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Contact Me
+          </a>
+          <a href="#publications" class="hero-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Publications
+          </a>
+          <a href="#experience" class="hero-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            Experience
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Research Interests ========== -->
+  <section class="interests-bar">
+    <div class="container">
+      <div class="interests-list">
+        <div class="interest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+          Large Language Models
+        </div>
+        <div class="interest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Multilingual NLP
+        </div>
+        <div class="interest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          RLHF / Alignment
+        </div>
+        <div class="interest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Data-Centric AI
+        </div>
+        <div class="interest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/></svg>
+          Web-Scale Parsing
+        </div>
+        <div class="interest-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Recommendation Systems
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== News ========== -->
+  <section class="section" id="news">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title"><span class="title-accent">#</span> News</h2>
+        <button class="history-toggle-btn" id="historyToggleBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+          History
+        </button>
+      </div>
+      <div class="news-list" id="newsList">
+        <div class="news-item">
+          <span class="news-date">Feb 2026</span>
+          <p>Joined <strong>Alibaba TaoTian Group</strong> as AI Agent Researcher, working on AI Agent applications for logistics and supply-chain optimization.</p>
+        </div>
+        <div class="news-item">
+          <span class="news-date">Nov 2025</span>
+          <p>ERNIE EB5 <strong>tied #2 globally on LMArena</strong> (China #1), surpassing DeepSeek – Text Arena win rate 86.4%, multilingual avg accuracy 92%.</p>
+        </div>
+        <div class="news-item">
+          <span class="news-date">Nov 2025</span>
+          <p>Vision-Arena: EB5-VL achieved <strong>+25.5% win rate</strong> vs baseline, <strong>tied #1 industry-wide</strong>.</p>
+        </div>
+        <div class="news-item">
+          <span class="news-date">Nov 2025</span>
+          <p>Patent filed: <em>"A Multi-Agent and LLM Collaborative Multi-Dimensional Text Quality Scoring System"</em> (First Inventor, under review).</p>
+        </div>
+        <div class="news-item">
+          <span class="news-date">Oct 2025</span>
+          <p>Paper <em>"Evaluation and Optimization of Efficient Text Search Algorithms"</em> submitted to <strong>ICASSP 2026</strong> (First Author, under review).</p>
+        </div>
+        <div class="news-item">
+          <span class="news-date">Mar 2025</span>
+          <p>Paper <em>"Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation"</em> published at <strong>ICASSP 2025</strong> (Second Author).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Current Work ========== -->
+  <section class="section" id="current-work">
+    <div class="container">
+      <h2 class="section-title"><span class="title-accent">#</span> Current Work</h2>
+      <div class="work-grid">
+        <div class="work-card">
+          <div class="work-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h3 class="work-title">Time Agent <span class="work-tag work-tag-research">NeurIPS 2026 Target</span></h3>
+          <p class="work-desc">AI Agent for time-series forecasting, combining foundation models (TimeGPT/TimesFM-style) with LLM reasoning for accurate predictions across diverse domains.</p>
+        </div>
+        <div class="work-card">
+          <div class="work-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h3 class="work-title">Multi-Agent Orchestration <span class="work-tag work-tag-work">Work Project</span></h3>
+          <p class="work-desc">Designing modular agent frameworks with episodic/semantic memory and hierarchical planner-executor-reflector patterns for supply-chain optimization.</p>
+        </div>
+        <div class="work-card">
+          <div class="work-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18M9 21V9"/>
+            </svg>
+          </div>
+          <h3 class="work-title">Xianyu Quality Inspection <span class="work-tag work-tag-work">Work Project</span></h3>
+          <p class="work-desc">AI Agent for photo compliance detection and physical defect inspection on second-hand products.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Publications & Patents ========== -->
+  <section class="section section-alt" id="publications">
+    <div class="container">
+      <h2 class="section-title"><span class="title-accent">#</span> Selected Publications & Patents</h2>
+
+      <h3 class="sub-title">Conference Papers</h3>
+      <div class="pub-list">
+
+        <!-- Paper 1 -->
+        <div class="pub-card">
+          <div class="pub-thumb">
+            <img src="images/paper2-suffix-tree.png" alt="Suffix Tree Generation" class="pub-thumb-img">
+          </div>
+          <div class="pub-body">
+            <div class="pub-badge pub-badge-review">Under Review</div>
+            <h4 class="pub-title">Evaluation and Optimization of Efficient Text Search Algorithms</h4>
+            <p class="pub-authors"><strong>Xinyu Guan</strong></p>
+            <p class="pub-venue">
+              <span class="venue-tag">ICASSP 2026</span>
+              <span class="pub-role first-author">First Author</span>
+              · Oct 2025
+            </p>
+            <p class="pub-desc">
+              Evaluated 7 classical string-matching algorithms on large corpora; proposed a suffix-tree-based algorithm
+              combined with Ukkonen's construction, achieving ~5.2× speedup on large-scale datasets. Targeted human
+              gene sequence search with 40% speed improvement on 3 billion sequences.
+            </p>
+          </div>
+        </div>
+
+        <!-- Paper 2 -->
+        <div class="pub-card">
+          <div class="pub-thumb">
+            <img src="images/paper1-hypergraph.png" alt="Heterogeneous Hypergraph" class="pub-thumb-img">
+          </div>
+          <div class="pub-body">
+            <div class="pub-badge pub-badge-published">Published</div>
+            <h4 class="pub-title">Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation</h4>
+            <p class="pub-authors">First Author, <strong>Xinyu Guan</strong> (Second Author)</p>
+            <p class="pub-venue">
+              <span class="venue-tag">ICASSP 2025</span>
+              <span class="pub-role">Second Author</span>
+              · Mar 2025
+            </p>
+            <p class="pub-desc">
+              Proposed a dynamic heterogeneous hypergraph network that incorporates price signals into next-basket
+              recommendation, capturing complex item correlations and temporal purchase dynamics.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <h3 class="sub-title" style="margin-top:40px;">Patents</h3>
+      <div class="pub-list">
+
+        <!-- Patent 1 -->
+        <div class="pub-card pub-card-noimg">
+          <div class="pub-body">
+            <div class="pub-badge pub-badge-review">Under Review</div>
+            <h4 class="pub-title">A Multi-Agent and LLM Collaborative Multi-Dimensional Text Quality Scoring System</h4>
+            <p class="pub-venue">
+              <span class="pub-role first-author">First Inventor</span>
+              · Nov 2025
+            </p>
+          </div>
+        </div>
+
+        <!-- Patent 2 -->
+        <div class="pub-card pub-card-noimg">
+          <div class="pub-body">
+            <div class="pub-badge pub-badge-granted">Granted</div>
+            <h4 class="pub-title">A Generative Large Model Watermarking Tool Based on Probability Perturbation Encryption</h4>
+            <p class="pub-venue">
+              <span class="pub-role first-author">First Inventor</span>
+              · Jul 2024
+            </p>
+          </div>
+        </div>
+
+        <!-- Patent 3 -->
+        <div class="pub-card pub-card-noimg">
+          <div class="pub-body">
+            <div class="pub-badge pub-badge-granted">Granted</div>
+            <h4 class="pub-title">A Database Drag Behavior Detection Method Based on Time Series</h4>
+            <p class="pub-venue">
+              <span class="pub-role">Co-Inventor</span>
+              · Jun 2024
+            </p>
+          </div>
+        </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Work Experience ========== -->
+  <section class="section" id="experience">
+    <div class="container">
+      <h2 class="section-title"><span class="title-accent">#</span> Work Experience</h2>
+      <div class="timeline">
+
+        <!-- Alibaba -->
+        <div class="timeline-item">
+          <div class="tl-dot tl-dot-primary"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <div>
+                <h3 class="tl-company">Alibaba Group</h3>
+                <p class="tl-role">TaoTian Group &mdash; AI Agent Researcher</p>
+              </div>
+              <span class="tl-date">Feb 2026 &ndash; Present</span>
+            </div>
+            <div class="tl-bullets">
+              <div class="tl-bullet">
+                <span class="bullet-label">Xianyu Quality Inspection</span>
+                Building AI Agents for photo compliance detection and physical defect inspection on second-hand products.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Baidu -->
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <div>
+                <h3 class="tl-company">Baidu</h3>
+                <p class="tl-role">ERNIE Foundation Model Core Team &mdash; Research Scientist (Senior)</p>
+              </div>
+              <span class="tl-date">Oct 2025 &ndash; Dec 2025</span>
+            </div>
+            <div class="tl-bullets">
+              <div class="tl-bullet">
+                <span class="bullet-label">ERNIE Alignment & Multilingual Post-Training</span>
+                Led DAPO-based post-training alignment for EB5 on PaddlePaddle, scaling to
+                <strong>260 H800 GPUs</strong> across <strong>80+ languages</strong>; designed SOTA multilingual
+                data scaling for hard prompts and low-resource languages.
+                Achieved <strong>Text Arena win rate 86.4%</strong>, multilingual avg accuracy <strong>92%</strong>;
+                <strong>tied #2 globally on LMArena (China #1)</strong>, surpassing DeepSeek.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Instruction Evolution & Data Enhancement</span>
+                Led instruction evolution across 10 innovation axes with history-aware learning; built a
+                high-quality automated self-play best-of + human N-to-1 pipeline for QA/creative/multimodal.
+                On Vision-Arena: <strong>+25.5% win rate</strong> vs baseline, <strong>tied #1 industry-wide</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tencent (H2T) -->
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <div>
+                <h3 class="tl-company">Tencent</h3>
+                <p class="tl-role">Hunyuan Text-to-Text Pipeline Team &mdash; Research Scientist</p>
+              </div>
+              <span class="tl-date">Mar 2025 &ndash; Sep 2025</span>
+            </div>
+            <div class="tl-bullets">
+              <div class="tl-bullet">
+                <span class="bullet-label">Yuanbao AI Search</span>
+                Trained web page classification & main-text extraction models (NeuroBERT-pro + GATv2Conv)
+                on <strong>8×H100</strong>; deployed on <strong>800×H100 GPUs</strong> at
+                <strong>~50 billion HTML pages/day</strong>. Improved extraction accuracy to 65%,
+                classification accuracy 70%→80%, structural segmentation 60%→65%.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Maximum-Rectangle Recall Algorithm</span>
+                Designed a novel recall algorithm with HTML2Text formatting; boosted
+                <strong>Precision 83%→98%</strong>, improved Recall ~1.5%.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">HTML Pruning (8 iterations)</span>
+                Improved recall <strong>73.41%→98.33%</strong> with 57.14% compression,
+                reducing downstream pre-training tokens by <strong>&gt;50%</strong>.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Multilingual Evaluation</span>
+                Arena-style evaluation against SOTA LLMs for Southeast Asian languages;
+                produced <strong>≈900B multilingual tokens</strong> via ELO-guided instruction evolution.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tencent (Strategy) -->
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <div>
+                <h3 class="tl-company">Tencent</h3>
+                <p class="tl-role">Hunyuan Strategy Group 4 &mdash; Research Scientist</p>
+              </div>
+              <span class="tl-date">Feb 2024 &ndash; Mar 2025</span>
+            </div>
+            <div class="tl-bullets">
+              <div class="tl-bullet">
+                <span class="bullet-label">Biomedical Domain Enhancement</span>
+                GPT-4o–based agent pipeline with 99% concept-extraction precision; curated 934
+                high-quality questions. MMLU Biomedical <strong>+11.7 pts</strong>,
+                CMMLU <strong>+10.2 pts</strong>.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Video Processing Pipeline</span>
+                Integrated PySceneDetect + Video-LLaMA; reduced 10-min 1080p processing to
+                <strong>~80s</strong>; capacity <strong>~20,000 video-hours/month</strong>.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Data Recognition Model</span>
+                Refined Magika model to <strong>&gt;99% file-type accuracy</strong> across 116 file types;
+                deployed at <strong>~10 QPS (800k items/day)</strong>.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Audio Synthesis & Alignment</span>
+                Whisper-based sliding-window alignment at <strong>99% text-audio accuracy</strong>;
+                delivered 20k+ high-quality transcripts (patented).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CAS -->
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <div>
+                <h3 class="tl-company">Institute of Information Engineering, Chinese Academy of Sciences</h3>
+                <p class="tl-role">Research Assistant Intern</p>
+              </div>
+              <span class="tl-date">Nov 2023 &ndash; Jan 2024</span>
+            </div>
+            <div class="tl-bullets">
+              <div class="tl-bullet">
+                <span class="bullet-label">Insider Threat Detection (LLM4ITD)</span>
+                Fine-tuned OPT-125M, ChatGLM-6B (P-tuning), LLaMA-7B (LoRA) on CERT 4.2;
+                achieved <strong>AUC ≈ 0.99, Recall ≈ 0.99</strong>, FPR ~0.3%.
+                LoRA/P-tuning reduced training time ~30% and compute &gt;50%.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">Knowledge Graph Construction</span>
+                Curated 20,000+ RDF triples; 98% extraction accuracy,
+                <strong>43% higher precision</strong> than rule-based baseline.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mico World -->
+        <div class="timeline-item">
+          <div class="tl-dot"></div>
+          <div class="tl-content">
+            <div class="tl-header">
+              <div>
+                <h3 class="tl-company">Mico World</h3>
+                <p class="tl-role">Yoho Department &mdash; Software Engineer</p>
+              </div>
+              <span class="tl-date">May 2021 &ndash; May 2022</span>
+            </div>
+            <div class="tl-bullets">
+              <div class="tl-bullet">
+                <span class="bullet-label">H5 Architecture</span>
+                Led H5 architecture for Greedy Lion (~20% of company revenue); critical path
+                optimization improved page load speed <strong>3.7×</strong>.
+              </div>
+              <div class="tl-bullet">
+                <span class="bullet-label">WakaDashboard (Vue.js)</span>
+                Designed enterprise management system from scratch; delivered &gt;80% of core APIs;
+                boosted frontend business efficiency <strong>73%</strong>.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Research Experience ========== -->
+  <section class="section section-alt" id="research">
+    <div class="container">
+      <h2 class="section-title"><span class="title-accent">#</span> Research Experience</h2>
+      <div class="research-grid">
+
+        <div class="research-card">
+          <div class="rc-header">
+            <h4>LLM4ITD: Insider Threat Detection with Fine-Tuned LLMs</h4>
+            <span class="rc-date">Nov 2023 &ndash; Feb 2024</span>
+          </div>
+          <p>Reconstructed classification tasks into QA framework across multiple 7B models.
+          Structured prompt templates for complex user behavior recognition.
+          AUC <strong>0.9923</strong>, Recall <strong>98.83%</strong> on CERT dataset.
+          LoRA/P-tuning on ~0.01% parameters: training time −30%, compute −50%.</p>
+        </div>
+
+        <div class="research-card">
+          <div class="rc-header">
+            <h4>Efficient Text Search Algorithm Evaluation</h4>
+            <span class="rc-date">Jun &ndash; Oct 2023</span>
+          </div>
+          <p>Collaborated with Prof. David Manlove (University of Oxford). Evaluated 7 classical
+          algorithms (KMP, BM, suffix tree, Ukkonen, etc.) on 1M+ samples from NLTK corpora.
+          Proposed suffix-tree + Ukkonen approach: <strong>~5.2× speedup</strong>.
+          Gene sequence search: <strong>40% faster</strong> on 3B sequences, 5× on 20M test set at 100% accuracy.</p>
+        </div>
+
+        <div class="research-card">
+          <div class="rc-header">
+            <h4>EEG Feature Analysis for SCI Patients (KNN / SVM)</h4>
+            <span class="rc-date">Jan &ndash; Jun 2023</span>
+          </div>
+          <p>Classified central neuropathic pain in spinal cord injury patients. Integrated variance
+          thresholding, chi-square, RFE, and local linear embedding with KNN and SVM on 5,000 EEG
+          samples. KNN accuracy <strong>69.4%→77.8%</strong> (+8.4 pts); SVM accuracy <strong>94.4%</strong>
+          with mitigated overfitting.</p>
+        </div>
+
+        <div class="research-card">
+          <div class="rc-header">
+            <h4>ML Analysis of WSI Colorectal Cancer Datasets</h4>
+            <span class="rc-date">Nov 2022 &ndash; Jan 2023</span>
+          </div>
+          <p>Applied BERT-based data augmentation (~25% of dataset) to whole-slide imaging.
+          Evaluated K-Means, Louvain, PCA, and UMAP approaches. Contributed to a related
+          conference paper draft.</p>
+        </div>
+
+        <div class="research-card">
+          <div class="rc-header">
+            <h4>Yellow Crane Tower Tourism Dialogue System (Llama2 7B-Chat)</h4>
+            <span class="rc-date">Aug &ndash; Oct 2023</span>
+          </div>
+          <p>Enhanced Llama2 7B-Chat for a tourism-domain dialogue system with fine-tuning,
+          retrieval augmentation, and domain-specific knowledge injection.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Education ========== -->
+  <section class="section" id="education">
+    <div class="container">
+      <h2 class="section-title"><span class="title-accent">#</span> Education</h2>
+      <div class="edu-list">
+        <div class="edu-item">
+          <div class="edu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 4 3 6 3s6-1.34 6-3v-5"/></svg>
+          </div>
+          <div class="edu-body">
+            <div class="edu-header">
+              <div>
+                <h3>University of Glasgow</h3>
+                <p class="edu-degree">MSc in Computer Science</p>
+              </div>
+              <div class="edu-right">
+                <span class="edu-date">Sep 2022 &ndash; Dec 2023</span>
+                <span class="edu-gpa">GPA 3.67 / 4.0</span>
+                <span class="edu-rank">USNews Rank #62</span>
+              </div>
+            </div>
+            <p class="edu-note">Research collaboration with Prof. David Manlove (University of Oxford) on efficient text search algorithms.</p>
+          </div>
+        </div>
+        <div class="edu-item">
+          <div class="edu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 4 3 6 3s6-1.34 6-3v-5"/></svg>
+          </div>
+          <div class="edu-body">
+            <div class="edu-header">
+              <div>
+                <h3>Hubei University</h3>
+                <p class="edu-degree">BEng in Software Engineering</p>
+              </div>
+              <div class="edu-right">
+                <span class="edu-date">Sep 2016 &ndash; Jun 2020</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Footer ========== -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Xinyu Guan. Built with care.</p>
+      <p class="footer-sub">AI Agent Researcher @ Alibaba TaoTian &middot; MSc, University of Glasgow</p>
+    </div>
+  </footer>
+
+  <script src="phd-main.js"></script>
+</body>
+</html>
