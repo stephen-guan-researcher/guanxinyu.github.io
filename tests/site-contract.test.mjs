@@ -1,0 +1,568 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFileSync, existsSync } from "node:fs";
+
+const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
+const index = read("index.html");
+const css = read("phd-styles.css");
+const behavior = read("phd-main.js");
+const lifeExists = existsSync(new URL("../life.html", import.meta.url));
+const life = lifeExists ? read("life.html") : "";
+
+function assertInOrder(source, values) {
+  let cursor = -1;
+  for (const value of values) {
+    const next = source.indexOf(value, cursor + 1);
+    assert.ok(next > cursor, `${value} must appear after the previous navigation label`);
+    cursor = next;
+  }
+}
+
+test("both pages expose the five approved destinations in order", () => {
+  const homeNavigation = [
+    ["Home", "#home"],
+    ["Research", "#research"],
+    ["Publications", "#papers"],
+    ["Experience", "#experience"],
+    ["Life Photos", "life.html"],
+  ];
+  const lifeNavigation = [
+    ["Home", "index.html#home"],
+    ["Research", "index.html#research"],
+    ["Publications", "index.html#papers"],
+    ["Experience", "index.html#experience"],
+    ["Life Photos", "life.html"],
+  ];
+
+  assertInOrder(index, homeNavigation.map(([label]) => `>${label}<`));
+  assertInOrder(life, lifeNavigation.map(([label]) => `>${label}<`));
+  for (const [label, href] of homeNavigation) {
+    assert.match(index, new RegExp(`href="${href.replace(".", "\\.")}"[^>]*>${label}<`));
+  }
+  for (const [label, href] of lifeNavigation) {
+    assert.match(life, new RegExp(`href="${href.replace(".", "\\.")}"[^>]*>${label}<`));
+  }
+  assert.doesNotMatch(index + life, />Beyond</);
+  assert.match(life, /aria-current="page"[^>]*>Life Photos</);
+});
+
+test("homepage exposes six numbered semantic sections in order", () => {
+  const sections = [...index.matchAll(
+    /<section\b[^>]*class="content-card ([^"]+)"[^>]*id="([^"]+)"[\s\S]*?<span class="section-index" aria-hidden="true">(0[1-6])<\/span>[\s\S]*?<h2[^>]*>([^<]+)<\/h2>/g,
+  )].map((match) => [match[2], match[3], match[4].trim()]);
+
+  assert.deepEqual(sections, [
+    ["home", "01", "About me"],
+    ["research", "02", "Current research"],
+    ["papers", "03", "Publications"],
+    ["experience", "04", "Work experience"],
+    ["research-experience", "05", "Research experience"],
+    ["education", "06", "Education"],
+  ]);
+});
+
+test("homepage preserves the approved blue-gray research-archive markers", () => {
+  assert.match(index, /<span class="profile-focus-kicker">Current Focus<\/span>/);
+  assert.match(life, /<span class="profile-focus-kicker">Current Focus<\/span>/);
+  assert.match(index, /<h2 id="news-title">Now<\/h2>/);
+  assert.doesNotMatch(index, /<h2 id="news-title">News<\/h2>/);
+
+  for (const page of [index, life]) {
+    assert.match(page, /href="phd-styles\.css\?v=20260803-live-ai-1"/);
+  }
+});
+
+test("Now presents the verified 2026 milestones as a reverse-chronological timeline", () => {
+  const news = index.match(/<aside class="news-card"[\s\S]*?<\/aside>/)?.[0] ?? "";
+  const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
+  const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
+
+  assert.equal(items.length, 4, "Now must expose four concise milestone cards");
+  assert.deepEqual(dates, ["2026-08", "2026-07", "2026-06", "2026-02"]);
+  for (const status of ["Preparing", "Submitted", "Preprint", "Career"]) {
+    assert.match(news, new RegExp(`<span>${status}<\\/span>`));
+  }
+  assert.match(news, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(news, /href="#experience"/);
+});
+
+test("profile page preserves the approved identity and real assets", () => {
+  for (const text of [
+    "Xinyu Guan",
+    "关鑫宇",
+    "AI Agent Researcher",
+    "AutoResearch",
+    "Post-Training",
+    "Agentic RL",
+    "Xianyu Quality Inspection",
+    "Alibaba Group",
+    "University of Glasgow",
+  ]) {
+    assert.ok(index.includes(text), `index.html must retain ${text}`);
+  }
+  assert.match(index, /images\/avatar\.jpg/);
+  for (const image of ["paper1-hypergraph.png", "paper2-suffix-tree.png"]) {
+    assert.equal(
+      existsSync(new URL(`../images/${image}`, import.meta.url)),
+      true,
+      `${image} must remain present`,
+    );
+  }
+});
+
+test("Xinyu Agent stays inside About me and starts in a compact accessible state", () => {
+  const home = contentSection("home");
+  const agent = home.match(/<aside\b[^>]*class="xinyu-agent"[\s\S]*?<\/aside>/)?.[0] ?? "";
+
+  assert.ok(agent, "About me must contain the Xinyu Agent card");
+  assert.match(
+    agent,
+    /<button\b(?=[^>]*\btype="button")(?=[^>]*\bdata-agent-toggle)(?=[^>]*\baria-expanded="false")(?=[^>]*\baria-controls="xinyu-agent-panel")[^>]*>/,
+  );
+  assert.match(agent, /<div\b[^>]*id="xinyu-agent-panel"[^>]*\bhidden\b[^>]*>/);
+  assert.match(agent, /<form\b[^>]*data-agent-form[^>]*>/);
+  assert.match(agent, /<input\b[^>]*aria-label="Ask Xinyu Agent"/);
+  assert.match(agent, /<button\b(?=[^>]*\btype="submit")(?=[^>]*\baria-label="Send question")[^>]*>/);
+  assert.equal((agent.match(/type="button"/g) ?? []).length, 1);
+  assert.doesNotMatch(agent, /Tech Demo|About Xinyu|data-agent-mode|data-agent-panel/);
+  assert.match(agent, /data-agent-status/);
+  assert.match(agent, /<input\b[^>]*maxlength="300"/);
+  assert.doesNotMatch(agent, /<img\b|class="[^"]*\b(?:chat-)?avatar\b/i);
+  assert.match(agent, /class="ri-sparkling-2-line" aria-hidden="true"/);
+  assert.ok(index.indexOf(agent) < index.indexOf('id="research"'));
+  assert.doesNotMatch(index, /<a[^>]*>\s*Ask Xinyu\s*<\/a>/);
+});
+
+test("Xinyu Agent does not present a scripted profile summary as a model answer", () => {
+  const home = contentSection("home");
+  const agent = home.match(/<aside\b[^>]*class="xinyu-agent"[\s\S]*?<\/aside>/)?.[0] ?? "";
+
+  assert.match(agent, /response will be generated live by Llama 3\.2/i);
+  assert.match(agent, /No scripted answer fallback/i);
+  assert.doesNotMatch(agent, /I am currently focused on <strong>AutoResearch<\/strong>/);
+});
+
+test("homepage exposes the deployed no-secret Agent API endpoint", () => {
+  assert.match(
+    index,
+    /<meta name="xinyu-agent-api" content="https:\/\/xinyu-agent-api\.798750933strikerg\.workers\.dev\/api\/chat"\s*\/>/,
+  );
+  assert.doesNotMatch(index, /(?:api[_-]?key|bearer\s+[a-z0-9._-]+)/i);
+  assert.doesNotMatch(behavior, /(?:innerHTML|outerHTML|insertAdjacentHTML)/);
+});
+
+test("Agent answers link back to the resume evidence", () => {
+  const home = contentSection("home");
+  const agent = home.match(/<aside\b[^>]*class="xinyu-agent"[\s\S]*?<\/aside>/)?.[0] ?? "";
+
+  assert.match(agent, /href="#research"[^>]*>Current Research<\/a>/);
+  assert.match(agent, /href="#experience"[^>]*>Alibaba Experience<\/a>/);
+  assert.match(agent, /href="#papers"[^>]*>Publications<\/a>/);
+  assert.match(agent, /aria-live="polite"/);
+});
+
+test("CICL remains a linked preprint with its verified metadata and image asset", () => {
+  const title =
+    "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents";
+  const card = cardWithText("publication-card", title);
+
+  assert.ok(card, "CICL must retain its own publication card");
+  assert.match(card, /class="publication-card publication-card-linked"/);
+  assert.match(card, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
+  assert.match(card, /rel="noopener"/);
+  assert.match(card, /<strong>Xinyu Guan<\/strong>, Qianyang Zhao, Yuming Deng/);
+  assert.ok(card.includes("arXiv:2606.08151 [cs.AI]"));
+  assert.ok(card.includes("First Author"));
+  assert.ok(card.includes("Jun 2026"));
+  assert.ok(card.includes("Preprint"));
+  assert.equal(
+    existsSync(new URL("../images/paper3-cicl-pipeline.png", import.meta.url)),
+    true,
+    "the CICL publication image must be present",
+  );
+});
+
+test("every verified paper link makes its whole card keyboard-accessible and clickable", () => {
+  const cards = cardsWithClass("publication-card");
+  const linkedCards = cards.filter((card) => /<a\b[^>]*href=/.test(card));
+
+  assert.equal(linkedCards.length, 1, "only the currently verified CICL paper should be linked");
+  assert.match(linkedCards[0], /class="publication-card publication-card-linked"/);
+  assert.match(linkedCards[0], /target="_blank"/);
+  assert.match(linkedCards[0], /rel="noopener"/);
+  assert.match(
+    cssRule(css, ".publication-card-linked h3 a::after"),
+    /position:\s*absolute[\s\S]*inset:\s*0[\s\S]*content:\s*""/,
+  );
+  assert.match(cssRule(css, ".publication-card-linked"), /cursor:\s*pointer/);
+  assert.match(cssRule(css, ".publication-card-linked:focus-within"), /outline:\s*3px/);
+
+  for (const card of cards.filter((candidate) => !/<a\b[^>]*href=/.test(candidate))) {
+    assert.doesNotMatch(card, /\bpublication-card-linked\b/);
+  }
+});
+
+test("verified publication figures remain scoped to their corresponding cards", () => {
+  const figureContracts = [
+    {
+      title:
+        "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents",
+      src: "images/paper3-cicl-pipeline.png",
+      alt: "CICL decision-aware context and memory-card pipeline",
+    },
+    {
+      title: "Evaluation and Optimization of Efficient Text Search Algorithms",
+      src: "images/paper2-suffix-tree.png",
+      alt: "Suffix-tree search illustration",
+    },
+    {
+      title: "Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation",
+      src: "images/paper1-hypergraph.png",
+      alt: "Price-aware heterogeneous hypergraph",
+    },
+  ];
+
+  for (const { title, src, alt } of figureContracts) {
+    const card = cardWithText("publication-card", title);
+    assert.ok(card, `${title} must retain its own publication card`);
+    assert.match(
+      card,
+      new RegExp(
+        `<figure class="publication-card-figure">[\\s\\S]*?<img[^>]*src="${src}"[^>]*alt="${alt}"[^>]*>[\\s\\S]*?<\\/figure>`,
+      ),
+      `${title} must keep its verified figure inside its publication card`,
+    );
+  }
+});
+
+test("publication metadata keeps an explicit visual order", () => {
+  for (const className of ["publication-meta", "publication-authors", "publication-summary"]) {
+    assert.match(css, new RegExp(`\\.publication-card \\.${className}\\s*\\{`));
+  }
+  assert.doesNotMatch(css, /\.publication-card\s*>\s*p:nth-of-type/);
+  assert.doesNotMatch(css, /\.publication-card\s*>\s*p:last-of-type/);
+});
+
+test("workspace navigation uses an opaque white toolbar and underlined active state", () => {
+  const navigation = cssRule(css, ".workspace-nav");
+  const active = cssRule(css, ".workspace-nav a.active");
+
+  assert.match(navigation, /background:\s*var\(--paper\)/);
+  assert.match(navigation, /border-radius:\s*12px/);
+  assert.doesNotMatch(navigation, /backdrop-filter\s*:/);
+  assert.match(active, /background:\s*transparent/);
+  assert.match(active, /color:\s*var\(--accent-strong\)/);
+  assert.match(active, /box-shadow:\s*none/);
+  assert.match(css, /\.workspace-nav a\.active::after\s*\{[^}]*height:\s*2px/);
+});
+
+test("copy contact actions use buttons instead of javascript URLs", () => {
+  for (const page of [index, life]) {
+    assert.doesNotMatch(page, /href="javascript:void\(0\)"/);
+    assert.match(
+      page,
+      /<button\b(?=[^>]*\btype="button")(?=[^>]*\bid="wechatCopyBtn")(?=[^>]*\bdata-wechat="18018735289")[^>]*>WeChat: 18018735289<\/button>/,
+    );
+    assert.match(
+      page,
+      /<button\b(?=[^>]*\btype="button")(?=[^>]*\bid="phoneCopyBtn")(?=[^>]*\bdata-phone="\+8618018735289")[^>]*>Phone: \+86 180 1873 5289<\/button>/,
+    );
+  }
+});
+
+test("life page is independent and contains six empty frames", () => {
+  assert.equal(lifeExists, true, "life.html must exist");
+  assert.equal((life.match(/class="life-frame\b/g) || []).length, 6);
+  assert.equal((life.match(/<figcaption\b[^>]*>Photo 0[1-6]<\/figcaption>/g) || []).length, 6);
+  assert.match(life, /images\/avatar\.jpg/);
+  assert.doesNotMatch(life, /Oxford, UK|class="year-line/);
+  assert.doesNotMatch(life, /<img[^>]+life-/);
+});
+
+test("empty Life frames reserve clipped media slots without redundant announcements", () => {
+  assert.equal((life.match(/class="frame-media"/g) || []).length, 6);
+  assert.doesNotMatch(life, /class="life-frame[^>]*\saria-label=/);
+  assert.equal((life.match(/class="frame-empty" aria-hidden="true"/g) || []).length, 6);
+  assert.equal((life.match(/<figure class="life-frame[^>]*\srole="presentation"/g) || []).length, 6);
+  assert.equal((life.match(/<figcaption aria-hidden="true">Photo 0[1-6]<\/figcaption>/g) || []).length, 6);
+
+  for (const frame of [
+    "life-frame-wide",
+    "life-frame-portrait",
+    "life-frame-square",
+    "life-frame-tall",
+    "life-frame-panorama",
+    "life-frame-square-small",
+  ]) {
+    assert.match(css, new RegExp(`\\.${frame} \\.frame-media\\s*\\{[^}]*aspect-ratio:`));
+  }
+
+  assert.match(css, /\.frame-media\s*\{[^}]*overflow:\s*hidden/);
+  assert.match(
+    css,
+    /\.frame-media\s+img\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover[^}]*object-position:\s*center/,
+  );
+});
+
+test("both pages load the same styles and behavior module", () => {
+  for (const page of [index, life]) {
+    assert.match(page, /href="phd-styles\.css\?v=20260803-live-ai-1"/);
+    assert.match(
+      page,
+      /src="phd-main\.js\?v=20260803-live-ai-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260803-live-ai-1"/,
+    );
+  }
+  assert.ok(css.length > 0);
+});
+
+test("shared CSS locks the selected card-shell tokens", () => {
+  for (const token of [
+    "--canvas: #f3f5f7",
+    "--paper: #ffffff",
+    "--ink: #1f2937",
+    "--muted: #687386",
+    "--line: #dce4eb",
+    "--accent: #315f8a",
+    "--accent-strong: #234a70",
+    "--accent-soft: #eaf1f7",
+  ]) {
+    assert.ok(css.toLowerCase().includes(token.toLowerCase()), `missing ${token}`);
+  }
+  assert.match(css, /\.life-gallery\s*\{[\s\S]*display:\s*grid/);
+  assert.match(css, /prefers-reduced-motion/);
+});
+
+test("shared CSS implements the approved fluid layout contract", () => {
+  assert.match(css, /font-size:\s*clamp\(16px,\s*calc\(0\.2vw \+ 15\.5px\),\s*18px\)/);
+  assert.match(css, /width:\s*min\(1480px,\s*calc\(100% - 32px\)\)/);
+  assert.match(css, /clamp\(200px,\s*17vw,\s*260px\)\s+minmax\(0,\s*1fr\)\s+clamp\(170px,\s*14vw,\s*230px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*1199px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*840px\)/);
+  assert.doesNotMatch(css, /@media\s*\(max-width:\s*1503px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*600px\)/);
+  assert.doesNotMatch(css, /width:\s*min\((?:1000|980|760)px/);
+});
+
+test("mobile profile and navigation preserve first-screen usability", () => {
+  const mobile = maxWidthMedia(600);
+  assert.match(mobile, /\.profile-card\s*\{[^}]*grid-template-columns:\s*clamp\(\s*88px,[^,]+,\s*104px\s*\)\s+minmax\(0,\s*1fr\)/s);
+  assert.match(mobile, /\.profile-links\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(mobile, /\.profile-links a:first-child\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+  assert.match(mobile, /\.profile-links span\s*\{[^}]*overflow-wrap:\s*anywhere/s);
+  assert.match(mobile, /\.workspace-nav a\s*\{[^}]*min-height:\s*44px/s);
+  assert.match(mobile, /\.profile-copy-actions\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+});
+
+test("navigation and mobile auxiliary labels preserve readable type floors", () => {
+  assertFontSizeAtLeast(cssRule(css, ".workspace-nav a"), 13, "desktop navigation");
+
+  const mobile = maxWidthMedia(600);
+  for (const [selector, floor] of [
+    [".profile-role", 13],
+    [".profile-affiliation", 12],
+    [".profile-focus-label", 12],
+    [".profile-focus-kicker", 12],
+    [".profile-links a", 12],
+    [".profile-primary-link", 12],
+    [".profile-copy-actions button", 12],
+    [".workspace-nav a", 12],
+    [".site-footer", 12],
+    [".frame-empty", 12],
+  ]) {
+    assertFontSizeAtLeast(cssRule(mobile, selector), floor, `mobile ${selector}`);
+  }
+});
+
+function cardsWithClass(className) {
+  const cardPattern = new RegExp(
+    `<article\\b(?=[^>]*\\bclass="[^"]*\\b${className}\\b[^"]*")[^>]*>[\\s\\S]*?<\\/article>`,
+    "g",
+  );
+  return [...index.matchAll(cardPattern)].map(([card]) => card);
+}
+
+function cardWithText(className, text) {
+  return cardsWithClass(className).find((card) => card.includes(text)) ?? "";
+}
+
+function contentSection(id) {
+  const sectionStart = index.indexOf(`id="${id}"`);
+  assert.notEqual(sectionStart, -1, `missing #${id} section`);
+  const nextSection = index.indexOf('<section class="content-card', sectionStart + 1);
+  return index.slice(sectionStart, nextSection === -1 ? index.length : nextSection);
+}
+
+function cssBlock(source, openingBrace) {
+  let depth = 0;
+  for (let cursor = openingBrace; cursor < source.length; cursor += 1) {
+    if (source[cursor] === "{") depth += 1;
+    if (source[cursor] === "}") depth -= 1;
+    if (depth === 0) return source.slice(openingBrace + 1, cursor);
+  }
+  assert.fail("CSS block must close");
+}
+
+function cssRule(source, selector) {
+  const match = new RegExp(`\\${selector}\\s*\\{`).exec(source);
+  assert.ok(match, `missing ${selector} rule`);
+  return cssBlock(source, source.indexOf("{", match.index));
+}
+
+function assertFontSizeAtLeast(rule, floor, label) {
+  const match = /font-size:\s*(\d+(?:\.\d+)?)px/.exec(rule);
+  assert.ok(match, `${label} must declare a pixel font size`);
+  assert.ok(Number(match[1]) >= floor, `${label} font size must be at least ${floor}px`);
+}
+
+function maxWidthMedia(maxWidth) {
+  const match = new RegExp(`@media\\s*\\(max-width:\\s*${maxWidth}px\\)\\s*\\{`).exec(css);
+  assert.ok(match, `missing max-width: ${maxWidth}px media query`);
+  return cssBlock(css, css.indexOf("{", match.index));
+}
+
+function gridTrackCount(declaration) {
+  const tracks = [];
+  let depth = 0;
+  let start = 0;
+
+  for (let cursor = 0; cursor <= declaration.length; cursor += 1) {
+    const char = declaration[cursor] ?? " ";
+    if (char === "(") depth += 1;
+    if (char === ")") depth -= 1;
+    if (depth === 0 && /\s/.test(char)) {
+      const track = declaration.slice(start, cursor).trim();
+      if (track) tracks.push(track);
+      start = cursor + 1;
+    }
+  }
+
+  return tracks.reduce((count, track) => {
+    const repeat = /^repeat\(\s*(\d+)\s*,/.exec(track);
+    return count + (repeat ? Number(repeat[1]) : 1);
+  }, 0);
+}
+
+function gridColumnsFor(source, selector) {
+  const rule = cssRule(source, selector);
+  assert.match(rule, /display:\s*grid/);
+  const columns = rule.match(/grid-template-columns:\s*([^;}]+)(?:;|$)/);
+  assert.ok(columns, `${selector} must declare grid-template-columns`);
+  return gridTrackCount(columns[1]);
+}
+
+function assertGridColumns(source, selector, expectedCount) {
+  assert.equal(gridColumnsFor(source, selector), expectedCount, `${selector} must have ${expectedCount} grid column(s)`);
+}
+
+function assertMultiColumnGrid(source, selector) {
+  assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
+}
+
+test("homepage locks the current research program, career, and six independent publication cards", () => {
+  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "CVPR Manuscript", "Agent Research Survey"];
+  const research = contentSection("research");
+  const researchCards = cardsWithClass("research-core-item");
+  assert.equal(researchCards.length, 3);
+  assert.match(research, /class="research-progress"/);
+  for (const title of researchTitles) {
+    assert.equal(
+      (research.match(new RegExp(title, "g")) ?? []).length,
+      1,
+      `${title} must appear exactly once in Current research`,
+    );
+  }
+
+  assert.equal(cardsWithClass("career-item").length, 6);
+  assert.equal(cardsWithClass("publication-card").length, 6);
+});
+
+test("work history contains six independent appointments with separate Tencent teams", () => {
+  const cards = cardsWithClass("career-item");
+  assert.equal(cards.length, 6);
+  for (const title of [
+    "Alibaba Group / TaoTian Group",
+    "Baidu / ERNIE Foundation Model Core Team",
+    "Tencent / Hunyuan Text-to-Text Pipeline Team",
+    "Tencent / Hunyuan Strategy Group 4",
+    "Institute of Information Engineering, Chinese Academy of Sciences",
+    "Mico World / Yoho Department",
+  ]) {
+    assert.equal(cards.filter((card) => card.includes(title)).length, 1);
+  }
+});
+
+test("each work appointment exposes the required visible content structure", () => {
+  for (const card of cardsWithClass("career-item")) {
+    for (const className of ["career-date", "career-header", "career-role", "career-summary", "career-projects"]) {
+      assert.match(card, new RegExp(`class="[^\"]*\\b${className}\\b[^\"]*"`));
+    }
+  }
+});
+
+test("detailed work metrics remain attached to their source appointments", () => {
+  const contracts = [
+    ["Baidu / ERNIE", ["260 H800", "80+ languages", "86.4%", "92%", "+25.5%"]],
+    ["Tencent / Hunyuan Text-to-Text", ["50B HTML", "98.33%", "57.14%", "900B"]],
+    ["Tencent / Hunyuan Strategy Group 4", ["20,000 video-hours", "116 file types", "10 QPS", "20,000+ transcripts"]],
+    ["Institute of Information Engineering", ["CERT 4.2", "0.99", "0.3%", "20,000+ RDF triples"]],
+    ["Mico World / Yoho", ["about 20% of company revenue", "3.7×", "80% of core APIs", "73%"]],
+  ];
+  for (const [title, values] of contracts) {
+    const card = cardWithText("career-item", title);
+    assert.ok(card);
+    const visibleText = card.replace(/<[^>]+>/g, "");
+    for (const value of values) assert.ok(visibleText.includes(value), `${title} must retain ${value}`);
+  }
+});
+
+test("research and education are independent visible entries", () => {
+  assert.equal(cardsWithClass("research-project").length, 5);
+  assert.equal(cardsWithClass("education-item").length, 2);
+  for (const sectionId of ["research-experience", "education"]) {
+    assert.doesNotMatch(contentSection(sectionId), /<details\b|aria-expanded=/);
+  }
+  for (const title of [
+    "LLM4ITD: Insider Threat Detection with Fine-Tuned LLMs",
+    "Efficient Text Search Algorithm Evaluation",
+    "EEG Feature Analysis for SCI Patients",
+    "ML Analysis of WSI Colorectal Cancer Datasets",
+    "Yellow Crane Tower Tourism Dialogue System",
+  ]) assert.ok(cardWithText("research-project", title));
+});
+
+test("new unpublished papers retain their exact titles and conservative public states", () => {
+  const aaaiTitles = [
+    "When KL Regularization Fails in Online Reasoning RL: A Token-Level Gradient Contract",
+    "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery",
+  ];
+  const chronoMemTitle = "ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting";
+
+  for (const title of aaaiTitles) {
+    const card = cardWithText("publication-card", title);
+    assert.ok(card, `publication card must include ${title}`);
+    assert.match(card, /Under Review/);
+    assert.match(card, /Not yet public/);
+    assert.doesNotMatch(card, /<a\b[^>]*href=/);
+  }
+
+  const chronoMemCard = cardWithText("publication-card", chronoMemTitle);
+  assert.ok(chronoMemCard, "ChronoMem must have its own publication card");
+  assert.match(chronoMemCard, /In Preparation/);
+  assert.match(chronoMemCard, /Not yet public/);
+  assert.doesNotMatch(chronoMemCard, /<a\b[^>]*href=/);
+});
+
+test("reference shell and publication rows respond at the selected breakpoints", () => {
+  assertGridColumns(css, ".academic-shell", 3);
+  assertGridColumns(css, ".publication-card", 2);
+
+  const tablet = maxWidthMedia(1199);
+  assertGridColumns(tablet, ".academic-shell", 2);
+
+  const compact = maxWidthMedia(840);
+  assertGridColumns(compact, ".academic-shell", 1);
+
+  const mobile = maxWidthMedia(600);
+  assertGridColumns(mobile, ".academic-shell", 1);
+  assertGridColumns(mobile, ".publication-card", 1);
+});
