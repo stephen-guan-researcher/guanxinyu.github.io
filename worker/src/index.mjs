@@ -5,7 +5,7 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:8000",
 ]);
 
-const MODEL = "@cf/openai/gpt-oss-20b";
+const MODEL = "@cf/meta/llama-4-scout-17b-16e-instruct";
 const MAX_REQUEST_BYTES = 16 * 1024;
 const PROFILE_CONTEXT = `You are the public profile assistant for Xinyu Guan. Answer only from the verified public facts below, without inferring or inventing details.
 

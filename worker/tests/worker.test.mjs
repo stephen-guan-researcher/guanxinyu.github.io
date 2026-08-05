@@ -184,9 +184,9 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.deepEqual(await response.json(), {
     answer: "Xinyu studies reliable AI agents.",
     provider: "workers-ai",
-    model: "@cf/openai/gpt-oss-20b",
+    model: "@cf/meta/llama-4-scout-17b-16e-instruct",
   });
-  assert.equal(invocation.model, "@cf/openai/gpt-oss-20b");
+  assert.equal(invocation.model, "@cf/meta/llama-4-scout-17b-16e-instruct");
   assert.equal(invocation.options.max_tokens, 400);
   assert.equal(invocation.options.temperature, 0);
   assert.equal(invocation.options.messages[1].content, "What does Xinyu research?");

@@ -152,8 +152,8 @@ test("Xinyu Agent does not present a scripted profile summary as a model answer"
   const home = contentSection("home");
   const agent = home.match(/<aside\b[^>]*class="xinyu-agent"[\s\S]*?<\/aside>/)?.[0] ?? "";
 
-  assert.match(agent, /Xinyu Agent <span>GPT-OSS 20B<\/span>/i);
-  assert.match(agent, /response will be generated live by GPT-OSS 20B/i);
+  assert.match(agent, /Xinyu Agent <span>Llama 4 Scout<\/span>/i);
+  assert.match(agent, /response will be generated live by Llama 4 Scout/i);
   assert.match(agent, /No scripted answer fallback/i);
   assert.doesNotMatch(agent, /I am currently focused on <strong>AutoResearch<\/strong>/);
 });
