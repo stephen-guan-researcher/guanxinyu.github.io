@@ -184,11 +184,11 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.deepEqual(await response.json(), {
     answer: "Xinyu studies reliable AI agents.",
     provider: "workers-ai",
-    model: "@cf/meta/llama-3.2-3b-instruct",
+    model: "@cf/openai/gpt-oss-20b",
   });
-  assert.equal(invocation.model, "@cf/meta/llama-3.2-3b-instruct");
-  assert.equal(invocation.options.max_tokens, 250);
-  assert.equal(invocation.options.temperature, 0.2);
+  assert.equal(invocation.model, "@cf/openai/gpt-oss-20b");
+  assert.equal(invocation.options.max_tokens, 400);
+  assert.equal(invocation.options.temperature, 0);
   assert.equal(invocation.options.messages[1].content, "What does Xinyu research?");
   assert.match(invocation.options.messages[0].content, /seven publication records/i);
   assert.match(invocation.options.messages[0].content, /SILICA[\s\S]*submitted to EACL/i);
@@ -212,6 +212,27 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(invocation.options.messages[0].content, /xinyuguanphd@outlook\.com/i);
   assert.match(invocation.options.messages[0].content, /do not invent/i);
   assert.match(invocation.options.messages[0].content, /same language/i);
+  assert.match(invocation.options.messages[0].content, /answer only the question asked/i);
+  assert.match(invocation.options.messages[0].content, /do not add unrelated publications/i);
+});
+
+test("keeps broad multi-employer work questions unmodified", async () => {
+  let invocation;
+  const env = createEnv({
+    onRun(model, options) {
+      invocation = { model, options };
+    },
+  });
+  const question = "What did Xinyu work on at Alibaba, Tencent, Baidu, and the Chinese Academy of Sciences?";
+
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question }),
+  }), env);
+
+  assert.equal(response.status, 200);
+  assert.equal(invocation.options.messages[1].content, question);
 });
 
 test("grounds first-person biographical questions in the homepage owner profile", async () => {

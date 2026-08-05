@@ -5,9 +5,11 @@ const ALLOWED_ORIGINS = new Set([
   "http://localhost:8000",
 ]);
 
-const MODEL = "@cf/meta/llama-3.2-3b-instruct";
+const MODEL = "@cf/openai/gpt-oss-20b";
 const MAX_REQUEST_BYTES = 16 * 1024;
 const PROFILE_CONTEXT = `You are the public profile assistant for Xinyu Guan. Answer only from the verified public facts below, without inferring or inventing details.
+
+Mandatory response rules: Answer only the question asked. Do not add unrelated publications, employers, education, or background. Answer in the same language as the user's question. Copy publication titles, author names, venue names, statuses, organization names, and school names exactly from the verified facts. Never substitute one venue for another. Keep the answer concise: use two to five sentences unless the question explicitly requests a list or more detail.
 
 Identity: The owner of this homepage is Xinyu Guan / 关鑫宇. He is an AI Agent Researcher in TaoTian Group at Alibaba.
 
@@ -43,7 +45,7 @@ const FIRST_PERSON_IDENTITY_QUESTION = /(?:我是谁|介绍(?:一下)?我|who am
 const FIRST_PERSON_PROFILE_QUESTION = /(?:我是谁|介绍(?:一下)?我|我的(?:研究|研究方向|工作|工作经历|经历|教育|学历|论文|专利|背景|联系方式)|我现在(?:研究|做|负责)|我.*(?:研究|工作|任职|就职|经历|论文|文章|专利|背景|联系方式)|who am i|introduce me|my (?:research|work|experience|education|publications?|patents?|background|contact))/i;
 const FIRST_PERSON_EDUCATION_QUESTION = /(?:我(?:的)?(?:研究生|硕士|本科|学历|学校|大学|毕业院校)|我.*(?:哪个|哪所|哪间).*(?:大学|学校)|我.*(?:大学|学校).*毕业|我毕业于|where did i (?:study|graduate)|my (?:graduate|master'?s|undergraduate|university|education))/i;
 const PATENT_PROFILE_QUESTION = /(?:我的.*专利|我有.*专利|专利.*(?:我|关鑫宇)|my patents?|what patents?|xinyu.*patents?)/i;
-const TENCENT_CAREER_QUESTION = /(?:(?:腾讯|tencent).*(?:工作|任职|经历|时间|何时|什么时候|when|work|role)|(?:工作|任职|经历|时间|何时|什么时候|when|work|role).*(?:腾讯|tencent))/i;
+const TENCENT_CAREER_QUESTION = /(?:(?:腾讯|tencent).*(?:时间|何时|什么时候|哪年|几年|多久|\bwhen\b|\bdates?\b|\byears?\b|\bperiod\b|\bspan\b|\bhow long\b)|(?:时间|何时|什么时候|哪年|几年|多久|\bwhen\b|\bdates?\b|\byears?\b|\bperiod\b|\bspan\b|\bhow long\b).*(?:腾讯|tencent))/i;
 
 function modelQuestion(question) {
   if (PATENT_PROFILE_QUESTION.test(question)) {
@@ -203,8 +205,8 @@ export async function handleRequest(request, env) {
         { role: "system", content: PROFILE_CONTEXT },
         { role: "user", content: modelQuestion(question) },
       ],
-      max_tokens: 250,
-      temperature: 0.2,
+      max_tokens: 400,
+      temperature: 0,
     });
   } catch (error) {
     return isQuotaError(error)
