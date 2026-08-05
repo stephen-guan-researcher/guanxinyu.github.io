@@ -190,11 +190,25 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.equal(invocation.options.max_tokens, 250);
   assert.equal(invocation.options.temperature, 0.2);
   assert.equal(invocation.options.messages[1].content, "What does Xinyu research?");
-  assert.match(invocation.options.messages[0].content, /six publication records/i);
+  assert.match(invocation.options.messages[0].content, /seven publication records/i);
+  assert.match(invocation.options.messages[0].content, /SILICA[\s\S]*submitted to EACL/i);
+  assert.match(invocation.options.messages[0].content, /authors of SILICA are Pengcheng Xu and Xinyu Guan, in that order/i);
+  assert.match(invocation.options.messages[0].content, /When KL Regularization Fails[\s\S]*ICLR manuscript in preparation/i);
+  assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*AAAI 2027 submission/i);
   for (const organization of ["Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences"]) {
     assert.match(invocation.options.messages[0].content, new RegExp(organization, "i"));
   }
   assert.match(invocation.options.messages[0].content, /University of Glasgow/i);
+  for (const fact of [
+    "AI agent research",
+    "Hunyuan Foundation Model",
+    "Yuanbao AI Search",
+    "ERNIE Bot 5 (EB5) Foundation Model",
+    "knowledge graphs",
+    "LLM-based security",
+  ]) {
+    assert.match(invocation.options.messages[0].content, new RegExp(fact.replace(/[()]/g, "\\$&"), "i"));
+  }
   assert.match(invocation.options.messages[0].content, /xinyuguanphd@outlook\.com/i);
   assert.match(invocation.options.messages[0].content, /do not invent/i);
   assert.match(invocation.options.messages[0].content, /same language/i);

@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20260803-live-ai-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20260804-life-photos-2" />
 </head>
 <body class="profile-page">
   <div class="academic-shell">
@@ -75,12 +75,20 @@
       </header>
       <div class="news-list">
         <article class="news-item">
+          <div><time datetime="2026-08">Aug 2026</time><span>Submitted</span></div>
+          <p>Submitted SILICA to EACL.</p>
+        </article>
+        <article class="news-item">
+          <div><time datetime="2026-08">Aug 2026</time><span>Preparing</span></div>
+          <p>Preparing the KL regularization manuscript for ICLR.</p>
+        </article>
+        <article class="news-item">
           <div><time datetime="2026-08">Aug 2026</time><span>Preparing</span></div>
           <p>Preparing an ICASSP 2027 manuscript on interpretable event memory.</p>
         </article>
         <article class="news-item">
           <div><time datetime="2026-07">Jul 2026</time><span>Submitted</span></div>
-          <p>Submitted two AAAI 2027 papers on online reasoning RL.</p>
+          <p>Submitted Advantage Scale Calibration to AAAI 2027.</p>
         </article>
         <article class="news-item">
           <div><time datetime="2026-06">Jun 2026</time><span>Preprint</span></div>
@@ -99,9 +107,10 @@
             <span class="section-index" aria-hidden="true">01</span>
             <h2 id="about-title">About me</h2>
           </header>
-          <p class="about-lead">I build reliable AI agents that can reason, learn from feedback, and turn research ideas into systems that work in the real world.</p>
-          <p>My current work spans <strong>AutoResearch</strong>, <strong>post-training</strong>, and <strong>agentic reinforcement learning</strong>. I am especially interested in closed-loop research agents, stable reasoning objectives, and high-quality data systems for foundation models.</p>
-          <p>Before Alibaba, I worked on multilingual alignment at Baidu, foundation-model data and AI search at Tencent Hunyuan, and LLM-based security research at the Chinese Academy of Sciences.</p>
+          <p class="about-lead">I research and build reliable AI agents that can reason, learn from feedback, and turn research ideas into systems that work in the real world.</p>
+          <p>At Alibaba, my current work focuses on <strong>AI agent research</strong>, spanning <strong>AutoResearch</strong>, <strong>post-training</strong>, and <strong>agentic reinforcement learning</strong>. I am especially interested in closed-loop research agents, stable reasoning objectives, and high-quality data systems for foundation models.</p>
+          <p>Before Alibaba, I contributed to foundation-model development at Tencent and Baidu. At Tencent, I worked on the <strong>Hunyuan Foundation Model</strong>, focusing on mathematical and biological capability enhancement, pre-training data, multilingual capability improvement, and <strong>Yuanbao AI Search</strong>. At Baidu, I contributed to multilingual capability enhancement for the <strong>ERNIE Bot 5 (EB5) Foundation Model</strong>.</p>
+          <p>Earlier, at the Chinese Academy of Sciences, I conducted research on <strong>knowledge graphs</strong> and <strong>LLM-based security</strong>.</p>
           <p class="about-note">I am always happy to connect and collaborate on ambitious research problems. Feel free to reach out by <a href="mailto:xinyuguanphd@outlook.com" id="contactMeBtn" data-email="xinyuguanphd@outlook.com">email</a> or visit my <a href="https://scholar.google.com/citations?user=iIMa-mkAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener">Google Scholar</a>.</p>
 
           <aside class="xinyu-agent" data-xinyu-agent aria-labelledby="xinyu-agent-title">
@@ -183,17 +192,30 @@
           </header>
           <div class="publication-list">
             <article class="publication-card">
-              <p class="publication-thumb publication-thumb-text" aria-hidden="true"><span>AAAI</span>2027</p>
-              <p class="status-label">Under Review</p>
+              <figure class="publication-card-figure">
+                <img src="images/paper-silica-identifiability.png" alt="SILICA shared-state counterfactual identifiability evaluation">
+              </figure>
+              <p class="status-label">Submitted</p>
+              <h3>SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</h3>
+              <p class="publication-meta">EACL Submission · 2026 · Not yet public</p>
+              <p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan</strong></p>
+              <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions.</p>
+            </article>
+
+            <article class="publication-card">
+              <p class="publication-thumb publication-thumb-text" aria-hidden="true"><span>ICLR</span>Manuscript</p>
+              <p class="status-label">In Preparation</p>
               <h3>When KL Regularization Fails in Online Reasoning RL: A Token-Level Gradient Contract</h3>
-              <p class="publication-meta">AAAI 2027 Submission · Jul 2026 · Not yet public</p>
+              <p class="publication-meta">ICLR Manuscript · 2026 · Not yet public</p>
               <p class="publication-authors">Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, <strong>Xinyu Guan</strong>, Huiming Yang</p>
               <p class="publication-summary">Frames KL failures as a token-level gradient-contract problem and proposes ZCPO to enforce zero-sum shared-prefix gradients.</p>
             </article>
 
             <article class="publication-card">
-              <p class="publication-thumb publication-thumb-text" aria-hidden="true"><span>AAAI</span>2027</p>
-              <p class="status-label">Under Review</p>
+              <figure class="publication-card-figure">
+                <img src="images/paper-advantage-maxnorm-ac.png" alt="MaxNorm-AC advantage-scale calibration pipeline">
+              </figure>
+              <p class="status-label">Submitted</p>
               <h3>Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery</h3>
               <p class="publication-meta">AAAI 2027 Submission · Jul 2026 · Not yet public</p>
               <p class="publication-authors">Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, <strong>Xinyu Guan</strong>, Huiming Yang</p>
@@ -201,7 +223,9 @@
             </article>
 
             <article class="publication-card">
-              <p class="publication-thumb publication-thumb-text" aria-hidden="true"><span>ICASSP</span>2027</p>
+              <figure class="publication-card-figure">
+                <img src="images/paper-chronomem-overview.png" alt="ChronoMem event-memory and residual-forecasting pipeline">
+              </figure>
               <p class="status-label">In Preparation</p>
               <h3>ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting</h3>
               <p class="publication-meta">ICASSP 2027 Manuscript · 2026 · Not yet public</p>
@@ -216,29 +240,29 @@
               <p class="status-label">Preprint</p>
               <h3><a href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents</a></h3>
               <p class="publication-meta">arXiv:2606.08151 [cs.AI] · Jun 2026</p>
-              <p class="publication-authors"><strong>Xinyu Guan</strong>, Qianyang Zhao, Yuming Deng · First Author</p>
+              <p class="publication-authors"><strong>Xinyu Guan</strong>, Qianyang Zhao, Yuming Deng</p>
               <p class="publication-summary">Introduces CICL, a decision-aware context layer that selects evidence by its expected effect on an agent's next action.</p>
             </article>
 
-            <article class="publication-card">
+            <article class="publication-card publication-card-linked">
               <figure class="publication-card-figure">
                 <img src="images/paper2-suffix-tree.png" alt="Suffix-tree search illustration">
               </figure>
               <p class="status-label">Under Review</p>
-              <h3>Evaluation and Optimization of Efficient Text Search Algorithms</h3>
+              <h3><a href="https://github.com/StrikerG/Efficient-Algorithms-for-Text-Search-and-Retrieval" target="_blank" rel="noopener">Evaluation and Optimization of Efficient Text Search Algorithms</a></h3>
               <p class="publication-meta">ICASSP 2026 · Oct 2025</p>
-              <p class="publication-authors"><strong>Xinyu Guan</strong> · First Author</p>
+              <p class="publication-authors"><strong>Xinyu Guan</strong></p>
               <p class="publication-summary">Evaluates seven string-matching algorithms and proposes an Ukkonen-based suffix-tree approach with approximately 5.2× speedup.</p>
             </article>
 
-            <article class="publication-card">
+            <article class="publication-card publication-card-linked">
               <figure class="publication-card-figure">
                 <img src="images/paper1-hypergraph.png" alt="Price-aware heterogeneous hypergraph">
               </figure>
               <p class="status-label">Published</p>
-              <h3>Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation</h3>
+              <h3><a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=zh-CN&amp;user=iIMa-mkAAAAJ&amp;citation_for_view=iIMa-mkAAAAJ:qjMakFHDy7sC" target="_blank" rel="noopener">Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation</a></h3>
               <p class="publication-meta">ICASSP 2025 · Mar 2025</p>
-              <p class="publication-authors"><strong>Xinyu Guan</strong> · Second Author</p>
+              <p class="publication-authors"><strong>Xinyu Guan</strong></p>
               <p class="publication-summary">Incorporates price signals into a dynamic heterogeneous hypergraph for next-basket recommendation.</p>
             </article>
           </div>
@@ -413,6 +437,6 @@
     </main>
   </div>
 
-  <script type="module" src="phd-main.js?v=20260803-live-ai-1"></script>
+  <script type="module" src="phd-main.js?v=20260805-profile-authors-1"></script>
 </body>
 </html>

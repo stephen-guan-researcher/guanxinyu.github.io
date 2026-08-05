@@ -379,6 +379,31 @@ test("buildAgentReply grounds research questions in the resume sections", () => 
   assert.match(reply.answer, /Agentic RL/);
 });
 
+test("buildAgentReply returns corrected experience reply", () => {
+  const reply = site.buildAgentReply("Tell me about your work experience");
+
+  assert.equal(reply.topic, "experience");
+  assert.deepEqual(reply.sources, ["experience", "research"]);
+  for (const fact of [
+    "AI agent research",
+    "Hunyuan Foundation Model",
+    "Yuanbao AI Search",
+    "ERNIE Bot 5 (EB5) Foundation Model",
+    "knowledge graphs",
+    "LLM-based security",
+  ]) {
+    assert.match(reply.answer, new RegExp(fact.replace(/[()]/g, "\\$&")));
+  }
+});
+
+test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
+  for (const question of ["What is SILICA?", "Is the KL paper going to ICLR?", "Tell me about the EACL submission"] ) {
+    const reply = site.buildAgentReply(question);
+    assert.equal(reply.topic, "papers");
+    assert.deepEqual(reply.sources, ["papers", "research"]);
+  }
+});
+
 test("initAgent reveals the live region before writing a submitted answer", async () => {
   const attrs = new Map([["aria-expanded", "false"]]);
   const toggle = {

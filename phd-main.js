@@ -67,10 +67,10 @@ export function setAgentExpanded(toggle, panel, expanded) {
 export function buildAgentReply(question) {
   const normalized = question.trim().toLowerCase();
 
-  if (/paper|publication|aaai|icassp|cicl|论文|文章/.test(normalized)) {
+  if (/paper|publication|aaai|iclr|eacl|icassp|cicl|silica|zcpo|advantage scale|论文|文章/.test(normalized)) {
     return {
       topic: "papers",
-      answer: "My recent work includes two AAAI 2027 submissions on online reasoning RL, the ChronoMem ICASSP manuscript, and the public CICL preprint on decision-aware memory cards for tool-using agents.",
+      answer: "My recent work includes the SILICA submission to EACL and the Advantage Scale Calibration submission to AAAI 2027. The KL regularization manuscript was withdrawn from AAAI and is being prepared for ICLR. ChronoMem is being prepared for ICASSP, while CICL is publicly available on arXiv.",
       sources: ["papers", "research"],
     };
   }
@@ -78,7 +78,7 @@ export function buildAgentReply(question) {
   if (/work|experience|alibaba|taotian|baidu|tencent|academy|工作|经历|阿里|百度|腾讯/.test(normalized)) {
     return {
       topic: "experience",
-      answer: "At Alibaba TaoTian, I build AI agents for Xianyu quality inspection. Earlier, I worked on multilingual alignment at Baidu, foundation-model data and AI search at Tencent Hunyuan, and LLM-based security research at the Chinese Academy of Sciences.",
+      answer: "At Alibaba TaoTian, my work focuses on AI agent research. Previously, I contributed to the Hunyuan Foundation Model at Tencent through mathematical and biological capability enhancement, pre-training data, multilingual capability improvement, and Yuanbao AI Search; at Baidu, I worked on multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model. Earlier, at the Chinese Academy of Sciences, I conducted research on knowledge graphs and LLM-based security.",
       sources: ["experience", "research"],
     };
   }

@@ -1074,10 +1074,10 @@ button:focus-visible {
 
 .life-gallery {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
-  gap: 10px;
-  margin-top: 20px;
+  gap: clamp(12px, 1.4vw, 20px);
+  margin-top: 24px;
 }
 
 .life-frame {
@@ -1085,90 +1085,38 @@ button:focus-visible {
   margin: 0;
 }
 
-.life-frame-wide {
-  grid-column: 1 / span 2;
-  grid-row: 1;
+.life-frame-featured {
+  grid-column: 1 / -1;
 }
 
-.life-frame-portrait {
-  grid-column: 3 / span 2;
-  grid-row: 1 / span 2;
+.life-frame-wide .frame-media {
+  aspect-ratio: 1182 / 665;
 }
 
-.life-frame-square {
-  grid-column: 5 / span 2;
-  grid-row: 1;
+.life-frame-portrait .frame-media {
+  aspect-ratio: 2 / 3;
 }
 
-.life-frame-tall {
-  grid-column: 1 / span 2;
-  grid-row: 2;
-}
-
-.life-frame-panorama {
-  grid-column: 5 / span 2;
-  grid-row: 2;
-}
-
-.life-frame-square-small {
-  grid-column: 3 / span 2;
-  grid-row: 3;
+.life-frame-portrait-soft .frame-media {
+  aspect-ratio: 3 / 4;
 }
 
 .frame-media {
   position: relative;
   width: 100%;
+  aspect-ratio: 3 / 2;
   overflow: hidden;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #eef2f5;
 }
 
-.frame-media img {
+.life-photo {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center;
-}
-
-.frame-empty {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  border: 1px dashed #ced6de;
-  background: #f5f7f9;
-  color: #99a3ae;
-  font-size: 12px;
-  text-align: center;
-}
-
-.life-frame-wide .frame-media {
-  aspect-ratio: 568 / 273;
-}
-
-.life-frame-portrait .frame-media {
-  aspect-ratio: 273 / 309;
-}
-
-.life-frame-square .frame-media {
-  aspect-ratio: 300 / 273;
-}
-
-.life-frame-tall .frame-media {
-  aspect-ratio: 212 / 275;
-}
-
-.life-frame-panorama .frame-media {
-  aspect-ratio: 530 / 243;
-}
-
-.life-frame-square-small .frame-media {
-  aspect-ratio: 248 / 243;
-}
-
-.life-frame figcaption {
-  display: none;
 }
 
 #copy-toast {
@@ -1518,8 +1466,7 @@ button:focus-visible {
     padding: 20px 18px 22px;
   }
 
-  .site-footer,
-  .frame-empty {
+  .site-footer {
     font-size: 12px;
   }
 
@@ -1619,12 +1566,7 @@ button:focus-visible {
   }
 
   .life-frame,
-  .life-frame-wide,
-  .life-frame-portrait,
-  .life-frame-square,
-  .life-frame-tall,
-  .life-frame-panorama,
-  .life-frame-square-small {
+  .life-frame-featured {
     grid-column: 1;
     grid-row: auto;
   }

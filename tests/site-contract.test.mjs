@@ -68,7 +68,7 @@ test("homepage preserves the approved blue-gray research-archive markers", () =>
   assert.doesNotMatch(index, /<h2 id="news-title">News<\/h2>/);
 
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260803-live-ai-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260804-life-photos-2"/);
   }
 });
 
@@ -77,11 +77,14 @@ test("Now presents the verified 2026 milestones as a reverse-chronological timel
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 4, "Now must expose four concise milestone cards");
-  assert.deepEqual(dates, ["2026-08", "2026-07", "2026-06", "2026-02"]);
+  assert.equal(items.length, 6, "Now must expose six concise milestone cards");
+  assert.deepEqual(dates, ["2026-08", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
   for (const status of ["Preparing", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
+  assert.match(news, /Submitted SILICA to EACL/);
+  assert.match(news, /Preparing the KL regularization manuscript for ICLR/);
+  assert.match(news, /Submitted Advantage Scale Calibration to AAAI 2027/);
   assert.match(news, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
   assert.match(news, /href="#experience"/);
 });
@@ -108,6 +111,18 @@ test("profile page preserves the approved identity and real assets", () => {
       `${image} must remain present`,
     );
   }
+});
+
+test("homepage About Me reflects approved AI-agent and foundation-model work", () => {
+  const about = contentSection("home");
+
+  assert.match(about, /I research and build reliable AI agents/);
+  assert.match(about, /At Alibaba, my current work focuses on <strong>AI agent research<\/strong>/);
+  assert.match(about, /<strong>Hunyuan Foundation Model<\/strong>/);
+  assert.match(about, /<strong>Yuanbao AI Search<\/strong>/);
+  assert.match(about, /<strong>ERNIE Bot 5 \(EB5\) Foundation Model<\/strong>/);
+  assert.match(about, /<strong>knowledge graphs<\/strong>/);
+  assert.match(about, /<strong>LLM-based security<\/strong>/);
 });
 
 test("Xinyu Agent stays inside About me and starts in a compact accessible state", () => {
@@ -172,7 +187,7 @@ test("CICL remains a linked preprint with its verified metadata and image asset"
   assert.match(card, /rel="noopener"/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Qianyang Zhao, Yuming Deng/);
   assert.ok(card.includes("arXiv:2606.08151 [cs.AI]"));
-  assert.ok(card.includes("First Author"));
+  assert.doesNotMatch(card, /(?:First|Second) Author/);
   assert.ok(card.includes("Jun 2026"));
   assert.ok(card.includes("Preprint"));
   assert.equal(
@@ -182,14 +197,33 @@ test("CICL remains a linked preprint with its verified metadata and image asset"
   );
 });
 
+test("publication author lines use names only and preserve SILICA order", () => {
+  const publications = contentSection("papers");
+  const silica = cardWithText(
+    "publication-card",
+    "SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction",
+  );
+
+  assert.match(
+    silica,
+    /<p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan<\/strong><\/p>/,
+  );
+  assert.doesNotMatch(publications, /(?:First|Second) Author/);
+});
+
 test("every verified paper link makes its whole card keyboard-accessible and clickable", () => {
   const cards = cardsWithClass("publication-card");
   const linkedCards = cards.filter((card) => /<a\b[^>]*href=/.test(card));
 
-  assert.equal(linkedCards.length, 1, "only the currently verified CICL paper should be linked");
-  assert.match(linkedCards[0], /class="publication-card publication-card-linked"/);
-  assert.match(linkedCards[0], /target="_blank"/);
-  assert.match(linkedCards[0], /rel="noopener"/);
+  assert.equal(linkedCards.length, 3, "the three publications with verified public destinations should be linked");
+  for (const card of linkedCards) {
+    assert.match(card, /class="publication-card publication-card-linked"/);
+    assert.match(card, /target="_blank"/);
+    assert.match(card, /rel="noopener"/);
+  }
+  assert.match(index, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
+  assert.match(index, /href="https:\/\/github\.com\/StrikerG\/Efficient-Algorithms-for-Text-Search-and-Retrieval"/);
+  assert.match(index, /href="https:\/\/scholar\.google\.com\/citations\?view_op=view_citation&amp;hl=zh-CN&amp;user=iIMa-mkAAAAJ&amp;citation_for_view=iIMa-mkAAAAJ:qjMakFHDy7sC"/);
   assert.match(
     cssRule(css, ".publication-card-linked h3 a::after"),
     /position:\s*absolute[\s\S]*inset:\s*0[\s\S]*content:\s*""/,
@@ -204,6 +238,22 @@ test("every verified paper link makes its whole card keyboard-accessible and cli
 
 test("verified publication figures remain scoped to their corresponding cards", () => {
   const figureContracts = [
+    {
+      title: "SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction",
+      src: "images/paper-silica-identifiability.png",
+      alt: "SILICA shared-state counterfactual identifiability evaluation",
+    },
+    {
+      title:
+        "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery",
+      src: "images/paper-advantage-maxnorm-ac.png",
+      alt: "MaxNorm-AC advantage-scale calibration pipeline",
+    },
+    {
+      title: "ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting",
+      src: "images/paper-chronomem-overview.png",
+      alt: "ChronoMem event-memory and residual-forecasting pipeline",
+    },
     {
       title:
         "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents",
@@ -270,46 +320,93 @@ test("copy contact actions use buttons instead of javascript URLs", () => {
   }
 });
 
-test("life page is independent and contains six empty frames", () => {
+test("life page publishes all fifteen supplied photographs as accessible gallery content", () => {
   assert.equal(lifeExists, true, "life.html must exist");
-  assert.equal((life.match(/class="life-frame\b/g) || []).length, 6);
-  assert.equal((life.match(/<figcaption\b[^>]*>Photo 0[1-6]<\/figcaption>/g) || []).length, 6);
+  assert.equal((life.match(/class="life-frame\b/g) || []).length, 15);
+  assert.equal((life.match(/<img\b(?=[^>]*\bclass="life-photo")(?=[^>]*\balt="[^"]+")[^>]*>/g) || []).length, 15);
   assert.match(life, /images\/avatar\.jpg/);
   assert.doesNotMatch(life, /Oxford, UK|class="year-line/);
-  assert.doesNotMatch(life, /<img[^>]+life-/);
+  assert.doesNotMatch(life, /frame-empty|Add life photo|role="presentation"/);
+
+  for (const filename of [
+    "coastal-temple.jpg",
+    "seaside-cafe.jpg",
+    "red-pavilion-portrait.jpg",
+    "ninghai-swing-seated.jpg",
+    "ninghai-swing-front.jpg",
+    "beach-walk.jpg",
+    "garden-rabbit.jpg",
+    "ntu-campus.jpg",
+    "glasgow-graduation-friends.jpg",
+    "glasgow-graduation-group.jpg",
+    "glasgow-bute-hall-night.jpg",
+    "glasgow-graduation-portrait.jpg",
+    "glasgow-arches-portrait.jpg",
+    "glasgow-graduation-contact-sheet.jpg",
+    "glasgow-graduation-reception.jpg",
+  ]) {
+    assert.match(life, new RegExp(`src="images/life/${filename}"`));
+    assert.equal(existsSync(new URL(`../images/life/${filename}`, import.meta.url)), true, `${filename} must exist`);
+  }
 });
 
-test("empty Life frames reserve clipped media slots without redundant announcements", () => {
-  assert.equal((life.match(/class="frame-media"/g) || []).length, 6);
-  assert.doesNotMatch(life, /class="life-frame[^>]*\saria-label=/);
-  assert.equal((life.match(/class="frame-empty" aria-hidden="true"/g) || []).length, 6);
-  assert.equal((life.match(/<figure class="life-frame[^>]*\srole="presentation"/g) || []).length, 6);
-  assert.equal((life.match(/<figcaption aria-hidden="true">Photo 0[1-6]<\/figcaption>/g) || []).length, 6);
+test("life gallery opens with the Glasgow graduation story and closes with the former cover photograph", () => {
+  assertInOrder(life, [
+    'src="images/life/glasgow-graduation-group.jpg"',
+    'src="images/life/glasgow-bute-hall-night.jpg"',
+    'src="images/life/glasgow-graduation-portrait.jpg"',
+    'src="images/life/glasgow-arches-portrait.jpg"',
+    'src="images/life/glasgow-graduation-contact-sheet.jpg"',
+    'src="images/life/glasgow-graduation-reception.jpg"',
+    'src="images/life/glasgow-graduation-friends.jpg"',
+    'src="images/life/ntu-campus.jpg"',
+    'src="images/life/seaside-cafe.jpg"',
+    'src="images/life/red-pavilion-portrait.jpg"',
+    'src="images/life/ninghai-swing-seated.jpg"',
+    'src="images/life/ninghai-swing-front.jpg"',
+    'src="images/life/beach-walk.jpg"',
+    'src="images/life/garden-rabbit.jpg"',
+    'src="images/life/coastal-temple.jpg"',
+  ]);
 
-  for (const frame of [
-    "life-frame-wide",
-    "life-frame-portrait",
-    "life-frame-square",
-    "life-frame-tall",
-    "life-frame-panorama",
-    "life-frame-square-small",
-  ]) {
-    assert.match(css, new RegExp(`\\.${frame} \\.frame-media\\s*\\{[^}]*aspect-ratio:`));
-  }
+  const figures = [...life.matchAll(/<figure class="([^"]*\blife-frame\b[^"]*)">([\s\S]*?)<\/figure>/g)];
+  assert.equal(figures.length, 15);
+  assert.match(figures[0][1], /\blife-frame-featured\b/);
+  assert.match(figures[0][1], /\blife-frame-wide\b/);
+  assert.match(figures[0][2], /src="images\/life\/glasgow-graduation-group\.jpg"/);
+  assert.match(figures[0][2], /fetchpriority="high"/);
+  assert.doesNotMatch(figures[0][2], /loading="lazy"/);
+  assert.doesNotMatch(figures.at(-1)[1], /\blife-frame-featured\b/);
+  assert.match(figures.at(-1)[2], /src="images\/life\/coastal-temple\.jpg"/);
+  assert.match(figures.at(-1)[2], /loading="lazy"/);
+  assert.doesNotMatch(figures.at(-1)[2], /fetchpriority="high"/);
+});
 
-  assert.match(css, /\.frame-media\s*\{[^}]*overflow:\s*hidden/);
-  assert.match(
-    css,
-    /\.frame-media\s+img\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover[^}]*object-position:\s*center/,
-  );
+test("life photographs preserve landscape and portrait ratios and stack into one column on mobile", () => {
+  assert.equal((life.match(/\bwidth="(?:768|960|1086|1182|1440|1620)"\s+height="(?:665|723|724|960|1024|1080|1440)"/g) || []).length, 15);
+  assert.equal((life.match(/\bloading="lazy"/g) || []).length, 14);
+  assert.equal((life.match(/\blife-frame-featured\b/g) || []).length, 1);
+  assert.equal((life.match(/\blife-frame-wide\b/g) || []).length, 2);
+  assert.equal((life.match(/class="life-frame life-frame-portrait"/g) || []).length, 3);
+  assert.equal((life.match(/class="life-frame life-frame-portrait-soft"/g) || []).length, 1);
+  assert.match(css, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(css, /\.life-frame-featured\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+  assert.match(css, /\.frame-media\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*2[^}]*overflow:\s*hidden/s);
+  assert.match(css, /\.life-frame-wide \.frame-media\s*\{[^}]*aspect-ratio:\s*1182\s*\/\s*665/s);
+  assert.match(css, /\.life-frame-portrait \.frame-media\s*\{[^}]*aspect-ratio:\s*2\s*\/\s*3/s);
+  assert.match(css, /\.life-frame-portrait-soft \.frame-media\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*4/s);
+  assert.match(css, /\.life-photo\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
+
+  const mobile = maxWidthMedia(600);
+  assert.match(mobile, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
 });
 
 test("both pages load the same styles and behavior module", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260803-live-ai-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260804-life-photos-2"/);
     assert.match(
       page,
-      /src="phd-main\.js\?v=20260803-live-ai-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260803-live-ai-1"/,
+      /src="phd-main\.js\?v=20260805-profile-authors-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260805-profile-authors-1"/,
     );
   }
   assert.ok(css.length > 0);
@@ -367,7 +464,6 @@ test("navigation and mobile auxiliary labels preserve readable type floors", () 
     [".profile-copy-actions button", 12],
     [".workspace-nav a", 12],
     [".site-footer", 12],
-    [".frame-empty", 12],
   ]) {
     assertFontSizeAtLeast(cssRule(mobile, selector), floor, `mobile ${selector}`);
   }
@@ -458,7 +554,7 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and six independent publication cards", () => {
+test("homepage locks the current research program, career, and seven independent publication cards", () => {
   const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "CVPR Manuscript", "Agent Research Survey"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
@@ -473,7 +569,7 @@ test("homepage locks the current research program, career, and six independent p
   }
 
   assert.equal(cardsWithClass("career-item").length, 6);
-  assert.equal(cardsWithClass("publication-card").length, 6);
+  assert.equal(cardsWithClass("publication-card").length, 7);
 });
 
 test("work history contains six independent appointments with separate Tencent teams", () => {
@@ -530,26 +626,29 @@ test("research and education are independent visible entries", () => {
   ]) assert.ok(cardWithText("research-project", title));
 });
 
-test("new unpublished papers retain their exact titles and conservative public states", () => {
-  const aaaiTitles = [
-    "When KL Regularization Fails in Online Reasoning RL: A Token-Level Gradient Contract",
-    "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery",
-  ];
+test("unpublished papers retain distinct venues and conservative public states", () => {
+  const silicaTitle = "SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction";
+  const klTitle = "When KL Regularization Fails in Online Reasoning RL: A Token-Level Gradient Contract";
+  const advantageTitle =
+    "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery";
   const chronoMemTitle = "ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting";
 
-  for (const title of aaaiTitles) {
+  const contracts = [
+    [silicaTitle, /Submitted/, /EACL Submission/],
+    [klTitle, /In Preparation/, /ICLR Manuscript/],
+    [advantageTitle, /Submitted/, /AAAI 2027 Submission/],
+    [chronoMemTitle, /In Preparation/, /ICASSP 2027 Manuscript/],
+  ];
+  for (const [title, status, venue] of contracts) {
     const card = cardWithText("publication-card", title);
     assert.ok(card, `publication card must include ${title}`);
-    assert.match(card, /Under Review/);
+    assert.match(card, status);
+    assert.match(card, venue);
     assert.match(card, /Not yet public/);
     assert.doesNotMatch(card, /<a\b[^>]*href=/);
   }
-
-  const chronoMemCard = cardWithText("publication-card", chronoMemTitle);
-  assert.ok(chronoMemCard, "ChronoMem must have its own publication card");
-  assert.match(chronoMemCard, /In Preparation/);
-  assert.match(chronoMemCard, /Not yet public/);
-  assert.doesNotMatch(chronoMemCard, /<a\b[^>]*href=/);
+  assert.doesNotMatch(cardWithText("publication-card", klTitle), /AAAI/);
+  assert.doesNotMatch(cardWithText("publication-card", silicaTitle), /\bACL Submission\b/);
 });
 
 test("reference shell and publication rows respond at the selected breakpoints", () => {
