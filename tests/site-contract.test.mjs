@@ -68,7 +68,7 @@ test("homepage preserves the approved blue-gray research-archive markers", () =>
   assert.doesNotMatch(index, /<h2 id="news-title">News<\/h2>/);
 
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260804-life-photos-2"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260805-consistency-perf-1"/);
   }
 });
 
@@ -103,7 +103,7 @@ test("profile page preserves the approved identity and real assets", () => {
   ]) {
     assert.ok(index.includes(text), `index.html must retain ${text}`);
   }
-  assert.match(index, /images\/avatar\.jpg/);
+  assert.match(index, /images\/generated\/avatar-528\.jpg/);
   for (const image of ["paper1-hypergraph.png", "paper2-suffix-tree.png"]) {
     assert.equal(
       existsSync(new URL(`../images/${image}`, import.meta.url)),
@@ -123,6 +123,48 @@ test("homepage About Me reflects approved AI-agent and foundation-model work", (
   assert.match(about, /<strong>ERNIE Bot 5 \(EB5\) Foundation Model<\/strong>/);
   assert.match(about, /<strong>knowledge graphs<\/strong>/);
   assert.match(about, /<strong>LLM-based security<\/strong>/);
+});
+
+test("verified public metadata and profile wording stay synchronized", () => {
+  assert.match(index, /University of Glasgow professor and University of Oxford graduate/);
+  assert.match(index, /AI Agent research spanning AutoResearch, post-training, agentic RL, and applied Xianyu AI systems/);
+  assert.match(index, /Xianyu AI agents for photo-compliance detection and physical-defect inspection/);
+  assert.match(contentSection("home"), /applied Xianyu AI systems/);
+  assert.match(contentSection("research"), /Xianyu AI workflows/);
+  assert.match(contentSection("experience"), /applied Xianyu AI systems/);
+  assert.match(contentSection("experience"), /Mathematical and biological capability enhancement/);
+  assert.match(contentSection("experience"), /training time <strong>30%<\/strong> lower/);
+  assert.match(index, /<strong>Xinyu Guan<\/strong> et al\./);
+
+  const textSearch = cardWithText(
+    "publication-card",
+    "Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach",
+  );
+  assert.ok(textSearch);
+  assert.match(textSearch, /class="status-label">Preprint/);
+  assert.match(textSearch, /<strong>Xinyu Guan<\/strong>, Shaohua Zhang/);
+  assert.match(textSearch, /arXiv:2512\.16927 \[cs\.DS\] · Nov 2025/);
+  assert.match(textSearch, /href="https:\/\/arxiv\.org\/abs\/2512\.16927"/);
+
+  const hypergraph = cardWithText(
+    "publication-card",
+    "Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation",
+  );
+  assert.ok(hypergraph);
+  assert.match(hypergraph, /class="status-label">Published/);
+  assert.match(hypergraph, /ICASSP 2025 · Apr 2025/);
+  assert.match(hypergraph, /Yuening Zhou, Yulin Wang, Qian Cui, <strong>Xinyu Guan<\/strong>, Francisco Cisternas/);
+  assert.match(hypergraph, /href="https:\/\/doi\.org\/10\.1109\/ICASSP49660\.2025\.10887705"/);
+  assert.match(hypergraph, /<a\b(?=[^>]*href="https:\/\/arxiv\.org\/abs\/2409\.11695")(?=[^>]*class="publication-inline-link")(?=[^>]*target="_blank")(?=[^>]*rel="noopener")[^>]*>arXiv<\/a>/);
+  assert.match(cssRule(css, ".publication-inline-link"), /position:\s*relative[\s\S]*z-index:\s*2/);
+
+  assert.doesNotMatch(behavior, /Answered by Llama 3\.2/);
+  assert.match(behavior, /Answered by \$\{formatAgentModelName\(reply\.model\)\} through Workers AI/);
+
+  assert.doesNotMatch(index, /Evaluation and Optimization of Efficient Text Search Algorithms/);
+  assert.doesNotMatch(index, /Price-Aware Dynamic Heterogeneous Hypergraph Network/);
+  assert.doesNotMatch(index, /Alibaba Experience/);
+  assert.doesNotMatch(index, /Biomedical domain enhancement|processing time <strong>30%<\/strong> lower/);
 });
 
 test("Xinyu Agent stays inside About me and starts in a compact accessible state", () => {
@@ -172,7 +214,7 @@ test("Agent answers link back to the resume evidence", () => {
   const agent = home.match(/<aside\b[^>]*class="xinyu-agent"[\s\S]*?<\/aside>/)?.[0] ?? "";
 
   assert.match(agent, /href="#research"[^>]*>Current Research<\/a>/);
-  assert.match(agent, /href="#experience"[^>]*>Alibaba Experience<\/a>/);
+  assert.match(agent, /href="#experience"[^>]*>Work Experience<\/a>/);
   assert.match(agent, /href="#papers"[^>]*>Publications<\/a>/);
   assert.match(agent, /aria-live="polite"/);
 });
@@ -223,8 +265,8 @@ test("every verified paper link makes its whole card keyboard-accessible and cli
     assert.match(card, /rel="noopener"/);
   }
   assert.match(index, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
-  assert.match(index, /href="https:\/\/github\.com\/StrikerG\/Efficient-Algorithms-for-Text-Search-and-Retrieval"/);
-  assert.match(index, /href="https:\/\/scholar\.google\.com\/citations\?view_op=view_citation&amp;hl=zh-CN&amp;user=iIMa-mkAAAAJ&amp;citation_for_view=iIMa-mkAAAAJ:qjMakFHDy7sC"/);
+  assert.match(index, /href="https:\/\/arxiv\.org\/abs\/2512\.16927"/);
+  assert.match(index, /href="https:\/\/doi\.org\/10\.1109\/ICASSP49660\.2025\.10887705"/);
   assert.match(
     cssRule(css, ".publication-card-linked h3 a::after"),
     /position:\s*absolute[\s\S]*inset:\s*0[\s\S]*content:\s*""/,
@@ -262,12 +304,12 @@ test("verified publication figures remain scoped to their corresponding cards", 
       alt: "CICL decision-aware context and memory-card pipeline",
     },
     {
-      title: "Evaluation and Optimization of Efficient Text Search Algorithms",
+      title: "Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach",
       src: "images/paper2-suffix-tree.png",
       alt: "Suffix-tree search illustration",
     },
     {
-      title: "Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation",
+      title: "Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation",
       src: "images/paper1-hypergraph.png",
       alt: "Price-aware heterogeneous hypergraph",
     },
@@ -325,7 +367,7 @@ test("life page publishes all fifteen supplied photographs as accessible gallery
   assert.equal(lifeExists, true, "life.html must exist");
   assert.equal((life.match(/class="life-frame\b/g) || []).length, 15);
   assert.equal((life.match(/<img\b(?=[^>]*\bclass="life-photo")(?=[^>]*\balt="[^"]+")[^>]*>/g) || []).length, 15);
-  assert.match(life, /images\/avatar\.jpg/);
+  assert.match(life, /images\/generated\/avatar-528\.jpg/);
   assert.doesNotMatch(life, /Oxford, UK|class="year-line/);
   assert.doesNotMatch(life, /frame-empty|Add life photo|role="presentation"/);
 
@@ -404,10 +446,10 @@ test("life photographs preserve landscape and portrait ratios and stack into one
 
 test("both pages load the same styles and behavior module", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260804-life-photos-2"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260805-consistency-perf-1"/);
     assert.match(
       page,
-      /src="phd-main\.js\?v=20260805-profile-authors-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260805-profile-authors-1"/,
+      /src="phd-main\.js\?v=20260805-consistency-perf-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260805-consistency-perf-1"/,
     );
   }
   assert.ok(css.length > 0);

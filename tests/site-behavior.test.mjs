@@ -404,7 +404,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   }
 });
 
-test("initAgent reveals the live region before writing a submitted answer", async () => {
+function createAgentFixture(apiUrl) {
   const attrs = new Map([["aria-expanded", "false"]]);
   const toggle = {
     getAttribute(name) {
@@ -472,15 +472,63 @@ test("initAgent reveals the live region before writing a submitted answer", asyn
     querySelector(selector) {
       return {
         "[data-xinyu-agent]": card,
-        "meta[name='xinyu-agent-api']": { content: "" },
+        "meta[name='xinyu-agent-api']": { content: apiUrl },
       }[selector] ?? null;
     },
   };
 
+  return {
+    answerNode,
+    attrs,
+    card,
+    doc,
+    form,
+    input,
+    panel,
+    statusNode,
+    submit,
+    get panelWasVisibleWhenAnswerChanged() {
+      return panelWasVisibleWhenAnswerChanged;
+    },
+  };
+}
+
+test("formatAgentModelName maps the deployed model without stale hard-coded copy", () => {
+  assert.equal(
+    site.formatAgentModelName("@cf/meta/llama-4-scout-17b-16e-instruct"),
+    "Llama 4 Scout",
+  );
+  assert.equal(site.formatAgentModelName("@cf/example/future-model"), "future model");
+  assert.equal(site.formatAgentModelName(""), "Workers AI");
+});
+
+test("Agent topic routing keeps research and experience aligned with Xianyu AI", () => {
+  const research = site.buildAgentReply("What are you researching now?");
+  const experience = site.buildAgentReply("What do you do at Alibaba?");
+  assert.match(research.answer, /Xianyu AI/);
+  assert.match(experience.answer, /Xianyu AI/);
+  assert.match(experience.answer, /AutoResearch/);
+  assert.match(experience.answer, /Post-Training/);
+  assert.match(experience.answer, /Agentic RL/);
+});
+
+test("initAgent reveals the live region before writing a submitted answer", async () => {
+  const fixture = createAgentFixture("");
+  const {
+    answerNode,
+    attrs,
+    card,
+    doc,
+    form,
+    input,
+    statusNode,
+    submit,
+  } = fixture;
+
   site.initAgent(doc);
   await form.submitHandler({ preventDefault() {} });
 
-  assert.equal(panelWasVisibleWhenAnswerChanged, true);
+  assert.equal(fixture.panelWasVisibleWhenAnswerChanged, true);
   assert.equal(attrs.get("aria-expanded"), "true");
   assert.equal(input.value, "");
   assert.match(answerNode.value, /not connected/i);
@@ -489,4 +537,25 @@ test("initAgent reveals the live region before writing a submitted answer", asyn
   assert.equal(card.attrs.get("aria-busy"), "false");
   assert.equal(input.disabled, false);
   assert.equal(submit.disabled, false);
+});
+
+test("initAgent renders the model returned by the successful Worker response", async () => {
+  const { doc, form, statusNode } = createAgentFixture("https://agent.example/api/chat");
+  site.initAgent(doc, {
+    fetchImpl: async () => ({
+      ok: true,
+      async json() {
+        return {
+          answer: "A grounded answer.",
+          provider: "workers-ai",
+          model: "@cf/meta/llama-4-scout-17b-16e-instruct",
+        };
+      },
+    }),
+  });
+  await form.submitHandler({ preventDefault() {} });
+  assert.equal(
+    statusNode.textContent,
+    "Answered by Llama 4 Scout through Workers AI · grounded in this public profile.",
+  );
 });

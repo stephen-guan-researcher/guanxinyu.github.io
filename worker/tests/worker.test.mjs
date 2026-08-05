@@ -190,6 +190,16 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.equal(invocation.options.max_tokens, 400);
   assert.equal(invocation.options.temperature, 0);
   assert.equal(invocation.options.messages[1].content, "What does Xinyu research?");
+  const systemMessage = invocation.options.messages[0].content;
+  assert.match(systemMessage, /University of Glasgow professor and University of Oxford graduate/i);
+  assert.match(systemMessage, /Xinyu Guan is the first author of ChronoMem/i);
+  assert.match(systemMessage, /Optimizing Text Search:[\s\S]*Xinyu Guan and Shaohua Zhang/i);
+  assert.match(systemMessage, /Basket-Enhanced Heterogenous Hypergraph[\s\S]*Yuening Zhou[\s\S]*Francisco Cisternas/i);
+  assert.match(systemMessage, /arXiv:2512\.16927[\s\S]*Nov(?:ember)? 2025/i);
+  assert.match(systemMessage, /10\.1109\/ICASSP49660\.2025\.10887705/);
+  assert.match(systemMessage, /arxiv\.org\/abs\/2409\.11695/);
+  assert.match(systemMessage, /applied Xianyu AI systems/i);
+  assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
   assert.match(invocation.options.messages[0].content, /seven publication records/i);
   assert.match(invocation.options.messages[0].content, /SILICA[\s\S]*submitted to EACL/i);
   assert.match(invocation.options.messages[0].content, /authors of SILICA are Pengcheng Xu and Xinyu Guan, in that order/i);

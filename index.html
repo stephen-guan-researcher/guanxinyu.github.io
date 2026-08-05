@@ -10,14 +10,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20260804-life-photos-2" />
+  <link rel="stylesheet" href="phd-styles.css?v=20260805-consistency-perf-1" />
 </head>
 <body class="profile-page">
   <div class="academic-shell">
     <div class="sidebar-stack">
       <aside class="profile-card" aria-labelledby="profile-name">
       <figure class="profile-photo">
-        <img src="images/avatar.jpg" alt="Portrait of Xinyu Guan" />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="images/generated/avatar-208.webp 208w, images/generated/avatar-352.webp 352w, images/generated/avatar-528.webp 528w"
+            sizes="(max-width: 600px) 104px, (max-width: 1199px) 140px, 176px"
+          />
+          <img
+            src="images/generated/avatar-528.jpg"
+            width="528"
+            height="453"
+            alt="Portrait of Xinyu Guan"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
       </figure>
 
       <div class="profile-identity">
@@ -108,7 +122,7 @@
             <h2 id="about-title">About me</h2>
           </header>
           <p class="about-lead">I research and build reliable AI agents that can reason, learn from feedback, and turn research ideas into systems that work in the real world.</p>
-          <p>At Alibaba, my current work focuses on <strong>AI agent research</strong>, spanning <strong>AutoResearch</strong>, <strong>post-training</strong>, and <strong>agentic reinforcement learning</strong>. I am especially interested in closed-loop research agents, stable reasoning objectives, and high-quality data systems for foundation models.</p>
+          <p>At Alibaba, my current work focuses on <strong>AI agent research</strong>, spanning <strong>AutoResearch</strong>, <strong>post-training</strong>, <strong>agentic reinforcement learning</strong>, and <strong>applied Xianyu AI systems</strong>. I am especially interested in closed-loop research agents, stable reasoning objectives, and high-quality data systems for foundation models.</p>
           <p>Before Alibaba, I contributed to foundation-model development at Tencent and Baidu. At Tencent, I worked on the <strong>Hunyuan Foundation Model</strong>, focusing on mathematical and biological capability enhancement, pre-training data, multilingual capability improvement, and <strong>Yuanbao AI Search</strong>. At Baidu, I contributed to multilingual capability enhancement for the <strong>ERNIE Bot 5 (EB5) Foundation Model</strong>.</p>
           <p>Earlier, at the Chinese Academy of Sciences, I conducted research on <strong>knowledge graphs</strong> and <strong>LLM-based security</strong>.</p>
           <p class="about-note">I am always happy to connect and collaborate on ambitious research problems. Feel free to reach out by <a href="mailto:xinyuguanphd@outlook.com" id="contactMeBtn" data-email="xinyuguanphd@outlook.com">email</a> or visit my <a href="https://scholar.google.com/citations?user=iIMa-mkAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener">Google Scholar</a>.</p>
@@ -135,7 +149,7 @@
                 <nav class="agent-sources" aria-label="Answer sources">
                   <span>Sources:</span>
                   <a href="#research" data-agent-source="research">Current Research</a>
-                  <a href="#experience" data-agent-source="experience">Alibaba Experience</a>
+                  <a href="#experience" data-agent-source="experience">Work Experience</a>
                   <a href="#papers" data-agent-source="papers">Publications</a>
                 </nav>
               </div>
@@ -157,7 +171,7 @@
             <span class="section-index" aria-hidden="true">02</span>
             <h2 id="research-title">Current research</h2>
           </header>
-          <p class="research-thesis">I study how agents can research, learn, and act reliably.</p>
+          <p class="research-thesis">I study how agents can research, learn, and act reliably, connecting these directions with applied Xianyu AI workflows.</p>
           <div class="research-core-grid">
             <article class="research-core-item">
               <span class="research-core-index" aria-hidden="true">01</span>
@@ -193,7 +207,10 @@
           <div class="publication-list">
             <article class="publication-card">
               <figure class="publication-card-figure">
-                <img src="images/paper-silica-identifiability.png" alt="SILICA shared-state counterfactual identifiability evaluation">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-silica-identifiability-320.webp 320w, images/generated/paper-silica-identifiability-640.webp 640w, images/generated/paper-silica-identifiability-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 90px), (max-width: 1199px) 124px, 148px" />
+                  <img src="images/paper-silica-identifiability.png" width="1200" height="525" alt="SILICA shared-state counterfactual identifiability evaluation" loading="lazy" decoding="async" />
+                </picture>
               </figure>
               <p class="status-label">Submitted</p>
               <h3>SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</h3>
@@ -213,7 +230,10 @@
 
             <article class="publication-card">
               <figure class="publication-card-figure">
-                <img src="images/paper-advantage-maxnorm-ac.png" alt="MaxNorm-AC advantage-scale calibration pipeline">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-advantage-maxnorm-ac-320.webp 320w, images/generated/paper-advantage-maxnorm-ac-640.webp 640w, images/generated/paper-advantage-maxnorm-ac-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 90px), (max-width: 1199px) 124px, 148px" />
+                  <img src="images/paper-advantage-maxnorm-ac.png" width="1200" height="525" alt="MaxNorm-AC advantage-scale calibration pipeline" loading="lazy" decoding="async" />
+                </picture>
               </figure>
               <p class="status-label">Submitted</p>
               <h3>Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery</h3>
@@ -224,7 +244,10 @@
 
             <article class="publication-card">
               <figure class="publication-card-figure">
-                <img src="images/paper-chronomem-overview.png" alt="ChronoMem event-memory and residual-forecasting pipeline">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-chronomem-overview-320.webp 320w, images/generated/paper-chronomem-overview-640.webp 640w, images/generated/paper-chronomem-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 90px), (max-width: 1199px) 124px, 148px" />
+                  <img src="images/paper-chronomem-overview.png" width="1200" height="525" alt="ChronoMem event-memory and residual-forecasting pipeline" loading="lazy" decoding="async" />
+                </picture>
               </figure>
               <p class="status-label">In Preparation</p>
               <h3>ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting</h3>
@@ -235,7 +258,10 @@
 
             <article class="publication-card publication-card-linked">
               <figure class="publication-card-figure">
-                <img src="images/paper3-cicl-pipeline.png" alt="CICL decision-aware context and memory-card pipeline">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper3-cicl-pipeline-320.webp 320w, images/generated/paper3-cicl-pipeline-640.webp 640w, images/generated/paper3-cicl-pipeline-850.webp 850w" sizes="(max-width: 600px) calc(100vw - 90px), (max-width: 1199px) 124px, 148px" />
+                  <img src="images/paper3-cicl-pipeline.png" width="850" height="320" alt="CICL decision-aware context and memory-card pipeline" loading="lazy" decoding="async" />
+                </picture>
               </figure>
               <p class="status-label">Preprint</p>
               <h3><a href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents</a></h3>
@@ -246,24 +272,30 @@
 
             <article class="publication-card publication-card-linked">
               <figure class="publication-card-figure">
-                <img src="images/paper2-suffix-tree.png" alt="Suffix-tree search illustration">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper2-suffix-tree-320.webp 320w, images/generated/paper2-suffix-tree-640.webp 640w, images/generated/paper2-suffix-tree-678.webp 678w" sizes="(max-width: 600px) calc(100vw - 90px), (max-width: 1199px) 124px, 148px" />
+                  <img src="images/paper2-suffix-tree.png" width="678" height="308" alt="Suffix-tree search illustration" loading="lazy" decoding="async" />
+                </picture>
               </figure>
-              <p class="status-label">Under Review</p>
-              <h3><a href="https://github.com/StrikerG/Efficient-Algorithms-for-Text-Search-and-Retrieval" target="_blank" rel="noopener">Evaluation and Optimization of Efficient Text Search Algorithms</a></h3>
-              <p class="publication-meta">ICASSP 2026 · Oct 2025</p>
-              <p class="publication-authors"><strong>Xinyu Guan</strong></p>
-              <p class="publication-summary">Evaluates seven string-matching algorithms and proposes an Ukkonen-based suffix-tree approach with approximately 5.2× speedup.</p>
+              <p class="status-label">Preprint</p>
+              <h3><a href="https://arxiv.org/abs/2512.16927" target="_blank" rel="noopener">Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach</a></h3>
+              <p class="publication-meta">arXiv:2512.16927 [cs.DS] · Nov 2025</p>
+              <p class="publication-authors"><strong>Xinyu Guan</strong>, Shaohua Zhang</p>
+              <p class="publication-summary">Presents a pattern-matching approach based on Ukkonen's construction for efficient text search.</p>
             </article>
 
             <article class="publication-card publication-card-linked">
               <figure class="publication-card-figure">
-                <img src="images/paper1-hypergraph.png" alt="Price-aware heterogeneous hypergraph">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper1-hypergraph-320.webp 320w, images/generated/paper1-hypergraph-640.webp 640w, images/generated/paper1-hypergraph-692.webp 692w" sizes="(max-width: 600px) calc(100vw - 90px), (max-width: 1199px) 124px, 148px" />
+                  <img src="images/paper1-hypergraph.png" width="692" height="468" alt="Price-aware heterogeneous hypergraph" loading="lazy" decoding="async" />
+                </picture>
               </figure>
               <p class="status-label">Published</p>
-              <h3><a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=zh-CN&amp;user=iIMa-mkAAAAJ&amp;citation_for_view=iIMa-mkAAAAJ:qjMakFHDy7sC" target="_blank" rel="noopener">Price-Aware Dynamic Heterogeneous Hypergraph Network for Next Basket Recommendation</a></h3>
-              <p class="publication-meta">ICASSP 2025 · Mar 2025</p>
-              <p class="publication-authors"><strong>Xinyu Guan</strong></p>
-              <p class="publication-summary">Incorporates price signals into a dynamic heterogeneous hypergraph for next-basket recommendation.</p>
+              <h3><a href="https://doi.org/10.1109/ICASSP49660.2025.10887705" target="_blank" rel="noopener">Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation</a></h3>
+              <p class="publication-meta">ICASSP 2025 · Apr 2025</p>
+              <p class="publication-authors">Yuening Zhou, Yulin Wang, Qian Cui, <strong>Xinyu Guan</strong>, Francisco Cisternas</p>
+              <p class="publication-summary">Introduces a basket-enhanced heterogeneous hypergraph for price-sensitive next-basket recommendation. <a class="publication-inline-link" href="https://arxiv.org/abs/2409.11695" target="_blank" rel="noopener">arXiv</a></p>
             </article>
           </div>
 
@@ -288,9 +320,10 @@
               <div>
                 <h3 class="career-header">Alibaba Group / TaoTian Group</h3>
                 <p class="career-role">AI Agent Researcher</p>
-                <p class="career-summary"><strong>Xianyu Quality Inspection</strong></p>
+                <p class="career-summary">AI Agent research spanning AutoResearch, post-training, agentic RL, and applied Xianyu AI systems.</p>
                 <ul class="career-projects">
-                  <li>Building AI agents for photo compliance detection and physical-defect inspection on second-hand products.</li>
+                  <li>Building reliable closed-loop research and reasoning workflows for AI agents.</li>
+                  <li>Building Xianyu AI agents for photo-compliance detection and physical-defect inspection on second-hand products through Xianyu Quality Inspection.</li>
                 </ul>
               </div>
             </article>
@@ -324,7 +357,7 @@
               <div>
                 <h3 class="career-header">Tencent / Hunyuan Strategy Group 4</h3>
                 <p class="career-role">Research Scientist</p>
-                <p class="career-summary">Biomedical domain enhancement, video processing, data recognition, and audio alignment.</p>
+                <p class="career-summary">Mathematical and biological capability enhancement, video processing, data recognition, and audio alignment.</p>
                 <ul class="career-projects">
                   <li>Biomedical concept extraction reached <strong>99%</strong> across <strong>934</strong> questions; MMLU improved <strong>+11.7</strong> and CMMLU improved <strong>+10.2</strong>.</li>
                   <li>Processed a 10-minute 1080p video in about <strong>80 seconds</strong>, with capacity of <strong>20,000 video-hours</strong> per month.</li>
@@ -340,7 +373,7 @@
                 <p class="career-role">Research Assistant Intern</p>
                 <p class="career-summary">Fine-tuned LLM approaches for insider-threat detection and structured knowledge-graph construction.</p>
                 <ul class="career-projects">
-                  <li>Worked with OPT-125M, ChatGLM-6B P-tuning, and LLaMA-7B LoRA on <strong>CERT 4.2</strong>; AUC and Recall were about <strong>0.99</strong>, FPR about <strong>0.3%</strong>, processing time <strong>30%</strong> lower, and compute over <strong>50%</strong> lower.</li>
+                  <li>Worked with OPT-125M, ChatGLM-6B P-tuning, and LLaMA-7B LoRA on <strong>CERT 4.2</strong>; AUC and Recall were about <strong>0.99</strong>, FPR about <strong>0.3%</strong>, training time <strong>30%</strong> lower, and compute over <strong>50%</strong> lower.</li>
                   <li>Curated <strong>20,000+ RDF triples</strong> with <strong>98%</strong> extraction accuracy and precision <strong>+43%</strong>.</li>
                 </ul>
               </div>
@@ -417,7 +450,7 @@
               <h3>University of Glasgow</h3>
               <p class="education-degree">MSc in Computer Science</p>
               <p>GPA <strong>3.67 / 4.0</strong> · USNews Rank <strong>#62</strong></p>
-              <p>Research collaboration with Prof. David Manlove, University of Oxford.</p>
+              <p>Research collaboration with Prof. David Manlove, University of Glasgow professor and University of Oxford graduate.</p>
             </div>
           </article>
           <article class="education-item">
@@ -437,6 +470,6 @@
     </main>
   </div>
 
-  <script type="module" src="phd-main.js?v=20260805-profile-authors-1"></script>
+  <script type="module" src="phd-main.js?v=20260805-consistency-perf-1"></script>
 </body>
 </html>

@@ -9,14 +9,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20260804-life-photos-2" />
+  <link rel="stylesheet" href="phd-styles.css?v=20260805-consistency-perf-1" />
 </head>
 <body class="life-page">
   <div class="academic-shell beyond-shell">
     <div class="sidebar-stack">
       <aside class="profile-card" aria-labelledby="profile-name">
       <figure class="profile-photo">
-        <img src="images/avatar.jpg" alt="Portrait of Xinyu Guan" />
+        <picture>
+          <source
+            type="image/webp"
+            srcset="images/generated/avatar-208.webp 208w, images/generated/avatar-352.webp 352w, images/generated/avatar-528.webp 528w"
+            sizes="(max-width: 600px) 104px, (max-width: 1199px) 140px, 176px"
+          />
+          <img
+            src="images/generated/avatar-528.jpg"
+            width="528"
+            height="453"
+            alt="Portrait of Xinyu Guan"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
       </figure>
 
       <div class="profile-identity">
@@ -78,77 +92,122 @@
           <section class="life-gallery" aria-label="Personal photo gallery">
             <figure class="life-frame life-frame-featured life-frame-wide">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-graduation-group.jpg" width="1182" height="665" alt="Xinyu Guan and friends posing with flowers at a University of Glasgow graduation celebration" fetchpriority="high" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-graduation-group-640.webp 640w, images/life/generated/glasgow-graduation-group-960.webp 960w, images/life/generated/glasgow-graduation-group-1182.webp 1182w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(100vw - 80px), 544px), (max-width: 1199px) min(calc(100vw - 80px), 896px), min(calc(100vw - 360px), 1120px)" />
+                  <img class="life-photo" src="images/life/glasgow-graduation-group.jpg" width="1182" height="665" alt="Xinyu Guan and friends posing with flowers at a University of Glasgow graduation celebration" fetchpriority="high" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame life-frame-wide">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-bute-hall-night.jpg" width="1182" height="665" alt="Xinyu Guan and two friends in graduation robes outside Bute Hall at night" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-bute-hall-night-640.webp 640w, images/life/generated/glasgow-bute-hall-night-960.webp 960w, images/life/generated/glasgow-bute-hall-night-1182.webp 1182w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/glasgow-bute-hall-night.jpg" width="1182" height="665" alt="Xinyu Guan and two friends in graduation robes outside Bute Hall at night" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame life-frame-portrait">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-graduation-portrait.jpg" width="960" height="1440" alt="Xinyu Guan in graduation robes holding a teddy bear outside a University of Glasgow building" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-graduation-portrait-640.webp 640w, images/life/generated/glasgow-graduation-portrait-960.webp 960w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/glasgow-graduation-portrait.jpg" width="960" height="1440" alt="Xinyu Guan in graduation robes holding a teddy bear outside a University of Glasgow building" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame life-frame-portrait">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-arches-portrait.jpg" width="960" height="1440" alt="Xinyu Guan in graduation robes beneath stone arches decorated with string lights" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-arches-portrait-640.webp 640w, images/life/generated/glasgow-arches-portrait-960.webp 960w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/glasgow-arches-portrait.jpg" width="960" height="1440" alt="Xinyu Guan in graduation robes beneath stone arches decorated with string lights" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame life-frame-portrait-soft">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-graduation-contact-sheet.jpg" width="768" height="1024" alt="Printed photo contact sheets from Xinyu Guan's graduation ceremony" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-graduation-contact-sheet-640.webp 640w, images/life/generated/glasgow-graduation-contact-sheet-768.webp 768w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/glasgow-graduation-contact-sheet.jpg" width="768" height="1024" alt="Printed photo contact sheets from Xinyu Guan's graduation ceremony" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame life-frame-portrait">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-graduation-reception.jpg" width="960" height="1440" alt="Xinyu Guan and another academic in ceremonial robes at a graduation reception" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-graduation-reception-640.webp 640w, images/life/generated/glasgow-graduation-reception-960.webp 960w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/glasgow-graduation-reception.jpg" width="960" height="1440" alt="Xinyu Guan and another academic in ceremonial robes at a graduation reception" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/glasgow-graduation-friends.jpg" width="1440" height="960" alt="Xinyu Guan with three friends outside a stone university building on graduation day" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/glasgow-graduation-friends-640.webp 640w, images/life/generated/glasgow-graduation-friends-960.webp 960w, images/life/generated/glasgow-graduation-friends-1280.webp 1280w, images/life/generated/glasgow-graduation-friends-1440.webp 1440w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/glasgow-graduation-friends.jpg" width="1440" height="960" alt="Xinyu Guan with three friends outside a stone university building on graduation day" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/ntu-campus.jpg" width="1620" height="1080" alt="Xinyu Guan standing beside the Nanyang Technological University entrance sign" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/ntu-campus-640.webp 640w, images/life/generated/ntu-campus-960.webp 960w, images/life/generated/ntu-campus-1280.webp 1280w, images/life/generated/ntu-campus-1620.webp 1620w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/ntu-campus.jpg" width="1620" height="1080" alt="Xinyu Guan standing beside the Nanyang Technological University entrance sign" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/seaside-cafe.jpg" width="1086" height="723" alt="Xinyu Guan seated at a seaside cafe" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/seaside-cafe-640.webp 640w, images/life/generated/seaside-cafe-960.webp 960w, images/life/generated/seaside-cafe-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/seaside-cafe.jpg" width="1086" height="723" alt="Xinyu Guan seated at a seaside cafe" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/red-pavilion-portrait.jpg" width="1086" height="723" alt="Xinyu Guan looking toward the sea beneath a red pavilion" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/red-pavilion-portrait-640.webp 640w, images/life/generated/red-pavilion-portrait-960.webp 960w, images/life/generated/red-pavilion-portrait-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/red-pavilion-portrait.jpg" width="1086" height="723" alt="Xinyu Guan looking toward the sea beneath a red pavilion" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/ninghai-swing-seated.jpg" width="1086" height="723" alt="Xinyu Guan sitting on a seaside swing in Ninghai" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/ninghai-swing-seated-640.webp 640w, images/life/generated/ninghai-swing-seated-960.webp 960w, images/life/generated/ninghai-swing-seated-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/ninghai-swing-seated.jpg" width="1086" height="723" alt="Xinyu Guan sitting on a seaside swing in Ninghai" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/ninghai-swing-front.jpg" width="1086" height="723" alt="Xinyu Guan smiling on a seaside swing in Ninghai" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/ninghai-swing-front-640.webp 640w, images/life/generated/ninghai-swing-front-960.webp 960w, images/life/generated/ninghai-swing-front-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/ninghai-swing-front.jpg" width="1086" height="723" alt="Xinyu Guan smiling on a seaside swing in Ninghai" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/beach-walk.jpg" width="1086" height="724" alt="Xinyu Guan walking beside the sea" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/beach-walk-640.webp 640w, images/life/generated/beach-walk-960.webp 960w, images/life/generated/beach-walk-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/beach-walk.jpg" width="1086" height="724" alt="Xinyu Guan walking beside the sea" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/garden-rabbit.jpg" width="1086" height="723" alt="A white rabbit doll beside a basket of fruit in a sunny garden" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/garden-rabbit-640.webp 640w, images/life/generated/garden-rabbit-960.webp 960w, images/life/generated/garden-rabbit-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/garden-rabbit.jpg" width="1086" height="723" alt="A white rabbit doll beside a basket of fruit in a sunny garden" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
             <figure class="life-frame">
               <div class="frame-media">
-                <img class="life-photo" src="images/life/coastal-temple.jpg" width="1086" height="723" alt="Xinyu Guan standing in the surf with a coastal temple in the distance" loading="lazy" decoding="async" />
+                <picture>
+                  <source type="image/webp" srcset="images/life/generated/coastal-temple-640.webp 640w, images/life/generated/coastal-temple-960.webp 960w, images/life/generated/coastal-temple-1086.webp 1086w" sizes="(max-width: 600px) min(calc(100vw - 62px), 538px), (max-width: 840px) min(calc(50vw - 46px), 266px), (max-width: 1199px) min(calc(50vw - 46px), 441px), min(calc(50vw - 180px), 550px)" />
+                  <img class="life-photo" src="images/life/coastal-temple.jpg" width="1086" height="723" alt="Xinyu Guan standing in the surf with a coastal temple in the distance" loading="lazy" decoding="async" />
+                </picture>
               </div>
             </figure>
           </section>
@@ -161,6 +220,6 @@
     </main>
   </div>
 
-  <script type="module" src="phd-main.js?v=20260805-profile-authors-1"></script>
+  <script type="module" src="phd-main.js?v=20260805-consistency-perf-1"></script>
 </body>
 </html>

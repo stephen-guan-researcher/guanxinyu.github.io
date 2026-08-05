@@ -55,7 +55,7 @@ function mediaQuery(query) {
 test("the sticky profile card uses the real portrait without overlay copy", () => {
   const portrait = elementWithClass(index, "figure", "profile-photo");
 
-  assert.match(portrait, /<img\b[^>]*src="images\/avatar\.jpg"/);
+  assert.match(portrait, /<img\b[^>]*src="images\/generated\/avatar-528\.jpg"/);
   assert.equal(
     normalizedText(portrait),
     "",

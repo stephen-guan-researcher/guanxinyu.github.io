@@ -765,6 +765,14 @@ button:focus-visible {
   letter-spacing: 0.18em;
 }
 
+.profile-photo picture,
+.publication-card-figure picture,
+.frame-media picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .publication-card-figure img {
   width: 100%;
   height: 100%;
@@ -823,6 +831,11 @@ button:focus-visible {
 
 .publication-card-linked h3 a:focus-visible {
   outline: none;
+}
+
+.publication-inline-link {
+  position: relative;
+  z-index: 2;
 }
 
 .publication-card .publication-meta {
