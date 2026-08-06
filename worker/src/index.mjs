@@ -43,6 +43,13 @@ function isQuotaError(error) {
   return error?.code === 3036 || error?.status === 429;
 }
 
+function canonicalizeAnswer(answer) {
+  return answer
+    .replaceAll("阿里巴巴陶天集团", "TaoTian Group @ Alibaba")
+    .replace(/([\p{Script=Han}])(TaoTian Group @ Alibaba)/gu, "$1 $2")
+    .replace(/(TaoTian Group @ Alibaba)([\p{Script=Han}])/gu, "$1 $2");
+}
+
 const FIRST_PERSON_IDENTITY_QUESTION = /(?:我是谁|介绍(?:一下)?我|who am i|introduce me)/i;
 const FIRST_PERSON_PROFILE_QUESTION = /(?:我是谁|介绍(?:一下)?我|我的(?:研究|研究方向|工作|工作经历|经历|教育|学历|论文|专利|背景|联系方式)|我现在(?:研究|做|负责)|我.*(?:研究|工作|任职|就职|经历|论文|文章|专利|背景|联系方式)|who am i|introduce me|my (?:research|work|experience|education|publications?|patents?|background|contact))/i;
 const FIRST_PERSON_EDUCATION_QUESTION = /(?:我(?:的)?(?:研究生|硕士|本科|学历|学校|大学|毕业院校)|我.*(?:哪个|哪所|哪间).*(?:大学|学校)|我.*(?:大学|学校).*毕业|我毕业于|where did i (?:study|graduate)|my (?:graduate|master'?s|undergraduate|university|education))/i;
@@ -216,7 +223,9 @@ export async function handleRequest(request, env) {
       : json({ error: "No model response available" }, 502, origin);
   }
 
-  const answer = typeof result?.response === "string" ? result.response.trim() : "";
+  const answer = typeof result?.response === "string"
+    ? canonicalizeAnswer(result.response.trim())
+    : "";
   if (!answer) {
     return json({ error: "No model response available" }, 502, origin);
   }

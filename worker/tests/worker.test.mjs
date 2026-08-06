@@ -312,6 +312,25 @@ test("preserves AI Agent as an untranslated role term in Chinese answers", async
   assert.match(userMessage, /use the exact Chinese role title "AI Agent 研究员"/i);
 });
 
+test("canonicalizes the Alibaba organization name in model-generated answers", async () => {
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question: "我是谁" }),
+  }), createEnv({
+    modelResult: {
+      response: "你是关鑫宇，目前是阿里巴巴陶天集团的 AI Agent 研究员。",
+    },
+  }));
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), {
+    answer: "你是关鑫宇，目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。",
+    provider: "workers-ai",
+    model: "@cf/meta/llama-4-scout-17b-16e-instruct",
+  });
+});
+
 test("resolves first-person graduate-school questions with canonical institution names", async () => {
   let invocation;
   const env = createEnv({
