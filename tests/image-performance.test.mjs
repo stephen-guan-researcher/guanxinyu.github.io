@@ -138,6 +138,22 @@ test("Life Photo tablet sizes respect the capped 600-pixel shell", () => {
   }
 });
 
+test("Life Photo mobile source hints use browser-compatible DPR-two payload caps", () => {
+  const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
+  assert.equal(tiles.length, 18);
+
+  for (const [, className, tile] of tiles) {
+    const expectedSize = className.includes("life-tile--lead") || className.includes("life-tile--wide")
+      ? "320px"
+      : "160px";
+    assert.match(
+      tile,
+      new RegExp(`sizes="\\(max-width: 600px\\) ${expectedSize},`),
+      `${className} must cap its mobile source hint before the DPR-two selection`,
+    );
+  }
+});
+
 test("both pages use the release cache token for changed CSS and JavaScript", () => {
   for (const page of [index, life]) {
     assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
