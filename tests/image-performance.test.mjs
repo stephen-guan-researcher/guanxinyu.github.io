@@ -35,12 +35,13 @@ test("every visual publication has correctly labelled responsive WebP variants",
   }
 });
 
-test("every current Life Photo has a compact 640-pixel WebP", () => {
+test("every current Life Photo has compact 320-pixel and 640-pixel WebP variants", () => {
   const life = readFileSync(asset("life.html"), "utf8");
   const stems = [...life.matchAll(/src="images\/life\/([^\"]+)\.jpg"/g)]
     .map((match) => match[1]);
-  assert.equal(new Set(stems).size, 15);
+  assert.equal(new Set(stems).size, 18);
   for (const stem of new Set(stems)) {
+    assertWebP(`images/life/generated/${stem}-320.webp`, 100_000);
     assertWebP(`images/life/generated/${stem}-640.webp`, 180_000);
   }
 });
@@ -102,29 +103,30 @@ test("publication figures are responsive and lazy", () => {
   }
 });
 
-test("Life Photos keep one prioritized image and fourteen lazy images", () => {
-  assert.equal((life.match(/fetchpriority="high"/g) ?? []).length, 2);
-  assert.equal((life.match(/loading="lazy"/g) ?? []).length, 14);
+test("Life Photos keep one prioritized gallery image and seventeen lazy images", () => {
   const gallery = life.match(/<section class="life-gallery"[\s\S]*?<\/section>/)?.[0] ?? "";
+  assert.equal((gallery.match(/fetchpriority="high"/g) ?? []).length, 1);
+  assert.equal((gallery.match(/loading="lazy"/g) ?? []).length, 17);
   const pictures = gallery.match(/<picture>[\s\S]*?<\/picture>/g) ?? [];
-  assert.equal(pictures.length, 15);
+  assert.equal(pictures.length, 18);
   for (const picture of pictures) {
     const stem = picture.match(/src="images\/life\/([^\"]+)\.jpg"/)?.[1];
     const sourceWidth = Number(picture.match(/\bwidth="(\d+)"/)?.[1]);
     assert.ok(stem && sourceWidth, "every Life picture must retain its JPEG fallback dimensions");
-    const widths = new Set([Math.min(640, sourceWidth), Math.min(960, sourceWidth), Math.min(1280, sourceWidth), sourceWidth]);
+    const widths = new Set([Math.min(320, sourceWidth), Math.min(640, sourceWidth), Math.min(960, sourceWidth), Math.min(1280, sourceWidth), sourceWidth]);
     for (const width of widths) {
       assert.match(picture, new RegExp(`${stem}-${width}\\.webp ${width}w`));
     }
-    assert.match(picture, picture.includes('fetchpriority="high"')
-      ? /sizes="\(max-width: 600px\) min\(calc\(100vw - 62px\), 538px\), \(max-width: 840px\) min\(calc\(100vw - 80px\), 544px\), \(max-width: 1199px\) min\(calc\(100vw - 80px\), 896px\), min\(calc\(100vw - 360px\), 1120px\)"/
-      : /sizes="\(max-width: 600px\) min\(calc\(100vw - 62px\), 538px\), \(max-width: 840px\) min\(calc\(50vw - 46px\), 266px\), \(max-width: 1199px\) min\(calc\(50vw - 46px\), 441px\), min\(calc\(50vw - 180px\), 550px\)"/);
+    assert.match(
+      picture,
+      /sizes="\(max-width: 600px\) (?:calc\(100vw - 48px\)|calc\(50vw - 30px\)), \(max-width: 1199px\) calc\((?:66\.667|50|33\.333)vw - (?:38|36|30)px\), min\(calc\((?:66\.667|50|33\.333|25)vw - (?:250|180|120|90)px\), (?:720|520|340|260)px\)"/,
+    );
   }
 });
 
 test("both pages use the release cache token for changed CSS and JavaScript", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260805-consistency-perf-1"/);
-    assert.match(page, /src="phd-main\.js\?v=20260805-consistency-perf-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
+    assert.match(page, /src="phd-main\.js\?v=20260806-life-mosaic-1"/);
   }
 });

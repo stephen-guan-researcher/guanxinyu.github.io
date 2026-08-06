@@ -1087,41 +1087,51 @@ button:focus-visible {
 
 .life-gallery {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: clamp(12px, 1.4vw, 20px);
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-flow: dense;
+  gap: clamp(3px, 0.35vw, 4px);
   margin-top: 24px;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--line);
 }
 
-.life-frame {
+.life-tile {
   min-width: 0;
   margin: 0;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
 }
 
-.life-frame-featured {
-  grid-column: 1 / -1;
+.life-tile--landscape {
+  grid-column: span 4;
+  aspect-ratio: 4 / 3;
 }
 
-.life-frame-wide .frame-media {
-  aspect-ratio: 1182 / 665;
-}
-
-.life-frame-portrait .frame-media {
-  aspect-ratio: 2 / 3;
-}
-
-.life-frame-portrait-soft .frame-media {
+.life-tile--portrait {
+  grid-column: span 3;
   aspect-ratio: 3 / 4;
 }
 
-.frame-media {
-  position: relative;
-  width: 100%;
+.life-tile--soft-portrait {
+  grid-column: span 3;
+  aspect-ratio: 4 / 5;
+}
+
+.life-tile--wide {
+  grid-column: span 6;
+  aspect-ratio: 16 / 9;
+}
+
+.life-tile--lead {
+  grid-column: span 8;
   aspect-ratio: 3 / 2;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #eef2f5;
+}
+
+.life-tile picture {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .life-photo {
@@ -1130,6 +1140,22 @@ button:focus-visible {
   height: 100%;
   object-fit: cover;
   object-position: center;
+}
+
+.life-photo--focal-road {
+  object-position: center 42%;
+}
+
+.life-photo--focal-camera {
+  object-position: 50% 35%;
+}
+
+.life-photo--focal-aquarium {
+  object-position: 50% 42%;
+}
+
+.life-photo--focal-night {
+  object-position: center 35%;
 }
 
 #copy-toast {
@@ -1261,6 +1287,27 @@ button:focus-visible {
 
   .publication-card {
     grid-template-columns: 124px minmax(0, 1fr);
+  }
+
+  .life-gallery {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .life-tile--landscape {
+    grid-column: span 2;
+  }
+
+  .life-tile--portrait,
+  .life-tile--soft-portrait {
+    grid-column: span 2;
+  }
+
+  .life-tile--wide {
+    grid-column: span 3;
+  }
+
+  .life-tile--lead {
+    grid-column: span 4;
   }
 
   .experience-details {
@@ -1574,14 +1621,21 @@ button:focus-visible {
   }
 
   .life-gallery {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .life-frame,
-  .life-frame-featured {
-    grid-column: 1;
-    grid-row: auto;
+  .life-tile--landscape,
+  .life-tile--portrait,
+  .life-tile--soft-portrait {
+    grid-column: span 1;
+  }
+
+  .life-tile--lead {
+    grid-column: 1 / -1;
+  }
+
+  .life-tile--wide {
+    grid-column: 1 / -1;
   }
 }
 

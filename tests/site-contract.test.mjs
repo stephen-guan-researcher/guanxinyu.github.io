@@ -68,7 +68,7 @@ test("homepage preserves the approved blue-gray research-archive markers", () =>
   assert.doesNotMatch(index, /<h2 id="news-title">News<\/h2>/);
 
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260805-consistency-perf-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
   }
 });
 
@@ -363,15 +363,18 @@ test("copy contact actions use buttons instead of javascript URLs", () => {
   }
 });
 
-test("life page publishes all fifteen supplied photographs as accessible gallery content", () => {
+test("life page publishes eighteen accessible photographs with the new opening sequence", () => {
   assert.equal(lifeExists, true, "life.html must exist");
-  assert.equal((life.match(/class="life-frame\b/g) || []).length, 15);
-  assert.equal((life.match(/<img\b(?=[^>]*\bclass="life-photo")(?=[^>]*\balt="[^"]+")[^>]*>/g) || []).length, 15);
+  assert.equal((life.match(/class="life-tile\b/g) || []).length, 18);
+  assert.equal((life.match(/<img\b(?=[^>]*\bclass="[^"]*\blife-photo\b[^"]*")(?=[^>]*\balt="[^"]+")[^>]*>/g) || []).length, 18);
   assert.match(life, /images\/generated\/avatar-528\.jpg/);
   assert.doesNotMatch(life, /Oxford, UK|class="year-line/);
   assert.doesNotMatch(life, /frame-empty|Add life photo|role="presentation"/);
 
   for (const filename of [
+    "life-road-red-shirt.jpg",
+    "life-camera-portrait.jpg",
+    "life-jellyfish-aquarium.jpg",
     "coastal-temple.jpg",
     "seaside-cafe.jpg",
     "red-pavilion-portrait.jpg",
@@ -393,8 +396,11 @@ test("life page publishes all fifteen supplied photographs as accessible gallery
   }
 });
 
-test("life gallery opens with the Glasgow graduation story and closes with the former cover photograph", () => {
+test("life gallery opens with the three new photographs and preserves the previous order", () => {
   assertInOrder(life, [
+    'src="images/life/life-road-red-shirt.jpg"',
+    'src="images/life/life-camera-portrait.jpg"',
+    'src="images/life/life-jellyfish-aquarium.jpg"',
     'src="images/life/glasgow-graduation-group.jpg"',
     'src="images/life/glasgow-bute-hall-night.jpg"',
     'src="images/life/glasgow-graduation-portrait.jpg"',
@@ -412,44 +418,47 @@ test("life gallery opens with the Glasgow graduation story and closes with the f
     'src="images/life/coastal-temple.jpg"',
   ]);
 
-  const figures = [...life.matchAll(/<figure class="([^"]*\blife-frame\b[^"]*)">([\s\S]*?)<\/figure>/g)];
-  assert.equal(figures.length, 15);
-  assert.match(figures[0][1], /\blife-frame-featured\b/);
-  assert.match(figures[0][1], /\blife-frame-wide\b/);
-  assert.match(figures[0][2], /src="images\/life\/glasgow-graduation-group\.jpg"/);
+  const figures = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
+  assert.equal(figures.length, 18);
+  assert.match(figures[0][1], /\blife-tile--lead\b/);
+  assert.match(figures[0][1], /\blife-tile--landscape\b/);
+  assert.match(figures[0][2], /src="images\/life\/life-road-red-shirt\.jpg"/);
   assert.match(figures[0][2], /fetchpriority="high"/);
   assert.doesNotMatch(figures[0][2], /loading="lazy"/);
-  assert.doesNotMatch(figures.at(-1)[1], /\blife-frame-featured\b/);
+  assert.match(figures[1][1], /\blife-tile--portrait\b/);
+  assert.match(figures[2][1], /\blife-tile--soft-portrait\b/);
+  assert.doesNotMatch(figures.at(-1)[1], /\blife-tile--lead\b/);
   assert.match(figures.at(-1)[2], /src="images\/life\/coastal-temple\.jpg"/);
   assert.match(figures.at(-1)[2], /loading="lazy"/);
   assert.doesNotMatch(figures.at(-1)[2], /fetchpriority="high"/);
 });
 
-test("life photographs preserve landscape and portrait ratios and stack into one column on mobile", () => {
-  assert.equal((life.match(/\bwidth="(?:768|960|1086|1182|1440|1620)"\s+height="(?:665|723|724|960|1024|1080|1440)"/g) || []).length, 15);
-  assert.equal((life.match(/\bloading="lazy"/g) || []).length, 14);
-  assert.equal((life.match(/\blife-frame-featured\b/g) || []).length, 1);
-  assert.equal((life.match(/\blife-frame-wide\b/g) || []).length, 2);
-  assert.equal((life.match(/class="life-frame life-frame-portrait"/g) || []).length, 3);
-  assert.equal((life.match(/class="life-frame life-frame-portrait-soft"/g) || []).length, 1);
-  assert.match(css, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
-  assert.match(css, /\.life-frame-featured\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
-  assert.match(css, /\.frame-media\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*2[^}]*overflow:\s*hidden/s);
-  assert.match(css, /\.life-frame-wide \.frame-media\s*\{[^}]*aspect-ratio:\s*1182\s*\/\s*665/s);
-  assert.match(css, /\.life-frame-portrait \.frame-media\s*\{[^}]*aspect-ratio:\s*2\s*\/\s*3/s);
-  assert.match(css, /\.life-frame-portrait-soft \.frame-media\s*\{[^}]*aspect-ratio:\s*3\s*\/\s*4/s);
+test("life photographs use one continuous 12-column mosaic and compact to two columns", () => {
+  assert.equal((life.match(/\bloading="lazy"/g) || []).length, 17);
+  assert.equal((life.match(/\blife-tile--lead\b/g) || []).length, 1);
+  assert.ok((life.match(/\blife-tile--wide\b/g) || []).length >= 2);
+  assert.ok((life.match(/\blife-tile--landscape\b/g) || []).length >= 6);
+  assert.ok((life.match(/\blife-tile--portrait\b/g) || []).length >= 4);
+  assert.ok((life.match(/\blife-tile--soft-portrait\b/g) || []).length >= 2);
+  assert.match(css, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-flow:\s*dense/s);
+  assert.match(css, /\.life-tile\s*\{[^}]*overflow:\s*hidden/s);
+  assert.match(css, /\.life-tile--landscape\s*\{[^}]*grid-column:\s*span\s*4/s);
+  assert.match(css, /\.life-tile--portrait\s*\{[^}]*grid-column:\s*span\s*3/s);
+  assert.match(css, /\.life-tile--soft-portrait\s*\{[^}]*grid-column:\s*span\s*3/s);
+  assert.match(css, /\.life-tile--wide\s*\{[^}]*grid-column:\s*span\s*6/s);
   assert.match(css, /\.life-photo\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
 
   const mobile = maxWidthMedia(600);
-  assert.match(mobile, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  assert.match(mobile, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(mobile, /\.life-tile--lead\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
 });
 
 test("both pages load the same styles and behavior module", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260805-consistency-perf-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
     assert.match(
       page,
-      /src="phd-main\.js\?v=20260805-consistency-perf-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260805-consistency-perf-1"/,
+      /src="phd-main\.js\?v=20260806-life-mosaic-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260806-life-mosaic-1"/,
     );
   }
   assert.ok(css.length > 0);

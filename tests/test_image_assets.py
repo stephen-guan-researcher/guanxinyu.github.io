@@ -49,11 +49,11 @@ class ResponsiveImageAssetsTest(unittest.TestCase):
     def test_life_tiers_and_metadata(self):
         html = (ROOT / "life.html").read_text()
         stems = set(re.findall(r'src="images/life/([^\"]+)\.jpg"', html))
-        self.assertEqual(len(stems), 15)
+        self.assertEqual(len(stems), 18)
         for stem in stems:
             source = ROOT / "images" / "life" / f"{stem}.jpg"
             with Image.open(source) as image:
-                expected = {min(640, image.width), min(960, image.width), min(1280, image.width), image.width}
+                expected = {min(320, image.width), min(640, image.width), min(960, image.width), min(1280, image.width), image.width}
                 self.assertFalse(image.getexif(), source)
                 self.assertFalse(any(key in image.info for key in ("exif", "xmp", "photoshop")), source)
             for width in expected:

@@ -54,12 +54,13 @@ def generate_papers():
 def generate_life():
     for path in sorted((ROOT / "images" / "life").glob("*.jpg")):
         with Image.open(path) as source:
-            widths = sorted({min(640, source.width), min(960, source.width), min(1280, source.width), source.width})
+            source = ImageOps.exif_transpose(source).convert("RGB")
+            widths = sorted({min(width, source.width) for width in (320, 640, 960, 1280, source.width)})
             for width in widths:
                 save_webp(
-                    resized(source.convert("RGB"), width),
+                    resized(source, width),
                     LIFE_GENERATED / f"{path.stem}-{width}.webp",
-                    82,
+                    76,
                 )
 
 
