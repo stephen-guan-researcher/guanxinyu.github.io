@@ -281,6 +281,8 @@ test("grounds first-person biographical questions in the homepage owner profile"
   assert.match(userMessage, /same language/i);
   assert.match(userMessage, /name, current role, and current research/i);
   assert.match(userMessage, /exact terms AutoResearch, Post-Training, and Agentic RL/i);
+  assert.match(userMessage, /start the answer exactly with "你是关鑫宇（Xinyu Guan），目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。"/i);
+  assert.match(userMessage, /do not identify yourself as Xinyu Agent or as a profile assistant/i);
   assert.match(userMessage, /Original question: 我是谁/);
   const systemMessage = invocation.options.messages[0].content;
   assert.match(systemMessage, /Xinyu Guan \/ 关鑫宇/);
@@ -312,23 +314,45 @@ test("preserves AI Agent as an untranslated role term in Chinese answers", async
   assert.match(userMessage, /use the exact Chinese role title "AI Agent 研究员"/i);
 });
 
-test("canonicalizes the Alibaba organization name in model-generated answers", async () => {
+test("canonicalizes Alibaba organization aliases in model-generated answers", async () => {
+  for (const alias of ["阿里巴巴陶天集团", "阿里巴巴淘天集团"]) {
+    const response = await handleRequest(request("/api/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "我是谁" }),
+    }), createEnv({
+      modelResult: {
+        response: `你是关鑫宇，目前是${alias}的 AI Agent 研究员。`,
+      },
+    }));
+
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), {
+      answer: "你是关鑫宇，目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。",
+      provider: "workers-ai",
+      model: "@cf/meta/llama-4-scout-17b-16e-instruct",
+    });
+  }
+});
+
+test("routes natural first-person Alibaba work questions through profile-owner resolution", async () => {
+  let invocation;
+  const question = "我在阿里巴巴做什么";
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ question: "我是谁" }),
+    body: JSON.stringify({ question }),
   }), createEnv({
-    modelResult: {
-      response: "你是关鑫宇，目前是阿里巴巴陶天集团的 AI Agent 研究员。",
+    onRun(model, options) {
+      invocation = { model, options };
     },
   }));
 
   assert.equal(response.status, 200);
-  assert.deepEqual(await response.json(), {
-    answer: "你是关鑫宇，目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。",
-    provider: "workers-ai",
-    model: "@cf/meta/llama-4-scout-17b-16e-instruct",
-  });
+  assert.notEqual(invocation.options.messages[1].content, question);
+  assert.match(invocation.options.messages[1].content, /about Xinyu Guan \/ 关鑫宇/i);
+  assert.match(invocation.options.messages[1].content, /answer in second person.*not "我是"/i);
+  assert.match(invocation.options.messages[1].content, /Original question: 我在阿里巴巴做什么/);
 });
 
 test("resolves first-person graduate-school questions with canonical institution names", async () => {

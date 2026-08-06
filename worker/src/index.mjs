@@ -45,13 +45,13 @@ function isQuotaError(error) {
 
 function canonicalizeAnswer(answer) {
   return answer
-    .replaceAll("阿里巴巴陶天集团", "TaoTian Group @ Alibaba")
+    .replace(/阿里巴巴[陶淘]天集团/g, "TaoTian Group @ Alibaba")
     .replace(/([\p{Script=Han}])(TaoTian Group @ Alibaba)/gu, "$1 $2")
     .replace(/(TaoTian Group @ Alibaba)([\p{Script=Han}])/gu, "$1 $2");
 }
 
 const FIRST_PERSON_IDENTITY_QUESTION = /(?:我是谁|介绍(?:一下)?我|who am i|introduce me)/i;
-const FIRST_PERSON_PROFILE_QUESTION = /(?:我是谁|介绍(?:一下)?我|我的(?:研究|研究方向|工作|工作经历|经历|教育|学历|论文|专利|背景|联系方式)|我现在(?:研究|做|负责)|我.*(?:研究|工作|任职|就职|经历|论文|文章|专利|背景|联系方式)|who am i|introduce me|my (?:research|work|experience|education|publications?|patents?|background|contact))/i;
+const FIRST_PERSON_PROFILE_QUESTION = /(?:我是谁|介绍(?:一下)?我|我的(?:研究|研究方向|工作|工作经历|经历|教育|学历|论文|专利|背景|联系方式)|我现在(?:研究|做|负责)|我(?:在|于).*(?:做|负责|从事)|我.*(?:研究|工作|任职|就职|经历|论文|文章|专利|背景|联系方式)|who am i|introduce me|my (?:research|work|experience|education|publications?|patents?|background|contact))/i;
 const FIRST_PERSON_EDUCATION_QUESTION = /(?:我(?:的)?(?:研究生|硕士|本科|学历|学校|大学|毕业院校)|我.*(?:哪个|哪所|哪间).*(?:大学|学校)|我.*(?:大学|学校).*毕业|我毕业于|where did i (?:study|graduate)|my (?:graduate|master'?s|undergraduate|university|education))/i;
 const PATENT_PROFILE_QUESTION = /(?:我的.*专利|我有.*专利|专利.*(?:我|关鑫宇)|my patents?|what patents?|xinyu.*patents?)/i;
 const TENCENT_CAREER_QUESTION = /(?:(?:腾讯|tencent).*(?:时间|何时|什么时候|哪年|几年|多久|\bwhen\b|\bdates?\b|\byears?\b|\bperiod\b|\bspan\b|\bhow long\b)|(?:时间|何时|什么时候|哪年|几年|多久|\bwhen\b|\bdates?\b|\byears?\b|\bperiod\b|\bspan\b|\bhow long\b).*(?:腾讯|tencent))/i;
@@ -90,7 +90,7 @@ Original question: ${question}`;
   if (!FIRST_PERSON_PROFILE_QUESTION.test(question)) return question;
 
   const answerInstruction = FIRST_PERSON_IDENTITY_QUESTION.test(question)
-    ? `For a Chinese identity question, address Xinyu as "你" and state his name, current role, and current research. Use the exact Chinese role title "AI Agent 研究员". Include the exact terms AutoResearch, Post-Training, and Agentic RL.`
+    ? `For a Chinese identity question, address Xinyu as "你" and state his name, current role, and current research. Start the answer exactly with "你是关鑫宇（Xinyu Guan），目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。" Use the exact Chinese role title "AI Agent 研究员". Do not identify yourself as Xinyu Agent or as a profile assistant. Include the exact terms AutoResearch, Post-Training, and Agentic RL.`
     : `Answer only the profile fact asked, in the same language as the original question. In Chinese, answer in second person and not "我是". Use exact names, titles, dates, publication states, and inventor or author roles from the verified facts.`;
 
   return `Profile-owner resolution: The original question is about Xinyu Guan / 关鑫宇, the owner of this homepage—not a request to identify the visitor.
