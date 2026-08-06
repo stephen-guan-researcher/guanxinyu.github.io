@@ -120,39 +120,23 @@ test("Life Photos keep one prioritized gallery image and seventeen lazy images",
   }
 });
 
-test("Life Photo tablet sizes respect the capped 600-pixel shell", () => {
+test("Life Photo sizes match every final mosaic slot without crossing image tiers", () => {
   const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
   assert.equal(tiles.length, 18);
 
   for (const [, className, tile] of tiles) {
-    const expectedWidth = className.includes("life-tile--lead")
-      ? 361
-      : className.includes("life-tile--wide")
-        ? 270
-        : 179;
-    assert.match(
-      tile,
-      new RegExp(`sizes="[^\"]+, \\(max-width: 840px\\) ${expectedWidth}px,`),
-      `${className} must use its capped 800px tablet slot width`,
-    );
-  }
-});
-
-test("Life Photo mobile source hints cap only phones through 420px and preserve larger mobile slots", () => {
-  const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
-  assert.equal(tiles.length, 18);
-
-  for (const [, className, tile] of tiles) {
-    const isFullWidth = className.includes("life-tile--lead") || className.includes("life-tile--wide");
-    const expectedPhoneCap = isFullWidth ? "320px" : "160px";
-    const expectedLargerMobileSlot = isFullWidth
-      ? "calc\\(100vw - 48px\\)"
-      : "calc\\(50vw - 30px\\)";
-    assert.match(
-      tile,
-      new RegExp(`sizes="\\(max-width: 420px\\) ${expectedPhoneCap}, \\(max-width: 600px\\) ${expectedLargerMobileSlot},`),
-      `${className} must cap only the <=420px source hint and retain its 421-600px slot formula`,
-    );
+    const isLead = className.includes("life-tile--lead");
+    const isWide = className.includes("life-tile--wide");
+    const isOpeningPortrait = className.includes("life-tile--opening-portrait");
+    const isLandscape = className.includes("life-tile--landscape");
+    const phone = isLead || isWide ? "320px" : "160px";
+    const largerMobile = isLead || isWide ? "calc(100vw - 62px)" : "calc(50vw - 32px)";
+    const compact = isLead ? "361px" : isWide ? "270px" : "179px";
+    const tablet = isLead ? "596px" : isWide ? "448px" : "297px";
+    const desktop = isLead ? "756px" : isWide ? "568px" : isOpeningPortrait || isLandscape ? "378px" : "284px";
+    const expected = `(max-width: 420px) ${phone}, (max-width: 600px) ${largerMobile}, (max-width: 840px) ${compact}, (max-width: 1199px) ${tablet}, ${desktop}`;
+    const escapedExpected = expected.replace(/[().]/g, "\\$&");
+    assert.match(tile, new RegExp(`sizes="${escapedExpected}"`), `${className} must describe its complete final slot ladder`);
   }
 });
 

@@ -427,30 +427,45 @@ test("life gallery opens with the three new photographs and preserves the previo
   assert.doesNotMatch(figures[0][2], /loading="lazy"/);
   assert.match(figures[1][1], /\blife-tile--portrait\b/);
   assert.match(figures[2][1], /\blife-tile--soft-portrait\b/);
+  assert.match(figures[1][1], /\blife-tile--opening-portrait\b/);
+  assert.match(figures[2][1], /\blife-tile--opening-portrait\b/);
+  assert.equal(figures.filter(([, className]) => className.includes("life-tile--opening-portrait")).length, 2);
   assert.doesNotMatch(figures.at(-1)[1], /\blife-tile--lead\b/);
   assert.match(figures.at(-1)[2], /src="images\/life\/coastal-temple\.jpg"/);
   assert.match(figures.at(-1)[2], /loading="lazy"/);
   assert.doesNotMatch(figures.at(-1)[2], /fetchpriority="high"/);
 });
 
-test("life photographs use one continuous 12-column mosaic and compact to two columns", () => {
+test("life photographs use fixed row tracks and hole-free opening geometry at every breakpoint", () => {
   assert.equal((life.match(/\bloading="lazy"/g) || []).length, 17);
   assert.equal((life.match(/\blife-tile--lead\b/g) || []).length, 1);
   assert.ok((life.match(/\blife-tile--wide\b/g) || []).length >= 2);
   assert.ok((life.match(/\blife-tile--landscape\b/g) || []).length >= 6);
   assert.ok((life.match(/\blife-tile--portrait\b/g) || []).length >= 4);
   assert.ok((life.match(/\blife-tile--soft-portrait\b/g) || []).length >= 2);
-  assert.match(css, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-flow:\s*dense/s);
+  assert.match(css, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*96px[^}]*grid-auto-flow:\s*dense/s);
   assert.match(css, /\.life-tile\s*\{[^}]*overflow:\s*hidden/s);
-  assert.match(css, /\.life-tile--landscape\s*\{[^}]*grid-column:\s*span\s*4/s);
-  assert.match(css, /\.life-tile--portrait\s*\{[^}]*grid-column:\s*span\s*3/s);
-  assert.match(css, /\.life-tile--soft-portrait\s*\{[^}]*grid-column:\s*span\s*3/s);
-  assert.match(css, /\.life-tile--wide\s*\{[^}]*grid-column:\s*span\s*6/s);
+  assert.match(css, /\.life-tile--landscape\s*\{[^}]*grid-column:\s*span\s*4[^}]*grid-row:\s*span\s*3/s);
+  assert.match(css, /\.life-tile--portrait\s*\{[^}]*grid-column:\s*span\s*3[^}]*grid-row:\s*span\s*4/s);
+  assert.match(css, /\.life-tile--soft-portrait\s*\{[^}]*grid-column:\s*span\s*3[^}]*grid-row:\s*span\s*4/s);
+  assert.match(css, /\.life-tile--wide\s*\{[^}]*grid-column:\s*span\s*6[^}]*grid-row:\s*span\s*3/s);
+  assert.match(css, /\.life-tile--lead\s*\{[^}]*grid-column:\s*span\s*8[^}]*grid-row:\s*span\s*6/s);
+  assert.match(css, /\.life-tile--opening-portrait\s*\{[^}]*grid-column:\s*span\s*4[^}]*grid-row:\s*span\s*3/s);
   assert.match(css, /\.life-photo\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
 
+  const tablet = maxWidthMedia(1199);
+  assert.match(tablet, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*64px/s);
+  assert.match(tablet, /\.life-tile--landscape\s*\{[^}]*grid-column:\s*span\s*2[^}]*grid-row:\s*span\s*2/s);
+  assert.match(tablet, /\.life-tile--portrait[\s\S]*?\.life-tile--soft-portrait\s*\{[^}]*grid-column:\s*span\s*2[^}]*grid-row:\s*span\s*4/s);
+  assert.match(tablet, /\.life-tile--wide\s*\{[^}]*grid-column:\s*span\s*3[^}]*grid-row:\s*span\s*2/s);
+  assert.match(tablet, /\.life-tile--lead\s*\{[^}]*grid-column:\s*span\s*4[^}]*grid-row:\s*span\s*6/s);
+  assert.match(tablet, /\.life-tile--opening-portrait\s*\{[^}]*grid-column:\s*span\s*2[^}]*grid-row:\s*span\s*3/s);
+
   const mobile = maxWidthMedia(600);
-  assert.match(mobile, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
-  assert.match(mobile, /\.life-tile--lead\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+  assert.match(mobile, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*auto/s);
+  assert.match(mobile, /\.life-tile\s*\{[^}]*grid-row:\s*auto/s);
+  assert.match(mobile, /\.life-tile--lead\s*\{[^}]*grid-column:\s*1\s*\/\s*-1[^}]*aspect-ratio:\s*3\s*\/\s*2/s);
+  assert.match(mobile, /\.life-tile--opening-portrait\s*\{[^}]*grid-column:\s*span\s*1[^}]*aspect-ratio:\s*3\s*\/\s*4/s);
 });
 
 test("both pages load the same styles and behavior module", () => {
