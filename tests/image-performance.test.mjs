@@ -138,18 +138,20 @@ test("Life Photo tablet sizes respect the capped 600-pixel shell", () => {
   }
 });
 
-test("Life Photo mobile source hints use browser-compatible DPR-two payload caps", () => {
+test("Life Photo mobile source hints cap only phones through 420px and preserve larger mobile slots", () => {
   const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
   assert.equal(tiles.length, 18);
 
   for (const [, className, tile] of tiles) {
-    const expectedSize = className.includes("life-tile--lead") || className.includes("life-tile--wide")
-      ? "320px"
-      : "160px";
+    const isFullWidth = className.includes("life-tile--lead") || className.includes("life-tile--wide");
+    const expectedPhoneCap = isFullWidth ? "320px" : "160px";
+    const expectedLargerMobileSlot = isFullWidth
+      ? "calc\\(100vw - 48px\\)"
+      : "calc\\(50vw - 30px\\)";
     assert.match(
       tile,
-      new RegExp(`sizes="\\(max-width: 600px\\) ${expectedSize},`),
-      `${className} must cap its mobile source hint before the DPR-two selection`,
+      new RegExp(`sizes="\\(max-width: 420px\\) ${expectedPhoneCap}, \\(max-width: 600px\\) ${expectedLargerMobileSlot},`),
+      `${className} must cap only the <=420px source hint and retain its 421-600px slot formula`,
     );
   }
 });
