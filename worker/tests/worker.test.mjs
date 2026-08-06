@@ -315,20 +315,41 @@ test("preserves AI Agent as an untranslated role term in Chinese answers", async
 });
 
 test("canonicalizes Alibaba organization aliases in model-generated answers", async () => {
-  for (const alias of ["阿里巴巴陶天集团", "阿里巴巴淘天集团"]) {
+  const cases = [
+    {
+      modelAnswer: "你是关鑫宇，目前是阿里巴巴陶天集团的 AI Agent 研究员。",
+      expectedAnswer: "你是关鑫宇，目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。",
+    },
+    {
+      modelAnswer: "你是关鑫宇，目前是阿里巴巴淘天集团的 AI Agent 研究员。",
+      expectedAnswer: "你是关鑫宇，目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。",
+    },
+    {
+      modelAnswer: "你在阿里巴巴的TaoTian Group担任 AI Agent 研究员。",
+      expectedAnswer: "你在 TaoTian Group @ Alibaba 担任 AI Agent 研究员。",
+    },
+    {
+      modelAnswer: "你目前在淘天集团从事 AI Agent 研究。",
+      expectedAnswer: "你目前在 TaoTian Group @ Alibaba 从事 AI Agent 研究。",
+    },
+    {
+      modelAnswer: "Xinyu works with TaoTian Group on AI agents.",
+      expectedAnswer: "Xinyu works with TaoTian Group @ Alibaba on AI agents.",
+    },
+  ];
+
+  for (const { modelAnswer, expectedAnswer } of cases) {
     const response = await handleRequest(request("/api/chat", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ question: "我是谁" }),
     }), createEnv({
-      modelResult: {
-        response: `你是关鑫宇，目前是${alias}的 AI Agent 研究员。`,
-      },
+      modelResult: { response: modelAnswer },
     }));
 
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
-      answer: "你是关鑫宇，目前是 TaoTian Group @ Alibaba 的 AI Agent 研究员。",
+      answer: expectedAnswer,
       provider: "workers-ai",
       model: "@cf/meta/llama-4-scout-17b-16e-instruct",
     });

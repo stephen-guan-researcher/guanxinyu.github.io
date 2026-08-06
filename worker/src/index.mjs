@@ -45,7 +45,10 @@ function isQuotaError(error) {
 
 function canonicalizeAnswer(answer) {
   return answer
-    .replace(/阿里巴巴[陶淘]天集团/g, "TaoTian Group @ Alibaba")
+    .replace(/阿里巴巴(?:的)?\s*TaoTian Group(?:\s*(?:@|at)\s*Alibaba)?/gi, "TaoTian Group @ Alibaba")
+    .replace(/Alibaba(?:'s)?\s+TaoTian Group/gi, "TaoTian Group @ Alibaba")
+    .replace(/(?:阿里巴巴(?:的)?\s*)?[陶淘]天集团/g, "TaoTian Group @ Alibaba")
+    .replace(/TaoTian Group(?:\s*(?:@|at)\s*Alibaba)?/gi, "TaoTian Group @ Alibaba")
     .replace(/([\p{Script=Han}])(TaoTian Group @ Alibaba)/gu, "$1 $2")
     .replace(/(TaoTian Group @ Alibaba)([\p{Script=Han}])/gu, "$1 $2");
 }
