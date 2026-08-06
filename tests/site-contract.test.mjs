@@ -54,7 +54,7 @@ test("homepage exposes six numbered semantic sections in order", () => {
   assert.deepEqual(sections, [
     ["home", "01", "About me"],
     ["research", "02", "Current research"],
-    ["papers", "03", "Publications"],
+    ["papers", "03", "Publications &amp; Manuscripts"],
     ["experience", "04", "Work experience"],
     ["research-experience", "05", "Research experience"],
     ["education", "06", "Education"],
@@ -68,7 +68,7 @@ test("homepage preserves the approved blue-gray research-archive markers", () =>
   assert.doesNotMatch(index, /<h2 id="news-title">News<\/h2>/);
 
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260806-profile-release-2"/);
   }
 });
 
@@ -98,7 +98,7 @@ test("profile page preserves the approved identity and real assets", () => {
     "Post-Training",
     "Agentic RL",
     "Xianyu Quality Inspection",
-    "Alibaba Group",
+    "TaoTian Group @ Alibaba",
     "University of Glasgow",
   ]) {
     assert.ok(index.includes(text), `index.html must retain ${text}`);
@@ -117,7 +117,7 @@ test("homepage About Me reflects approved AI-agent and foundation-model work", (
   const about = contentSection("home");
 
   assert.match(about, /I research and build reliable AI agents/);
-  assert.match(about, /At Alibaba, my current work focuses on <strong>AI agent research<\/strong>/);
+  assert.match(about, /At <strong>TaoTian Group @ Alibaba<\/strong>, my current work focuses on <strong>AI agent research<\/strong>/);
   assert.match(about, /<strong>Hunyuan Foundation Model<\/strong>/);
   assert.match(about, /<strong>Yuanbao AI Search<\/strong>/);
   assert.match(about, /<strong>ERNIE Bot 5 \(EB5\) Foundation Model<\/strong>/);
@@ -127,12 +127,13 @@ test("homepage About Me reflects approved AI-agent and foundation-model work", (
 
 test("verified public metadata and profile wording stay synchronized", () => {
   assert.match(index, /University of Glasgow professor and University of Oxford graduate/);
-  assert.match(index, /AI Agent research spanning AutoResearch, post-training, agentic RL, and applied Xianyu AI systems/);
+  assert.match(index, /AI Agent research across AutoResearch, post-training, and agentic RL, applied in Xianyu AI systems/);
+  assert.doesNotMatch(index, /spanning AutoResearch, post-training, agentic RL, and applied Xianyu AI systems/);
   assert.match(index, /Xianyu AI agents for photo-compliance detection and physical-defect inspection/);
-  assert.match(contentSection("home"), /applied Xianyu AI systems/);
-  assert.match(contentSection("research"), /Xianyu AI workflows/);
-  assert.match(contentSection("experience"), /applied Xianyu AI systems/);
-  assert.match(contentSection("experience"), /Mathematical and biological capability enhancement/);
+  assert.match(contentSection("home"), /apply these ideas in <strong>Xianyu AI systems<\/strong>/);
+  assert.match(contentSection("research"), /Xianyu AI as a practical application domain/);
+  assert.match(contentSection("experience"), /applied in Xianyu AI systems/);
+  assert.match(contentSection("experience"), /Mathematical and biomedical capability enhancement/);
   assert.match(contentSection("experience"), /training time <strong>30%<\/strong> lower/);
   assert.match(index, /<strong>Xinyu Guan<\/strong> et al\./);
 
@@ -470,10 +471,10 @@ test("life photographs use fixed row tracks and hole-free opening geometry at ev
 
 test("both pages load the same styles and behavior module", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260806-profile-release-2"/);
     assert.match(
       page,
-      /src="phd-main\.js\?v=20260806-life-mosaic-1"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260806-life-mosaic-1"/,
+      /src="phd-main\.js\?v=20260806-profile-release-2"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260806-profile-release-2"/,
     );
   }
   assert.ok(css.length > 0);
@@ -643,7 +644,7 @@ test("work history contains six independent appointments with separate Tencent t
   const cards = cardsWithClass("career-item");
   assert.equal(cards.length, 6);
   for (const title of [
-    "Alibaba Group / TaoTian Group",
+    "TaoTian Group @ Alibaba",
     "Baidu / ERNIE Foundation Model Core Team",
     "Tencent / Hunyuan Text-to-Text Pipeline Team",
     "Tencent / Hunyuan Strategy Group 4",
@@ -652,6 +653,8 @@ test("work history contains six independent appointments with separate Tencent t
   ]) {
     assert.equal(cards.filter((card) => card.includes(title)).length, 1);
   }
+  assert.match(cardWithText("career-item", "Institute of Information Engineering"), /Nov 2023 — Feb 2024/);
+  assert.doesNotMatch(index, /Alibaba Group \/ TaoTian Group|Alibaba TaoTian/);
 });
 
 test("each work appointment exposes the required visible content structure", () => {
@@ -679,7 +682,7 @@ test("detailed work metrics remain attached to their source appointments", () =>
 });
 
 test("research and education are independent visible entries", () => {
-  assert.equal(cardsWithClass("research-project").length, 5);
+  assert.equal(cardsWithClass("research-project").length, 6);
   assert.equal(cardsWithClass("education-item").length, 2);
   for (const sectionId of ["research-experience", "education"]) {
     assert.doesNotMatch(contentSection(sectionId), /<details\b|aria-expanded=/);
@@ -690,7 +693,21 @@ test("research and education are independent visible entries", () => {
     "EEG Feature Analysis for SCI Patients",
     "ML Analysis of WSI Colorectal Cancer Datasets",
     "Yellow Crane Tower Tourism Dialogue System",
+    "Lung Cancer Literature Classification with BioBERT",
   ]) assert.ok(cardWithText("research-project", title));
+
+  assertInOrder(contentSection("research-experience"), [
+    "LLM4ITD: Insider Threat Detection with Fine-Tuned LLMs",
+    "Yellow Crane Tower Tourism Dialogue System",
+    "Efficient Text Search Algorithm Evaluation",
+    "Lung Cancer Literature Classification with BioBERT",
+    "EEG Feature Analysis for SCI Patients",
+    "ML Analysis of WSI Colorectal Cancer Datasets",
+  ]);
+
+  const yellowCrane = cardWithText("research-project", "Yellow Crane Tower Tourism Dialogue System");
+  assert.match(yellowCrane, /15,000<\/strong> GPT-4-distilled tourism dialogues/);
+  assert.doesNotMatch(yellowCrane, /GPT-4o/);
 });
 
 test("unpublished papers retain distinct venues and conservative public states", () => {
@@ -701,10 +718,10 @@ test("unpublished papers retain distinct venues and conservative public states",
   const chronoMemTitle = "ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting";
 
   const contracts = [
-    [silicaTitle, /Submitted/, /EACL Submission/],
-    [klTitle, /In Preparation/, /ICLR Manuscript/],
-    [advantageTitle, /Submitted/, /AAAI 2027 Submission/],
-    [chronoMemTitle, /In Preparation/, /ICASSP 2027 Manuscript/],
+    [silicaTitle, /Submitted/, /Submitted to EACL · Aug 2026/],
+    [klTitle, /In Preparation/, /Withdrawn from AAAI · In preparation for ICLR · Aug 2026/],
+    [advantageTitle, /Submitted/, /Submitted to AAAI 2027 · Jul 2026/],
+    [chronoMemTitle, /In Preparation/, /In preparation for ICASSP 2027 · Aug 2026/],
   ];
   for (const [title, status, venue] of contracts) {
     const card = cardWithText("publication-card", title);
@@ -714,7 +731,7 @@ test("unpublished papers retain distinct venues and conservative public states",
     assert.match(card, /Not yet public/);
     assert.doesNotMatch(card, /<a\b[^>]*href=/);
   }
-  assert.doesNotMatch(cardWithText("publication-card", klTitle), /AAAI/);
+  assert.match(cardWithText("publication-card", klTitle), /Withdrawn from AAAI/);
   assert.doesNotMatch(cardWithText("publication-card", silicaTitle), /\bACL Submission\b/);
 });
 

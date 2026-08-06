@@ -198,13 +198,27 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /arXiv:2512\.16927[\s\S]*Nov(?:ember)? 2025/i);
   assert.match(systemMessage, /10\.1109\/ICASSP49660\.2025\.10887705/);
   assert.match(systemMessage, /arxiv\.org\/abs\/2409\.11695/);
-  assert.match(systemMessage, /applied Xianyu AI systems/i);
+  assert.match(systemMessage, /applied in Xianyu AI systems/i);
+  assert.match(systemMessage, /across AutoResearch, post-training, and agentic reinforcement learning, applied in Xianyu AI systems/i);
+  assert.doesNotMatch(systemMessage, /spanning AutoResearch, post-training, agentic reinforcement learning, and applied Xianyu AI systems/i);
+  assert.match(systemMessage, /TaoTian Group @ Alibaba/);
+  assert.match(systemMessage, /CVPR manuscript/i);
+  assert.match(systemMessage, /Agent Research Survey/i);
+  assert.match(
+    systemMessage,
+    /When KL Regularization Fails[\s\S]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, Xinyu Guan, and Huiming Yang/i,
+  );
+  assert.match(
+    systemMessage,
+    /Advantage Scale Calibration[\s\S]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, Xinyu Guan, and Huiming Yang/i,
+  );
+  assert.match(systemMessage, /November 2023 to February 2024/);
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
-  assert.match(invocation.options.messages[0].content, /seven publication records/i);
+  assert.match(invocation.options.messages[0].content, /seven publication and manuscript records/i);
   assert.match(invocation.options.messages[0].content, /SILICA[\s\S]*submitted to EACL/i);
   assert.match(invocation.options.messages[0].content, /authors of SILICA are Pengcheng Xu and Xinyu Guan, in that order/i);
-  assert.match(invocation.options.messages[0].content, /When KL Regularization Fails[\s\S]*ICLR manuscript in preparation/i);
-  assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*AAAI 2027 submission/i);
+  assert.match(invocation.options.messages[0].content, /When KL Regularization Fails[\s\S]*being prepared for ICLR as of August 2026/i);
+  assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*submitted to AAAI 2027 in July 2026/i);
   for (const organization of ["Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences"]) {
     assert.match(invocation.options.messages[0].content, new RegExp(organization, "i"));
   }
@@ -384,7 +398,7 @@ test("routes natural first-person career-date questions with complete dates", as
     "October 2025 to December 2025",
     "March 2025 to September 2025",
     "February 2024 to March 2025",
-    "November 2023 to January 2024",
+    "November 2023 to February 2024",
     "May 2021 to May 2022",
   ]) {
     assert.match(systemMessage, new RegExp(datedRole, "i"));

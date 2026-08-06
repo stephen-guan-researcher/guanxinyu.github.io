@@ -394,6 +394,8 @@ test("buildAgentReply returns corrected experience reply", () => {
   ]) {
     assert.match(reply.answer, new RegExp(fact.replace(/[()]/g, "\\$&")));
   }
+  assert.match(reply.answer, /across AutoResearch, Post-Training, and Agentic RL, applied in Xianyu AI systems/);
+  assert.doesNotMatch(reply.answer, /Agentic RL, and applied Xianyu AI systems/);
 });
 
 test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
@@ -402,6 +404,12 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     assert.equal(reply.topic, "papers");
     assert.deepEqual(reply.sources, ["papers", "research"]);
   }
+
+  const reply = site.buildAgentReply("Summarize your latest papers");
+  assert.match(reply.answer, /submitted to EACL in August 2026/);
+  assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
+  assert.match(reply.answer, /prepared for ICLR as of August 2026/);
+  assert.match(reply.answer, /ICASSP 2027 as of August 2026/);
 });
 
 function createAgentFixture(apiUrl) {

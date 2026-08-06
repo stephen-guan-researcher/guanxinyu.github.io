@@ -142,7 +142,7 @@ test("Life Photo sizes match every final mosaic slot without crossing image tier
 
 test("both pages use the release cache token for changed CSS and JavaScript", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260806-life-mosaic-1"/);
-    assert.match(page, /src="phd-main\.js\?v=20260806-life-mosaic-1"/);
+    assert.match(page, /href="phd-styles\.css\?v=20260806-profile-release-2"/);
+    assert.match(page, /src="phd-main\.js\?v=20260806-profile-release-2"/);
   }
 });

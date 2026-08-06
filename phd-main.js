@@ -77,7 +77,7 @@ export function buildAgentReply(question) {
   if (/paper|publication|aaai|iclr|eacl|icassp|cicl|silica|zcpo|advantage scale|论文|文章/.test(normalized)) {
     return {
       topic: "papers",
-      answer: "My recent work includes the SILICA submission to EACL and the Advantage Scale Calibration submission to AAAI 2027. The KL regularization manuscript was withdrawn from AAAI and is being prepared for ICLR. ChronoMem is in preparation for ICASSP, while CICL is publicly available on arXiv. My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
+      answer: "My recent work includes SILICA, submitted to EACL in August 2026, and Advantage Scale Calibration, submitted to AAAI 2027 in July 2026. The KL regularization manuscript was withdrawn from AAAI and is being prepared for ICLR as of August 2026. ChronoMem is in preparation for ICASSP 2027 as of August 2026, while CICL is publicly available on arXiv. My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
       sources: ["papers", "research"],
     };
   }
@@ -85,7 +85,7 @@ export function buildAgentReply(question) {
   if (/work|experience|alibaba|taotian|baidu|tencent|academy|工作|经历|阿里|百度|腾讯/.test(normalized)) {
     return {
       topic: "experience",
-      answer: "At Alibaba TaoTian, my work focuses on AI agent research spanning AutoResearch, Post-Training, Agentic RL, and applied Xianyu AI systems, including reliable closed-loop and reasoning workflows plus photo-compliance and physical-defect inspection. Previously, I contributed to the Hunyuan Foundation Model at Tencent through mathematical and biological capability enhancement, pre-training data, multilingual capability improvement, and Yuanbao AI Search; at Baidu, I worked on multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model. Earlier, at the Chinese Academy of Sciences, I conducted research on knowledge graphs and LLM-based security.",
+      answer: "At TaoTian Group @ Alibaba, my work focuses on AI agent research across AutoResearch, Post-Training, and Agentic RL, applied in Xianyu AI systems through reliable closed-loop and reasoning workflows plus photo-compliance and physical-defect inspection. Previously, I contributed to the Hunyuan Foundation Model at Tencent through mathematical and biomedical capability enhancement, pre-training data, multilingual capability improvement, and Yuanbao AI Search; at Baidu, I worked on multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model. Earlier, at the Chinese Academy of Sciences, I conducted research on knowledge graphs and LLM-based security.",
       sources: ["experience", "research"],
     };
   }
@@ -101,7 +101,7 @@ export function buildAgentReply(question) {
   if (/research|autoresearch|post[- ]?training|agentic|reinforcement|研究|方向/.test(normalized)) {
     return {
       topic: "research",
-      answer: "I am currently focused on AutoResearch, Post-Training, Agentic RL, and applied Xianyu AI workflows—connected directions for building reliable agents that can plan, retrieve, experiment, learn from feedback, and act with verifiable evidence.",
+      answer: "I am currently focused on three core directions—AutoResearch, Post-Training, and Agentic RL—with Xianyu AI as a practical application domain. A CVPR manuscript and an Agent Research Survey are also in progress.",
       sources: ["research", "experience", "papers"],
     };
   }
