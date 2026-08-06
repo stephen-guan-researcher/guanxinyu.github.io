@@ -117,9 +117,23 @@ test("Life Photos keep one prioritized gallery image and seventeen lazy images",
     for (const width of widths) {
       assert.match(picture, new RegExp(`${stem}-${width}\\.webp ${width}w`));
     }
+  }
+});
+
+test("Life Photo tablet sizes respect the capped 600-pixel shell", () => {
+  const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
+  assert.equal(tiles.length, 18);
+
+  for (const [, className, tile] of tiles) {
+    const expectedWidth = className.includes("life-tile--lead")
+      ? 361
+      : className.includes("life-tile--wide")
+        ? 270
+        : 179;
     assert.match(
-      picture,
-      /sizes="\(max-width: 600px\) (?:calc\(100vw - 48px\)|calc\(50vw - 30px\)), \(max-width: 1199px\) calc\((?:66\.667|50|33\.333)vw - (?:38|36|30)px\), min\(calc\((?:66\.667|50|33\.333|25)vw - (?:250|180|120|90)px\), (?:720|520|340|260)px\)"/,
+      tile,
+      new RegExp(`sizes="[^\"]+, \\(max-width: 840px\\) ${expectedWidth}px,`),
+      `${className} must use its capped 800px tablet slot width`,
     );
   }
 });
