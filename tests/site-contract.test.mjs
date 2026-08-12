@@ -640,6 +640,21 @@ test("homepage locks the current research program, career, and seven independent
   assert.equal(cardsWithClass("publication-card").length, 7);
 });
 
+test("verified career levels stay attached to their corresponding appointments", () => {
+  const contracts = [
+    ["TaoTian Group @ Alibaba", "AI Agent Researcher · P6"],
+    ["Baidu / ERNIE Foundation Model Core Team", "Senior Research Scientist · T4+"],
+    ["Tencent / Hunyuan Text-to-Text Pipeline Team", "Research Scientist · T5"],
+    ["Tencent / Hunyuan Strategy Group 4", "Research Scientist · T5"],
+  ];
+
+  for (const [heading, role] of contracts) {
+    const card = cardWithText("career-item", heading);
+    assert.ok(card, `missing career card: ${heading}`);
+    assert.ok(card.includes(role), `${heading} must display ${role}`);
+  }
+});
+
 test("work history contains six independent appointments with separate Tencent teams", () => {
   const cards = cardsWithClass("career-item");
   assert.equal(cards.length, 6);
