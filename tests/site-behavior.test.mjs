@@ -379,13 +379,19 @@ test("buildAgentReply grounds research questions in the resume sections", () => 
   assert.match(reply.answer, /Agentic RL/);
 });
 
-test("buildAgentReply returns corrected experience reply", () => {
+test("buildAgentReply returns the concise current Alibaba experience fallback", () => {
   const reply = site.buildAgentReply("Tell me about your work experience");
 
   assert.equal(reply.topic, "experience");
   assert.deepEqual(reply.sources, ["experience", "research"]);
   for (const fact of [
-    "AI agent research",
+    "AI Agent Researcher · P6",
+    "TaoTian Group @ Alibaba",
+    "General AutoResearch",
+    "Xianyu Multimodal Quality Inspection",
+    "viewpoint compliance detection",
+    "base photo-quality checks",
+    "visible physical-defect detection",
     "Hunyuan Foundation Model",
     "Yuanbao AI Search",
     "ERNIE Bot 5 (EB5) Foundation Model",
@@ -394,8 +400,8 @@ test("buildAgentReply returns corrected experience reply", () => {
   ]) {
     assert.match(reply.answer, new RegExp(fact.replace(/[()]/g, "\\$&")));
   }
-  assert.match(reply.answer, /across AutoResearch, Post-Training, and Agentic RL, applied in Xianyu AI systems/);
-  assert.doesNotMatch(reply.answer, /Agentic RL, and applied Xianyu AI systems/);
+  assert.doesNotMatch(reply.answer, /Post-Training|Agentic RL/);
+  assert.doesNotMatch(reply.answer, /19 business-task|8 of 9|279 migration|97\.54%|30K orders/i);
 });
 
 test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
@@ -510,14 +516,18 @@ test("formatAgentModelName maps the deployed model without stale hard-coded copy
   assert.equal(site.formatAgentModelName(""), "Workers AI");
 });
 
-test("Agent topic routing keeps research and experience aligned with Xianyu AI", () => {
+test("Agent topic routing keeps current research and Alibaba fallback aligned", () => {
   const research = site.buildAgentReply("What are you researching now?");
   const experience = site.buildAgentReply("What do you do at Alibaba?");
   assert.match(research.answer, /Xianyu AI/);
-  assert.match(experience.answer, /Xianyu AI/);
-  assert.match(experience.answer, /AutoResearch/);
-  assert.match(experience.answer, /Post-Training/);
-  assert.match(experience.answer, /Agentic RL/);
+  assert.match(experience.answer, /AI Agent Researcher · P6/);
+  assert.match(experience.answer, /TaoTian Group @ Alibaba/);
+  assert.match(experience.answer, /General AutoResearch/);
+  assert.match(experience.answer, /Xianyu Multimodal Quality Inspection/);
+  assert.match(
+    experience.answer,
+    /viewpoint compliance detection, base photo-quality checks, and visible physical-defect detection/,
+  );
 });
 
 test("initAgent reveals the live region before writing a submitted answer", async () => {

@@ -85,7 +85,7 @@ export function buildAgentReply(question) {
   if (/work|experience|alibaba|taotian|baidu|tencent|academy|工作|经历|阿里|百度|腾讯/.test(normalized)) {
     return {
       topic: "experience",
-      answer: "At TaoTian Group @ Alibaba, my work focuses on AI agent research across AutoResearch, Post-Training, and Agentic RL, applied in Xianyu AI systems through reliable closed-loop and reasoning workflows plus photo-compliance and physical-defect inspection. Previously, I contributed to the Hunyuan Foundation Model at Tencent through mathematical and biomedical capability enhancement, pre-training data, multilingual capability improvement, and Yuanbao AI Search; at Baidu, I worked on multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model. Earlier, at the Chinese Academy of Sciences, I conducted research on knowledge graphs and LLM-based security.",
+      answer: "As an AI Agent Researcher · P6 at TaoTian Group @ Alibaba, I work across two areas: General AutoResearch, building Agent runtime support for autonomous prompt iteration and optimization; and Xianyu Multimodal Quality Inspection, covering viewpoint compliance detection, base photo-quality checks, and visible physical-defect detection. Previously, I contributed to the Hunyuan Foundation Model at Tencent through mathematical and biomedical capability enhancement, pre-training data, multilingual capability improvement, and Yuanbao AI Search; at Baidu, I worked on multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model. Earlier, at the Chinese Academy of Sciences, I conducted research on knowledge graphs and LLM-based security.",
       sources: ["experience", "research"],
     };
   }
