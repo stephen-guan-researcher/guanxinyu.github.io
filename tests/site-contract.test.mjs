@@ -714,17 +714,36 @@ test("Alibaba appointment presents the approved two-workstream scope and claim b
 
   const visibleText = alibaba.replace(/<[^>]+>/g, "");
   for (const value of [
-    "General-Purpose Agent Runtime / AutoResearch",
-    "Multimodal Quality Inspection Agent / Xianyu",
+    "General AutoResearch",
+    "Xianyu Multimodal Quality Inspection",
+    "bounded loop control",
+    "stalled-branch rerouting",
+    "evidence-driven hypothesis generation",
+    "hierarchical memory",
+    "resumable execution traces",
+    "bad-case",
+    "candidate",
+    "prompt or policy",
+    "19 business tasks",
     "4 Agent runtimes",
     "4 model configurations",
     "279 migration tests",
+    "viewpoint compliance detection",
+    "base photo-quality checks",
+    "visible physical-defect detection",
+    "80 inspection checks",
+    "97.54% mean Macro-F1",
   ]) {
     assert.ok(visibleText.includes(value), `Alibaba appointment must retain ${value}`);
   }
-  assert.match(visibleText, /8 of 9 tasks[^.!?]*controlled image-QC benchmark/i);
-  assert.match(visibleText, /modeled unit-cost reduction[^.!?]*78\.8%[^.!?]*RMB 1\.00[^.!?]*RMB 0\.212/i);
+  assert.match(visibleText, /autonomously[^.!?]*bad-case[^.!?]*candidate[^.!?]*prompt or policy/i);
+  assert.match(visibleText, /end-to-end prompt optimization and migration validation[^.!?]*19 business tasks[^.!?]*without manual intervention/i);
+  assert.match(visibleText, /4 Agent runtimes[^.!?]*4 model configurations[^.!?]*8 of 9 controlled image-QC tasks/i);
+  assert.match(visibleText, /279 migration tests passed/i);
+  assert.match(visibleText, /nine-category acceptance snapshot[^.!?]*80 inspection checks[^.!?]*97\.54% mean Macro-F1/i);
   assert.match(visibleText, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
+  assert.doesNotMatch(visibleText, /19 business tasks[^.!?]*production rollout|production rollout[^.!?]*19 business tasks/i);
+  assert.doesNotMatch(visibleText, /97\.54%[^.!?]*30\+ product categories|30\+ product categories[^.!?]*97\.54%/i);
   assert.doesNotMatch(
     visibleText,
     /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)(?:\s+(?:ID|name))?\s*(?::|=|is\b)\s*[A-Za-z0-9][\w.-]*/i,

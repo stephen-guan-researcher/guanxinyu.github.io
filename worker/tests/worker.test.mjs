@@ -206,17 +206,36 @@ test("returns a Workers AI answer for a valid question", async () => {
   )?.[0] ?? "";
   assert.ok(alibabaAppointment, "Worker profile context must retain the Alibaba appointment");
   for (const value of [
-    "General-Purpose Agent Runtime / AutoResearch",
-    "Multimodal Quality Inspection Agent / Xianyu",
+    "General AutoResearch",
+    "Xianyu Multimodal Quality Inspection",
+    "bounded loop control",
+    "stalled-branch rerouting",
+    "evidence-driven hypothesis generation",
+    "hierarchical memory",
+    "resumable execution traces",
+    "bad-case",
+    "candidate",
+    "prompt or policy",
+    "19 business tasks",
     "4 Agent runtimes",
     "4 model configurations",
     "279 migration tests",
+    "viewpoint compliance detection",
+    "base photo-quality checks",
+    "visible physical-defect detection",
+    "80 inspection checks",
+    "97.54% mean Macro-F1",
   ]) {
     assert.ok(alibabaAppointment.includes(value), `Alibaba appointment must retain ${value}`);
   }
-  assert.match(alibabaAppointment, /8 of 9 tasks[^.!?]*controlled image-QC benchmark/i);
-  assert.match(alibabaAppointment, /modeled unit-cost reduction[^.!?]*78\.8%[^.!?]*RMB 1\.00[^.!?]*RMB 0\.212/i);
+  assert.match(alibabaAppointment, /autonomously[^.!?]*bad-case[^.!?]*candidate[^.!?]*prompt or policy/i);
+  assert.match(alibabaAppointment, /end-to-end prompt optimization and migration validation[^.!?]*19 business tasks[^.!?]*without manual intervention/i);
+  assert.match(alibabaAppointment, /4 Agent runtimes[^.!?]*4 model configurations[^.!?]*8 of 9 controlled image-QC tasks/i);
+  assert.match(alibabaAppointment, /279 migration tests passed/i);
+  assert.match(alibabaAppointment, /nine-category acceptance snapshot[^.!?]*80 inspection checks[^.!?]*97\.54% mean Macro-F1/i);
   assert.match(alibabaAppointment, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
+  assert.doesNotMatch(alibabaAppointment, /19 business tasks[^.!?]*production rollout|production rollout[^.!?]*19 business tasks/i);
+  assert.doesNotMatch(alibabaAppointment, /97\.54%[^.!?]*30\+ product categories|30\+ product categories[^.!?]*97\.54%/i);
   assert.doesNotMatch(
     alibabaAppointment,
     /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)(?:\s+(?:ID|name))?\s*(?::|=|is\b)\s*[A-Za-z0-9][\w.-]*/i,
