@@ -8,6 +8,23 @@ const css = read("phd-styles.css");
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
+const releaseToken = "20260812-autoresearch-xianyu-1";
+
+function assertReleaseAssets(page) {
+  const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
+    /\brel="stylesheet"/.test(tag) && /\bhref="phd-styles\.css\?v=/.test(tag),
+  );
+  const script = (page.match(/<script\b[^>]*>/g) ?? []).find((tag) =>
+    /\bsrc="phd-main\.js\?v=/.test(tag),
+  );
+
+  assert.ok(stylesheet, "page must load the shared stylesheet through a link element");
+  assert.ok(script, "page must load the shared behavior through a script element");
+  assert.match(stylesheet, new RegExp(`\\bhref="phd-styles\\.css\\?v=${releaseToken}"`));
+  assert.match(script, new RegExp(`\\bsrc="phd-main\\.js\\?v=${releaseToken}"`));
+  assert.match(script, /\btype="module"/);
+  assert.doesNotMatch(page, /20260806-profile-release-2/);
+}
 
 function assertInOrder(source, values) {
   let cursor = -1;
@@ -68,7 +85,7 @@ test("homepage preserves the approved blue-gray research-archive markers", () =>
   assert.doesNotMatch(index, /<h2 id="news-title">News<\/h2>/);
 
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260806-profile-release-2"/);
+    assertReleaseAssets(page);
   }
 });
 
@@ -471,11 +488,7 @@ test("life photographs use fixed row tracks and hole-free opening geometry at ev
 
 test("both pages load the same styles and behavior module", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260806-profile-release-2"/);
-    assert.match(
-      page,
-      /src="phd-main\.js\?v=20260806-profile-release-2"[^>]*type="module"|type="module"[^>]*src="phd-main\.js\?v=20260806-profile-release-2"/,
-    );
+    assertReleaseAssets(page);
   }
   assert.ok(css.length > 0);
 });

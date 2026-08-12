@@ -65,6 +65,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
+const releaseToken = "20260812-autoresearch-xianyu-1";
 
 test("both pages use the prioritized responsive avatar", () => {
   for (const page of [index, life]) {
@@ -142,7 +143,17 @@ test("Life Photo sizes match every final mosaic slot without crossing image tier
 
 test("both pages use the release cache token for changed CSS and JavaScript", () => {
   for (const page of [index, life]) {
-    assert.match(page, /href="phd-styles\.css\?v=20260806-profile-release-2"/);
-    assert.match(page, /src="phd-main\.js\?v=20260806-profile-release-2"/);
+    const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
+      /\brel="stylesheet"/.test(tag) && /\bhref="phd-styles\.css\?v=/.test(tag),
+    );
+    const script = (page.match(/<script\b[^>]*>/g) ?? []).find((tag) =>
+      /\bsrc="phd-main\.js\?v=/.test(tag),
+    );
+
+    assert.ok(stylesheet, "page must load the changed stylesheet through a link element");
+    assert.ok(script, "page must load the changed JavaScript through a script element");
+    assert.match(stylesheet, new RegExp(`\\bhref="phd-styles\\.css\\?v=${releaseToken}"`));
+    assert.match(script, new RegExp(`\\bsrc="phd-main\\.js\\?v=${releaseToken}"`));
+    assert.doesNotMatch(page, /20260806-profile-release-2/);
   }
 });
