@@ -6,21 +6,23 @@ Rewrite the Alibaba appointment as two concise, professional, evidence-grounded 
 
 ## Approved content structure
 
-1. **General-Purpose Agent Runtime / AutoResearch**
-   - Describe an evidence-grounded Agent runtime for long-horizon research and engineering workflows.
-   - Name the core capabilities: project understanding, modular Skill routing, bad-case-driven iterative optimization, regression testing, resumable experiment traces, and approval-gated migration.
-   - Quantify only the controlled evaluation: 4 Agent runtimes, 4 model configurations, 8 of 9 tasks meeting target on a controlled image-QC benchmark, and 279 migration tests passed.
+1. **General AutoResearch**
+   - Describe the re-architected Agent runtime for long-horizon research and optimization.
+   - Name the core capabilities: bounded loop control, stalled-branch rerouting, evidence-driven hypothesis generation, hierarchical memory, resumable execution traces, bad-case diagnosis, candidate validation, and autonomous prompt or policy iteration.
+   - State the user-confirmed operational result separately: end-to-end prompt optimization and migration validation across 19 business tasks without manual intervention.
+   - State the controlled technology-selection result separately: 4 Agent runtimes, 4 model configurations, 8 of 9 controlled image-QC tasks meeting target, and 279 migration tests passed.
 
-2. **Multimodal Quality Inspection Agent / Xianyu**
-   - Describe viewpoint compliance, image quality, and product-condition assessment.
-   - State the probation-defense estimate as a modeled unit-cost reduction of 78.8%, from RMB 1.00 to RMB 0.212 per order.
-   - State the user-confirmed current business scale as support for 30+ product categories at approximately 30K orders per day.
+2. **Xianyu Multimodal Quality Inspection**
+   - Name the three inspection categories: viewpoint compliance detection, base photo-quality checks, and visible physical-defect detection.
+   - State the audited nine-category acceptance snapshot separately: 80 inspection checks at 97.54% mean Macro-F1.
+   - State the user-confirmed current business scale separately: support for 30+ product categories at approximately 30K orders per day.
 
 ## Public-claim boundaries
 
-- The 8-of-9 result belongs only to a controlled image-QC benchmark; it is not a general Agent success rate.
+- The 19-task result means automated prompt optimization and migration validation; it does not claim unattended production deployment.
+- The 8-of-9 result belongs only to controlled image-QC tasks in the technology-selection evaluation; it is not a general Agent success rate.
 - Say “279 migration tests passed,” never “all tests passed.”
-- Describe the cost reduction as modeled, not realized savings.
+- The 97.54% mean Macro-F1 belongs to the nine-category, 80-check acceptance snapshot; do not attribute it to all 30+ categories.
 - Use “supports 30+ product categories at approximately 30K orders per day”; do not present an exact throughput or SLA.
 - Do not disclose internal runtime names, model names, category names, or private business data.
 
@@ -29,4 +31,4 @@ Rewrite the Alibaba appointment as two concise, professional, evidence-grounded 
 - Update the Alibaba card in `index.html` without changing its layout.
 - Synchronize the same verified facts into `worker/src/index.mjs` so Xinyu Agent answers consistently.
 - Add static-site and Worker contract tests for the two workstreams and all claim boundaries.
-- Bump the public cache-busting release token in `index.html` and `life.html` for the production release.
+- Bump the public cache-busting release token to `20260812-autoresearch-xianyu-1` in `index.html` and `life.html` for the production release.

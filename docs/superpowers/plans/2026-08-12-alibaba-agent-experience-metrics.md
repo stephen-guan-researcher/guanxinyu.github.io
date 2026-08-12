@@ -11,9 +11,12 @@
 ## Global Constraints
 
 - Keep the existing homepage layout unchanged.
-- The 8-of-9 result must be explicitly scoped to a controlled image-QC benchmark.
+- Present exactly two Alibaba workstreams: `General AutoResearch` and `Xianyu Multimodal Quality Inspection`.
+- State that end-to-end prompt optimization and migration validation completed across 19 business tasks without manual intervention; do not call this unattended production deployment.
+- The 8-of-9 result must be explicitly scoped to controlled image-QC tasks in a 4-Agent-runtime by 4-model-configuration evaluation.
 - State only that 279 migration tests passed; never state that all tests passed.
-- Label the 78.8% unit-cost reduction as modeled, from RMB 1.00 to RMB 0.212 per order.
+- Bind 97.54% mean Macro-F1 only to the nine-category, 80-inspection-check acceptance snapshot.
+- Name viewpoint compliance detection, base photo-quality checks, and visible physical-defect detection.
 - State business scale as support for 30+ product categories at approximately 30K orders per day.
 - Do not expose internal runtime, model, or category names.
 
@@ -31,7 +34,7 @@
 
 - [ ] **Step 1: Write failing static-site assertions**
 
-Add assertions requiring the headings `General-Purpose Agent Runtime / AutoResearch` and `Multimodal Quality Inspection Agent / Xianyu`, along with `4 Agent runtimes`, `4 model configurations`, `8 of 9 tasks`, `controlled image-QC benchmark`, `279 migration tests`, `modeled unit-cost reduction`, `78.8%`, `30+ product categories`, and `30K orders per day`.
+Add assertions requiring `General AutoResearch`, its runtime capabilities, `19 business tasks`, `without manual intervention`, `4 Agent runtimes`, `4 model configurations`, `8 of 9 controlled image-QC tasks`, and `279 migration tests`. Require `Xianyu Multimodal Quality Inspection`, all three inspection categories, a nine-category snapshot with 80 inspection checks at 97.54% mean Macro-F1, and current support for 30+ product categories at approximately 30K orders per day.
 
 - [ ] **Step 2: Run the static-site test and verify RED**
 
@@ -58,11 +61,11 @@ Expected: FAIL because the Worker context still contains the previous single-tra
 
 **Interfaces:**
 - Consumes: Contracts from Task 1.
-- Produces: The public Alibaba experience card, grounded Xinyu Agent context, and release token `20260812-alibaba-agent-metrics-1`.
+- Produces: The public Alibaba experience card, grounded Xinyu Agent context, and release token `20260812-autoresearch-xianyu-1`.
 
 - [ ] **Step 1: Update the Alibaba homepage card**
 
-Use exactly two bullet points. The first describes General-Purpose Agent Runtime / AutoResearch and scopes 8-of-9 to a controlled image-QC benchmark. The second describes the Multimodal Quality Inspection Agent / Xianyu, labels cost reduction as modeled, and states support for 30+ categories at approximately 30K orders per day.
+Use exactly two bullet points. The first describes General AutoResearch, the 19-task autonomous result, and the scoped 4-by-4, 8-of-9, 279-test evaluation. The second describes Xianyu Multimodal Quality Inspection, all three inspection categories, the separate nine-category 80-check snapshot, and current 30+ category / approximately 30K-order-per-day scale.
 
 - [ ] **Step 2: Synchronize the Worker context**
 
@@ -70,7 +73,7 @@ Replace the single Alibaba appointment sentence with the same two-track facts an
 
 - [ ] **Step 3: Bump the release token**
 
-Replace `20260806-profile-release-2` with `20260812-alibaba-agent-metrics-1` in `index.html` and `life.html`.
+Replace `20260806-profile-release-2` with `20260812-autoresearch-xianyu-1` in `index.html` and `life.html`.
 
 - [ ] **Step 4: Run focused tests and verify GREEN**
 
@@ -111,4 +114,4 @@ Fetch `origin`, confirm `origin/main` has not diverged, push the verified HEAD t
 
 - [ ] **Step 5: Verify production**
 
-Open `https://guanxinyu.blog/?v=20260812-alibaba-agent-metrics-1#experience` on desktop and mobile. Verify the two workstreams, all approved metrics, no horizontal overflow, clean image loading, and a grounded Xinyu Agent response about the Alibaba role.
+Open `https://guanxinyu.blog/?v=20260812-autoresearch-xianyu-1#experience` on desktop and mobile. Verify the two workstreams, all approved metrics, no horizontal overflow, clean image loading, and a grounded Xinyu Agent response about the Alibaba role.
