@@ -73,6 +73,15 @@ Run: `node --test --test-name-pattern="verified career levels" tests/site-contra
 
 Expected: PASS.
 
+- [ ] **Step 5: Commit the homepage role-level change**
+
+```bash
+git add index.html tests/site-contract.test.mjs
+git commit -m "feat: display verified career levels"
+```
+
+Expected: only the homepage and its contract test are committed.
+
 ---
 
 ### Task 2: Xinyu Agent Career-Level Context
@@ -128,6 +137,15 @@ Run: `node --test --test-name-pattern="Workers AI answer|career-date" worker/tes
 
 Expected: PASS.
 
+- [ ] **Step 5: Commit the Agent context change**
+
+```bash
+git add worker/src/index.mjs worker/tests/worker.test.mjs
+git commit -m "feat: ground Agent in verified career levels"
+```
+
+Expected: only the Worker source and Worker test are committed.
+
 ---
 
 ### Task 3: Regression and Responsive Verification
@@ -161,11 +179,8 @@ Serve the worktree using `python3 -m http.server 8000 --bind 127.0.0.1`, then in
 
 Expected: all four role-level strings are visible, no horizontal overflow occurs, and no console errors or failed page assets appear.
 
-- [ ] **Step 3: Commit the implementation**
+- [ ] **Step 3: Confirm the branch is ready for review**
 
-```bash
-git add index.html tests/site-contract.test.mjs worker/src/index.mjs worker/tests/worker.test.mjs
-git commit -m "feat: add verified career levels"
-```
+Run: `git status --short --branch`
 
-Expected: only the four implementation/test files are included. Do not push or deploy in this task.
+Expected: the branch contains the two reviewed implementation commits and has no uncommitted implementation files. Do not push or deploy in this task.
