@@ -202,6 +202,10 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /across AutoResearch, post-training, and agentic reinforcement learning, applied in Xianyu AI systems/i);
   assert.doesNotMatch(systemMessage, /spanning AutoResearch, post-training, agentic reinforcement learning, and applied Xianyu AI systems/i);
   assert.match(systemMessage, /TaoTian Group @ Alibaba/);
+  assert.match(systemMessage, /AI Agent Researcher \(P6\) with TaoTian Group @ Alibaba/i);
+  assert.match(systemMessage, /Senior Research Scientist \(T4\+\).*Baidu/i);
+  assert.match(systemMessage, /Research Scientist \(T5\).*Tencent Hunyuan's Text-to-Text Pipeline Team/i);
+  assert.match(systemMessage, /Research Scientist \(T5\).*Tencent Hunyuan Strategy Group 4/i);
   assert.match(systemMessage, /CVPR manuscript/i);
   assert.match(systemMessage, /Agent Research Survey/i);
   assert.match(
@@ -471,6 +475,8 @@ test("routes natural first-person career-date questions with complete dates", as
   assert.match(userMessage, /two consecutive Tencent Hunyuan roles/i);
   assert.match(userMessage, /overall Tencent span is February 2024 to September 2025/i);
   assert.match(userMessage, /February 2024 to March 2025[\s\S]*March 2025 to September 2025/i);
+  assert.match(userMessage, /Research Scientist \(T5\), Tencent Hunyuan Strategy Group 4/i);
+  assert.match(userMessage, /Research Scientist \(T5\), Tencent Hunyuan Text-to-Text Pipeline Team/i);
   assert.match(userMessage, /answer in second person.*not "我是"/i);
   assert.match(userMessage, /Original question: 我什么时候在腾讯工作/);
 });
