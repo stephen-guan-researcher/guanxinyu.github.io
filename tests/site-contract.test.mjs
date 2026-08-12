@@ -549,6 +549,12 @@ function cardWithText(className, text) {
   return cardsWithClass(className).find((card) => card.includes(text)) ?? "";
 }
 
+function careerRoleVisibleText(card) {
+  const role = card.match(/<p\b[^>]*\bclass="[^"]*\bcareer-role\b[^"]*"[^>]*>([\s\S]*?)<\/p>/);
+  assert.ok(role, "career card must contain a .career-role element");
+  return role[1].replace(/<[^>]+>/g, "").trim();
+}
+
 function contentSection(id) {
   const sectionStart = index.indexOf(`id="${id}"`);
   assert.notEqual(sectionStart, -1, `missing #${id} section`);
@@ -646,12 +652,18 @@ test("verified career levels stay attached to their corresponding appointments",
     ["Baidu / ERNIE Foundation Model Core Team", "Senior Research Scientist · T4+"],
     ["Tencent / Hunyuan Text-to-Text Pipeline Team", "Research Scientist · T5"],
     ["Tencent / Hunyuan Strategy Group 4", "Research Scientist · T5"],
+    ["Institute of Information Engineering, Chinese Academy of Sciences", "Research Assistant Intern"],
+    ["Mico World / Yoho Department", "Software Engineer"],
   ];
 
-  for (const [heading, role] of contracts) {
+  for (const [heading, expectedRole] of contracts) {
     const card = cardWithText("career-item", heading);
     assert.ok(card, `missing career card: ${heading}`);
-    assert.ok(card.includes(role), `${heading} must display ${role}`);
+    assert.equal(
+      careerRoleVisibleText(card),
+      expectedRole,
+      `${heading} must display its exact role in .career-role`,
+    );
   }
 });
 
