@@ -727,8 +727,8 @@ test("Alibaba appointment presents the approved two-workstream scope and claim b
   assert.match(visibleText, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
   assert.doesNotMatch(
     visibleText,
-    /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)\s*:\s*[A-Za-z0-9][\w.-]*/i,
-    "Alibaba card must present aggregate scope, not named internal runtime, model, or category identifiers",
+    /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)(?:\s+(?:ID|name))?\s*(?::|=|is\b)\s*[A-Za-z0-9][\w.-]*/i,
+    "Alibaba card must present aggregate scope, not internal runtime, model, or category identifiers",
   );
 });
 

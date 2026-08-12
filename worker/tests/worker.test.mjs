@@ -219,8 +219,8 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(alibabaAppointment, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
   assert.doesNotMatch(
     alibabaAppointment,
-    /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)\s*:\s*[A-Za-z0-9][\w.-]*/i,
-    "Alibaba appointment must present aggregate scope, not named internal runtime, model, or category identifiers",
+    /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)(?:\s+(?:ID|name))?\s*(?::|=|is\b)\s*[A-Za-z0-9][\w.-]*/i,
+    "Alibaba appointment must present aggregate scope, not internal runtime, model, or category identifiers",
   );
   const appointmentSentences = [
     "From October 2025 to December 2025, he was a Senior Research Scientist (T4+) in Baidu's ERNIE Foundation Model Core Team, contributing to multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model through DAPO-based post-training and alignment.",
