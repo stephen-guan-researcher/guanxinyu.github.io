@@ -210,6 +210,21 @@ test("returns a Workers AI answer for a valid question", async () => {
   for (const appointment of appointmentSentences) {
     assert.ok(systemMessage.includes(appointment), `missing complete appointment sentence: ${appointment}`);
   }
+  for (const fact of [
+    "General-Purpose Agent Runtime / AutoResearch",
+    "Multimodal Quality Inspection Agent / Xianyu",
+    "4 Agent runtimes",
+    "4 model configurations",
+    "8 of 9 tasks",
+    "controlled image-QC benchmark",
+    "279 migration tests",
+    "modeled unit-cost reduction",
+    "78.8%",
+    "30+ product categories",
+    "30K orders per day",
+  ]) {
+    assert.ok(systemMessage.includes(fact), `Worker profile context must retain ${fact}`);
+  }
   assert.match(systemMessage, /CVPR manuscript/i);
   assert.match(systemMessage, /Agent Research Survey/i);
   assert.match(

@@ -708,6 +708,28 @@ test("detailed work metrics remain attached to their source appointments", () =>
   }
 });
 
+test("Alibaba appointment presents the approved two-workstream scope and claim boundaries", () => {
+  const alibaba = cardWithText("career-item", "TaoTian Group @ Alibaba");
+  assert.ok(alibaba, "Alibaba appointment must remain a distinct career card");
+
+  const visibleText = alibaba.replace(/<[^>]+>/g, "");
+  for (const value of [
+    "General-Purpose Agent Runtime / AutoResearch",
+    "Multimodal Quality Inspection Agent / Xianyu",
+    "4 Agent runtimes",
+    "4 model configurations",
+    "8 of 9 tasks",
+    "controlled image-QC benchmark",
+    "279 migration tests",
+    "modeled unit-cost reduction",
+    "78.8%",
+    "30+ product categories",
+    "30K orders per day",
+  ]) {
+    assert.ok(visibleText.includes(value), `Alibaba appointment must retain ${value}`);
+  }
+});
+
 test("research and education are independent visible entries", () => {
   assert.equal(cardsWithClass("research-project").length, 6);
   assert.equal(cardsWithClass("education-item").length, 2);
