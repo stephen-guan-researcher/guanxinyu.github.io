@@ -198,9 +198,16 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /arXiv:2512\.16927[\s\S]*Nov(?:ember)? 2025/i);
   assert.match(systemMessage, /10\.1109\/ICASSP49660\.2025\.10887705/);
   assert.match(systemMessage, /arxiv\.org\/abs\/2409\.11695/);
-  assert.match(systemMessage, /applied in Xianyu AI systems/i);
-  assert.match(systemMessage, /across AutoResearch, post-training, and agentic reinforcement learning, applied in Xianyu AI systems/i);
-  assert.doesNotMatch(systemMessage, /spanning AutoResearch, post-training, agentic reinforcement learning, and applied Xianyu AI systems/i);
+  const researchParagraph = systemMessage.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
+  assert.match(
+    researchParagraph,
+    /viewpoint compliance detection, base photo-quality checks, and visible physical-defect detection/i,
+  );
+  assert.doesNotMatch(
+    researchParagraph,
+    /photo-compliance detection, and physical-defect inspection/i,
+    "Worker Research must use the approved three-category taxonomy without a competing two-category version",
+  );
   const alibabaAppointment = systemMessage.match(
     /From February 2026 to present,[\s\S]*?(?=From October 2025 to December 2025)/,
   )?.[0] ?? "";
@@ -216,7 +223,7 @@ test("returns a Workers AI answer for a valid question", async () => {
     "bad-case",
     "candidate",
     "prompt or policy",
-    "19 business tasks",
+    "19 business-task optimization runs",
     "4 Agent runtimes",
     "4 model configurations",
     "279 migration tests",
@@ -229,12 +236,28 @@ test("returns a Workers AI answer for a valid question", async () => {
     assert.ok(alibabaAppointment.includes(value), `Alibaba appointment must retain ${value}`);
   }
   assert.match(alibabaAppointment, /autonomously[^.!?]*bad-case[^.!?]*candidate[^.!?]*prompt or policy/i);
-  assert.match(alibabaAppointment, /end-to-end prompt optimization and migration validation[^.!?]*19 business tasks[^.!?]*without manual intervention/i);
+  const optimizationRunSentence = alibabaAppointment.match(
+    /Across 19 business-task optimization runs[^.!?]*[.!?]/i,
+  )?.[0] ?? "";
+  assert.match(
+    optimizationRunSentence,
+    /Across 19 business-task optimization runs[^.!?]*prompt (?:iteration|optimization)[^.!?]*migration validation[^.!?]*without human intervention within the optimization loop/i,
+  );
+  assert.doesNotMatch(
+    optimizationRunSentence,
+    /\b(?:production|deploy(?:ed|ment)?|rollout|launch(?:ed)?)\b/i,
+    "19 business-task runs must not be presented as unattended production deployment",
+  );
   assert.match(alibabaAppointment, /4 Agent runtimes[^.!?]*4 model configurations[^.!?]*8 of 9 controlled image-QC tasks/i);
   assert.match(alibabaAppointment, /279 migration tests passed/i);
-  assert.match(alibabaAppointment, /nine-category acceptance snapshot[^.!?]*80 inspection checks[^.!?]*97\.54% mean Macro-F1/i);
-  assert.match(alibabaAppointment, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
-  assert.doesNotMatch(alibabaAppointment, /19 business tasks[^.!?]*production rollout|production rollout[^.!?]*19 business tasks/i);
+  assert.match(
+    alibabaAppointment,
+    /offline acceptance snapshot limited to nine categories and 80 inspection checks[^.!?]*97\.54% mean Macro-F1/i,
+  );
+  assert.match(
+    alibabaAppointment,
+    /\. Separately, (?:the )?current capability supports 30\+ product categories[^.!?]*approximately 30K orders per day/i,
+  );
   assert.doesNotMatch(alibabaAppointment, /97\.54%[^.!?]*30\+ product categories|30\+ product categories[^.!?]*97\.54%/i);
   assert.doesNotMatch(
     alibabaAppointment,

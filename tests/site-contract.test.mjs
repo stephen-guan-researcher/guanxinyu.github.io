@@ -114,7 +114,7 @@ test("profile page preserves the approved identity and real assets", () => {
     "AutoResearch",
     "Post-Training",
     "Agentic RL",
-    "Xianyu Quality Inspection",
+    "Xianyu Multimodal Quality Inspection",
     "TaoTian Group @ Alibaba",
     "University of Glasgow",
   ]) {
@@ -144,12 +144,15 @@ test("homepage About Me reflects approved AI-agent and foundation-model work", (
 
 test("verified public metadata and profile wording stay synchronized", () => {
   assert.match(index, /University of Glasgow professor and University of Oxford graduate/);
-  assert.match(index, /AI Agent research across AutoResearch, post-training, and agentic RL, applied in Xianyu AI systems/);
-  assert.doesNotMatch(index, /spanning AutoResearch, post-training, agentic RL, and applied Xianyu AI systems/);
-  assert.match(index, /Xianyu AI agents for photo-compliance detection and physical-defect inspection/);
+  assert.match(index, /AI Agent research spanning General AutoResearch and multimodal quality inspection for Xianyu\./);
+  assert.doesNotMatch(index, /AI Agent research across AutoResearch, post-training, and agentic RL, applied in Xianyu AI systems/);
+  assert.doesNotMatch(index, /Xianyu AI agents for photo-compliance detection and physical-defect inspection/);
   assert.match(contentSection("home"), /apply these ideas in <strong>Xianyu AI systems<\/strong>/);
   assert.match(contentSection("research"), /Xianyu AI as a practical application domain/);
-  assert.match(contentSection("experience"), /applied in Xianyu AI systems/);
+  assert.match(
+    contentSection("experience"),
+    /AI Agent research spanning General AutoResearch and multimodal quality inspection for Xianyu\./,
+  );
   assert.match(contentSection("experience"), /Mathematical and biomedical capability enhancement/);
   assert.match(contentSection("experience"), /training time <strong>30%<\/strong> lower/);
   assert.match(index, /<strong>Xinyu Guan<\/strong> et al\./);
@@ -725,6 +728,16 @@ test("Alibaba appointment presents the approved two-workstream scope and claim b
   const alibaba = cardWithText("career-item", "TaoTian Group @ Alibaba");
   assert.ok(alibaba, "Alibaba appointment must remain a distinct career card");
 
+  const summary = alibaba.match(/<p class="career-summary">([^<]*)<\/p>/)?.[1] ?? "";
+  assert.equal(
+    summary,
+    "AI Agent research spanning General AutoResearch and multimodal quality inspection for Xianyu.",
+  );
+  assert.doesNotMatch(summary, /photo-compliance|physical-defect|post-training|agentic RL/i);
+
+  const projects = alibaba.match(/<ul class="career-projects">[\s\S]*?<\/ul>/)?.[0] ?? "";
+  assert.equal((projects.match(/<li\b/g) ?? []).length, 2, "Alibaba must retain exactly two workstream bullets");
+
   const visibleText = alibaba.replace(/<[^>]+>/g, "");
   for (const value of [
     "General AutoResearch",
@@ -737,7 +750,7 @@ test("Alibaba appointment presents the approved two-workstream scope and claim b
     "bad-case",
     "candidate",
     "prompt or policy",
-    "19 business tasks",
+    "19 business-task optimization runs",
     "4 Agent runtimes",
     "4 model configurations",
     "279 migration tests",
@@ -750,12 +763,28 @@ test("Alibaba appointment presents the approved two-workstream scope and claim b
     assert.ok(visibleText.includes(value), `Alibaba appointment must retain ${value}`);
   }
   assert.match(visibleText, /autonomously[^.!?]*bad-case[^.!?]*candidate[^.!?]*prompt or policy/i);
-  assert.match(visibleText, /end-to-end prompt optimization and migration validation[^.!?]*19 business tasks[^.!?]*without manual intervention/i);
+  const optimizationRunSentence = visibleText.match(
+    /Across 19 business-task optimization runs[^.!?]*[.!?]/i,
+  )?.[0] ?? "";
+  assert.match(
+    optimizationRunSentence,
+    /Across 19 business-task optimization runs[^.!?]*prompt (?:iteration|optimization)[^.!?]*migration validation[^.!?]*without human intervention within the optimization loop/i,
+  );
+  assert.doesNotMatch(
+    optimizationRunSentence,
+    /\b(?:production|deploy(?:ed|ment)?|rollout|launch(?:ed)?)\b/i,
+    "19 business-task runs must not be presented as unattended production deployment",
+  );
   assert.match(visibleText, /4 Agent runtimes[^.!?]*4 model configurations[^.!?]*8 of 9 controlled image-QC tasks/i);
   assert.match(visibleText, /279 migration tests passed/i);
-  assert.match(visibleText, /nine-category acceptance snapshot[^.!?]*80 inspection checks[^.!?]*97\.54% mean Macro-F1/i);
-  assert.match(visibleText, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
-  assert.doesNotMatch(visibleText, /19 business tasks[^.!?]*production rollout|production rollout[^.!?]*19 business tasks/i);
+  assert.match(
+    visibleText,
+    /offline acceptance snapshot limited to nine categories and 80 inspection checks[^.!?]*97\.54% mean Macro-F1/i,
+  );
+  assert.match(
+    visibleText,
+    /\. Separately, (?:the )?current capability supports 30\+ product categories[^.!?]*approximately 30K orders per day/i,
+  );
   assert.doesNotMatch(visibleText, /97\.54%[^.!?]*30\+ product categories|30\+ product categories[^.!?]*97\.54%/i);
   assert.doesNotMatch(
     visibleText,
