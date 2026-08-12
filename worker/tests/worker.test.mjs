@@ -201,29 +201,34 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /applied in Xianyu AI systems/i);
   assert.match(systemMessage, /across AutoResearch, post-training, and agentic reinforcement learning, applied in Xianyu AI systems/i);
   assert.doesNotMatch(systemMessage, /spanning AutoResearch, post-training, agentic reinforcement learning, and applied Xianyu AI systems/i);
+  const alibabaAppointment = systemMessage.match(
+    /From February 2026 to present,[\s\S]*?(?=From October 2025 to December 2025)/,
+  )?.[0] ?? "";
+  assert.ok(alibabaAppointment, "Worker profile context must retain the Alibaba appointment");
+  for (const value of [
+    "General-Purpose Agent Runtime / AutoResearch",
+    "Multimodal Quality Inspection Agent / Xianyu",
+    "4 Agent runtimes",
+    "4 model configurations",
+    "279 migration tests",
+  ]) {
+    assert.ok(alibabaAppointment.includes(value), `Alibaba appointment must retain ${value}`);
+  }
+  assert.match(alibabaAppointment, /8 of 9 tasks[^.!?]*controlled image-QC benchmark/i);
+  assert.match(alibabaAppointment, /modeled unit-cost reduction[^.!?]*78\.8%[^.!?]*RMB 1\.00[^.!?]*RMB 0\.212/i);
+  assert.match(alibabaAppointment, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
+  assert.doesNotMatch(
+    alibabaAppointment,
+    /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)\s*:\s*[A-Za-z0-9][\w.-]*/i,
+    "Alibaba appointment must present aggregate scope, not named internal runtime, model, or category identifiers",
+  );
   const appointmentSentences = [
-    "From February 2026 to present, Xinyu has been an AI Agent Researcher (P6) with TaoTian Group @ Alibaba, where his current work focuses on AI agent research across AutoResearch, post-training, and agentic reinforcement learning, applied in Xianyu AI systems for reliable closed-loop and reasoning workflows, photo-compliance detection, and physical-defect inspection.",
     "From October 2025 to December 2025, he was a Senior Research Scientist (T4+) in Baidu's ERNIE Foundation Model Core Team, contributing to multilingual capability enhancement for the ERNIE Bot 5 (EB5) Foundation Model through DAPO-based post-training and alignment.",
     "From March 2025 to September 2025, he was a Research Scientist (T5) in Tencent Hunyuan's Text-to-Text Pipeline Team, working on the Hunyuan Foundation Model through Yuanbao AI Search, pre-training data, and multilingual capability improvement.",
     "From February 2024 to March 2025, he was a Research Scientist (T5) in Tencent Hunyuan Strategy Group 4, contributing mathematical and biomedical capability enhancement, video processing, data recognition, and audio alignment for the Hunyuan Foundation Model.",
   ];
   for (const appointment of appointmentSentences) {
     assert.ok(systemMessage.includes(appointment), `missing complete appointment sentence: ${appointment}`);
-  }
-  for (const fact of [
-    "General-Purpose Agent Runtime / AutoResearch",
-    "Multimodal Quality Inspection Agent / Xianyu",
-    "4 Agent runtimes",
-    "4 model configurations",
-    "8 of 9 tasks",
-    "controlled image-QC benchmark",
-    "279 migration tests",
-    "modeled unit-cost reduction",
-    "78.8%",
-    "30+ product categories",
-    "30K orders per day",
-  ]) {
-    assert.ok(systemMessage.includes(fact), `Worker profile context must retain ${fact}`);
   }
   assert.match(systemMessage, /CVPR manuscript/i);
   assert.match(systemMessage, /Agent Research Survey/i);

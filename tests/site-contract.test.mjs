@@ -718,16 +718,18 @@ test("Alibaba appointment presents the approved two-workstream scope and claim b
     "Multimodal Quality Inspection Agent / Xianyu",
     "4 Agent runtimes",
     "4 model configurations",
-    "8 of 9 tasks",
-    "controlled image-QC benchmark",
     "279 migration tests",
-    "modeled unit-cost reduction",
-    "78.8%",
-    "30+ product categories",
-    "30K orders per day",
   ]) {
     assert.ok(visibleText.includes(value), `Alibaba appointment must retain ${value}`);
   }
+  assert.match(visibleText, /8 of 9 tasks[^.!?]*controlled image-QC benchmark/i);
+  assert.match(visibleText, /modeled unit-cost reduction[^.!?]*78\.8%[^.!?]*RMB 1\.00[^.!?]*RMB 0\.212/i);
+  assert.match(visibleText, /supports 30\+ product categories[^.!?]*approximately 30K orders per day/i);
+  assert.doesNotMatch(
+    visibleText,
+    /\b(?:AutoResearch|Xianyu)\s+(?:runtime|model|category)\s*:\s*[A-Za-z0-9][\w.-]*/i,
+    "Alibaba card must present aggregate scope, not named internal runtime, model, or category identifiers",
+  );
 });
 
 test("research and education are independent visible entries", () => {
