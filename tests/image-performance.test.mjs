@@ -65,7 +65,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20260812-autoresearch-xianyu-1";
+const releaseToken = "20260817-iconip-accepted-1";
 
 test("both pages use the prioritized responsive avatar", () => {
   for (const page of [index, life]) {
