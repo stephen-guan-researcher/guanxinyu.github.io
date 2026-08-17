@@ -321,6 +321,33 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(invocation.options.messages[0].content, /do not add unrelated publications/i);
 });
 
+test("expands CICL shorthand into the verified ICONIP publication record", async () => {
+  let invocation;
+  const question = "CICL 现在是什么状态？请说明会议、proceedings 和是否已经正式出版。";
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question }),
+  }), createEnv({
+    onRun(model, options) {
+      invocation = { model, options };
+    },
+  }));
+
+  assert.equal(response.status, 200);
+  const userMessage = invocation.options.messages[1].content;
+  assert.notEqual(userMessage, question);
+  assert.match(
+    userMessage,
+    /CICL refers to "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents"/i,
+  );
+  assert.match(userMessage, /accepted at ICONIP 2026/i);
+  assert.match(userMessage, /Springer Communications in Computer and Information Science \(CCIS\) proceedings/i);
+  assert.match(userMessage, /not yet published/i);
+  assert.match(userMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(userMessage, new RegExp(`Original question: ${question}`));
+});
+
 test("keeps broad multi-employer work questions unmodified", async () => {
   let invocation;
   const env = createEnv({

@@ -58,8 +58,17 @@ const FIRST_PERSON_PROFILE_QUESTION = /(?:我是谁|介绍(?:一下)?我|我的(
 const FIRST_PERSON_EDUCATION_QUESTION = /(?:我(?:的)?(?:研究生|硕士|本科|学历|学校|大学|毕业院校)|我.*(?:哪个|哪所|哪间).*(?:大学|学校)|我.*(?:大学|学校).*毕业|我毕业于|where did i (?:study|graduate)|my (?:graduate|master'?s|undergraduate|university|education))/i;
 const PATENT_PROFILE_QUESTION = /(?:我的.*专利|我有.*专利|专利.*(?:我|关鑫宇)|my patents?|what patents?|xinyu.*patents?)/i;
 const TENCENT_CAREER_QUESTION = /(?:(?:腾讯|tencent).*(?:时间|何时|什么时候|哪年|几年|多久|\bwhen\b|\bdates?\b|\byears?\b|\bperiod\b|\bspan\b|\bhow long\b)|(?:时间|何时|什么时候|哪年|几年|多久|\bwhen\b|\bdates?\b|\byears?\b|\bperiod\b|\bspan\b|\bhow long\b).*(?:腾讯|tencent))/i;
+const CICL_PUBLICATION_QUESTION = /\bCICL\b/i;
 
 function modelQuestion(question) {
+  if (CICL_PUBLICATION_QUESTION.test(question)) {
+    return `Publication-name resolution: CICL refers to "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents".
+This paper was accepted at ICONIP 2026 for publication in the Springer Communications in Computer and Information Science (CCIS) proceedings in August 2026. It is not yet published. Its authors are Xinyu Guan, Qianyang Zhao, and Yuming Deng, and its public paper URL is https://arxiv.org/abs/2606.08151.
+
+Answer only the publication fact asked, in the same language as the original question. Preserve the exact title, venue, proceedings name, acceptance status, publication status, authors, and URL from the verified facts.
+Original question: ${question}`;
+  }
+
   if (PATENT_PROFILE_QUESTION.test(question)) {
     return `Profile-owner resolution: The original question is about Xinyu Guan / 关鑫宇, the owner of this homepage—not a request to identify the visitor.
 This is a patent question. Include all three verified patent records, including the under-review record as well as the two granted records. For each record, state the inventor role and legal status. Do not omit a record based on its legal status. In Chinese, answer in second person and use the exact terms "第一发明人", "共同发明人", "审查中", and "已授权"; never say "首发发明人".
