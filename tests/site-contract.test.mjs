@@ -94,15 +94,19 @@ test("Now presents the verified 2026 milestones as a reverse-chronological timel
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 6, "Now must expose six concise milestone cards");
-  assert.deepEqual(dates, ["2026-08", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
-  for (const status of ["Preparing", "Submitted", "Preprint", "Career"]) {
+  assert.equal(items.length, 7, "Now must expose seven concise milestone cards");
+  assert.deepEqual(dates, ["2026-08", "2026-08", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  for (const status of ["Accepted", "Preparing", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
-  assert.match(news, /Submitted SILICA to EACL/);
+  assert.match(
+    items[0],
+    /Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026\./,
+  );
+  assert.match(items[0], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.ok(news.indexOf("Decision-Aware Memory Cards was accepted") < news.indexOf("Submitted SILICA"));
   assert.match(news, /Preparing the KL regularization manuscript for ICLR/);
   assert.match(news, /Submitted Advantage Scale Calibration to AAAI 2027/);
-  assert.match(news, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
   assert.match(news, /href="#experience"/);
 });
 
@@ -240,20 +244,18 @@ test("Agent answers link back to the resume evidence", () => {
   assert.match(agent, /aria-live="polite"/);
 });
 
-test("CICL remains a linked preprint with its verified metadata and image asset", () => {
+test("CICL is a linked ICONIP 2026 acceptance with conservative publication wording", () => {
   const title =
     "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents";
   const card = cardWithText("publication-card", title);
 
   assert.ok(card, "CICL must retain its own publication card");
   assert.match(card, /class="publication-card publication-card-linked"/);
+  assert.match(card, /class="status-label">Accepted/);
+  assert.match(card, /ICONIP 2026 · Springer CCIS · Accepted Aug 2026/);
   assert.match(card, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
-  assert.match(card, /rel="noopener"/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Qianyang Zhao, Yuming Deng/);
-  assert.ok(card.includes("arXiv:2606.08151 [cs.AI]"));
-  assert.doesNotMatch(card, /(?:First|Second) Author/);
-  assert.ok(card.includes("Jun 2026"));
-  assert.ok(card.includes("Preprint"));
+  assert.doesNotMatch(card, /class="status-label">(?:Preprint|Published)/);
   assert.equal(
     existsSync(new URL("../images/paper3-cicl-pipeline.png", import.meta.url)),
     true,
