@@ -62,11 +62,14 @@ const CICL_PUBLICATION_QUESTION = /\bCICL\b/i;
 
 function modelQuestion(question) {
   if (CICL_PUBLICATION_QUESTION.test(question)) {
-    return `Publication-name resolution: CICL refers to "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents".
+    return `Original question: ${question}
+
+Language rule: Answer in the same language as the original question. 中文问题请务必使用中文回答。
+
+Publication-name resolution: CICL refers to "Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents".
 This paper was accepted at ICONIP 2026 for publication in the Springer Communications in Computer and Information Science (CCIS) proceedings in August 2026. It is not yet published. Its authors are Xinyu Guan, Qianyang Zhao, and Yuming Deng, and its public paper URL is https://arxiv.org/abs/2606.08151.
 
-Answer only the publication fact asked, in the same language as the original question. Preserve the exact title, venue, proceedings name, acceptance status, publication status, authors, and URL from the verified facts.
-Original question: ${question}`;
+Answer only the publication fact asked. Preserve the exact title, venue, proceedings name, acceptance status, publication status, authors, and URL from the verified facts.`;
   }
 
   if (PATENT_PROFILE_QUESTION.test(question)) {

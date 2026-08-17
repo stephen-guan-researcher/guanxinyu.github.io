@@ -345,7 +345,45 @@ test("expands CICL shorthand into the verified ICONIP publication record", async
   assert.match(userMessage, /Springer Communications in Computer and Information Science \(CCIS\) proceedings/i);
   assert.match(userMessage, /not yet published/i);
   assert.match(userMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(userMessage, /Answer in the same language as the original question/i);
+  assert.match(userMessage, /中文问题请务必使用中文回答/);
   assert.match(userMessage, new RegExp(`Original question: ${question}`));
+});
+
+test("does not force non-Han CICL questions to English", async () => {
+  let invocation;
+  const question = "¿Cuál es el estado de CICL?";
+  await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question }),
+  }), createEnv({
+    onRun(model, options) {
+      invocation = { model, options };
+    },
+  }));
+
+  const userMessage = invocation.options.messages[1].content;
+  assert.match(userMessage, /Answer in the same language as the original question/i);
+  assert.doesNotMatch(userMessage, /Answer in English/i);
+});
+
+test("does not classify Japanese CICL questions as Chinese", async () => {
+  let invocation;
+  const question = "CICLの状態は？";
+  await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question }),
+  }), createEnv({
+    onRun(model, options) {
+      invocation = { model, options };
+    },
+  }));
+
+  const userMessage = invocation.options.messages[1].content;
+  assert.match(userMessage, /Answer in the same language as the original question/i);
+  assert.doesNotMatch(userMessage, /Answer in Chinese, matching the original question/i);
 });
 
 test("keeps broad multi-employer work questions unmodified", async () => {
