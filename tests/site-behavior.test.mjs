@@ -429,7 +429,12 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /was accepted at ICONIP 2026/);
   assert.match(reply.answer, /Springer CCIS proceedings/);
   assert.match(reply.answer, /publicly available on arXiv/);
-  assert.doesNotMatch(reply.answer, /CICL (?:is|was) published/i);
+  assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(reply.answer, /It is not yet published\./);
+  assert.doesNotMatch(
+    reply.answer,
+    /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents[^.]*\b(?:is|was) published\b/i,
+  );
 });
 
 function createAgentFixture(apiUrl) {

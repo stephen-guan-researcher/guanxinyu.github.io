@@ -8,7 +8,7 @@ const css = read("phd-styles.css");
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20260817-iconip-accepted-1";
+const releaseToken = "20260817-iconip-accepted-2";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
