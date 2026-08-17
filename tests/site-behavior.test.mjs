@@ -405,7 +405,12 @@ test("buildAgentReply returns the concise current Alibaba experience fallback", 
 });
 
 test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
-  for (const question of ["What is SILICA?", "Is the KL paper going to ICLR?", "Tell me about the EACL submission"] ) {
+  for (const question of [
+    "What is SILICA?",
+    "Is the KL paper going to ICLR?",
+    "Tell me about the EACL submission",
+    "What happened with CICL?",
+  ]) {
     const reply = site.buildAgentReply(question);
     assert.equal(reply.topic, "papers");
     assert.deepEqual(reply.sources, ["papers", "research"]);
@@ -416,6 +421,15 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
   assert.match(reply.answer, /prepared for ICLR as of August 2026/);
   assert.match(reply.answer, /ICASSP 2027 as of August 2026/);
+  assert.match(
+    reply.answer,
+    /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents/,
+  );
+  assert.match(reply.answer, /Xinyu Guan, Qianyang Zhao, and Yuming Deng/);
+  assert.match(reply.answer, /was accepted at ICONIP 2026/);
+  assert.match(reply.answer, /Springer CCIS proceedings/);
+  assert.match(reply.answer, /publicly available on arXiv/);
+  assert.doesNotMatch(reply.answer, /CICL (?:is|was) published/i);
 });
 
 function createAgentFixture(apiUrl) {

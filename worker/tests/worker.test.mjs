@@ -198,6 +198,17 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /arXiv:2512\.16927[\s\S]*Nov(?:ember)? 2025/i);
   assert.match(systemMessage, /10\.1109\/ICASSP49660\.2025\.10887705/);
   assert.match(systemMessage, /arxiv\.org\/abs\/2409\.11695/);
+  assert.match(
+    systemMessage,
+    /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents[\s\S]*accepted at ICONIP 2026[\s\S]*Springer Communications in Computer and Information Science \(CCIS\) proceedings/i,
+  );
+  assert.match(
+    systemMessage,
+    /Decision-Aware Memory Cards[\s\S]*Xinyu Guan, Qianyang Zhao, and Yuming Deng/i,
+  );
+  assert.match(systemMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(systemMessage, /not yet published/i);
+  assert.doesNotMatch(systemMessage, /Decision-Aware Memory Cards[^.]*was published/i);
   const researchParagraph = systemMessage.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.match(
     researchParagraph,

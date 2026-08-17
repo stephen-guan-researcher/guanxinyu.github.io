@@ -77,7 +77,7 @@ export function buildAgentReply(question) {
   if (/paper|publication|aaai|iclr|eacl|icassp|cicl|silica|zcpo|advantage scale|论文|文章/.test(normalized)) {
     return {
       topic: "papers",
-      answer: "My recent work includes SILICA, submitted to EACL in August 2026, and Advantage Scale Calibration, submitted to AAAI 2027 in July 2026. The KL regularization manuscript was withdrawn from AAAI and is being prepared for ICLR as of August 2026. ChronoMem is in preparation for ICASSP 2027 as of August 2026, while CICL is publicly available on arXiv. My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
+      answer: "My recent work includes SILICA, submitted to EACL in August 2026, and Advantage Scale Calibration, submitted to AAAI 2027 in July 2026. The KL regularization manuscript was withdrawn from AAAI and is being prepared for ICLR as of August 2026. ChronoMem is in preparation for ICASSP 2027 as of August 2026. “Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents” by Xinyu Guan, Qianyang Zhao, and Yuming Deng was accepted at ICONIP 2026 for publication in the Springer CCIS proceedings and remains publicly available on arXiv. My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
       sources: ["papers", "research"],
     };
   }
