@@ -8,7 +8,7 @@ const css = read("phd-styles.css");
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20260907-contact-wechat-1";
+const releaseToken = "20260907-contact-wechat-profile-link-1";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -372,15 +372,41 @@ test("workspace navigation uses an opaque white toolbar and underlined active st
   assert.match(css, /\.workspace-nav a\.active::after\s*\{[^}]*height:\s*2px/);
 });
 
-test("profile contact actions expose the public WeChat ID without a phone number", () => {
+test("profile contact list places the public WeChat ID immediately after email", () => {
   for (const page of [index, life]) {
     assert.doesNotMatch(page, /href="javascript:void\(0\)"/);
+    const profileLinks = page.match(/<div class="profile-links"[^>]*>[\s\S]*?<\/div>/)?.[0] ?? "";
     assert.match(
-      page,
-      /<button\b(?=[^>]*\btype="button")(?=[^>]*\bid="wechatCopyBtn")(?=[^>]*\bdata-wechat="super_lucky_magic")[^>]*>WeChat: super_lucky_magic<\/button>/,
+      profileLinks,
+      /mailto:xinyuguanphd@outlook\.com[\s\S]*?<button\b(?=[^>]*\btype="button")(?=[^>]*\bclass="profile-contact-button")(?=[^>]*\bid="wechatCopyBtn")(?=[^>]*\bdata-wechat="super_lucky_magic")[^>]*>[\s\S]*?ri-wechat-line[\s\S]*?<span>WeChat: super_lucky_magic<\/span>[\s\S]*?<\/button>[\s\S]*?Google Scholar/,
     );
+    assert.doesNotMatch(page, /class="profile-copy-actions"/);
     assert.doesNotMatch(page, /phoneCopyBtn|data-phone=|Phone:|18018735289|\+86 180 1873 5289/);
   }
+  assert.match(css, /\.profile-links a,\s*\.profile-links button\s*\{[^}]*display:\s*grid/s);
+  assert.match(css, /\.profile-links button\s*\{[^}]*border:\s*0[^}]*background:\s*transparent/s);
+  assert.match(css, /\.profile-contact-button\s*\{[^}]*grid-template-columns:\s*16px\s+minmax\(0,\s*1fr\)[^}]*gap:\s*4px/s);
+  assert.match(css, /\.profile-contact-button span\s*\{[^}]*overflow-wrap:\s*anywhere[^}]*white-space:\s*normal/s);
+});
+
+test("narrow desktop gives the email and WeChat column enough width", () => {
+  const narrowDesktop = maxWidthMedia(1199);
+  assert.match(
+    narrowDesktop,
+    /\.profile-links\s*\{[^}]*grid-template-columns:\s*minmax\(240px,\s*1\.65fr\)\s+repeat\(2,\s*minmax\(0,\s*1fr\)\)/s,
+  );
+  assert.match(
+    narrowDesktop,
+    /\.profile-contact-button\s*\{[^}]*grid-column:\s*1[^}]*grid-row:\s*2/s,
+  );
+  assert.match(
+    narrowDesktop,
+    /\.profile-links a:last-child\s*\{[^}]*grid-column:\s*3[^}]*grid-row:\s*2/s,
+  );
+  assert.match(
+    narrowDesktop,
+    /\.profile-contact-button span\s*\{[^}]*overflow-wrap:\s*normal[^}]*white-space:\s*nowrap/s,
+  );
 });
 
 test("life page publishes eighteen accessible photographs with the new opening sequence", () => {
@@ -530,7 +556,8 @@ test("mobile profile and navigation preserve first-screen usability", () => {
   assert.match(mobile, /\.profile-links a:first-child\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
   assert.match(mobile, /\.profile-links span\s*\{[^}]*overflow-wrap:\s*anywhere/s);
   assert.match(mobile, /\.workspace-nav a\s*\{[^}]*min-height:\s*44px/s);
-  assert.match(mobile, /\.profile-copy-actions\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  assert.match(mobile, /\.profile-contact-button\s*\{[^}]*grid-column:\s*1\s*\/\s*-1[^}]*grid-row:\s*auto/s);
+  assert.match(mobile, /\.profile-links a:last-child\s*\{[^}]*grid-column:\s*auto[^}]*grid-row:\s*auto/s);
 });
 
 test("navigation and mobile auxiliary labels preserve readable type floors", () => {
@@ -544,7 +571,7 @@ test("navigation and mobile auxiliary labels preserve readable type floors", () 
     [".profile-focus-kicker", 12],
     [".profile-links a", 12],
     [".profile-primary-link", 12],
-    [".profile-copy-actions button", 12],
+    [".profile-links button", 12],
     [".workspace-nav a", 12],
     [".site-footer", 12],
   ]) {

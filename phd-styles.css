@@ -190,7 +190,8 @@ button:focus-visible {
   padding: 13px 2px 7px;
 }
 
-.profile-links a {
+.profile-links a,
+.profile-links button {
   display: grid;
   min-width: 0;
   min-height: 32px;
@@ -203,7 +204,29 @@ button:focus-visible {
   transition: background 160ms ease, color 160ms ease;
 }
 
-.profile-links a:hover {
+.profile-links button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.profile-contact-button {
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 4px;
+}
+
+.profile-contact-button span {
+  overflow-wrap: anywhere;
+  letter-spacing: -0.01em;
+  white-space: normal;
+}
+
+.profile-links a:hover,
+.profile-links button:hover {
   background: #f6f8fa;
   color: var(--ink);
 }
@@ -238,28 +261,6 @@ button:focus-visible {
 .profile-primary-link:hover {
   background: #2c2c2c;
   transform: translateY(-1px);
-}
-
-.profile-copy-actions {
-  display: grid;
-  gap: 2px;
-  margin-top: 10px;
-}
-
-.profile-copy-actions button {
-  min-height: 25px;
-  padding: 4px 2px;
-  border: 0;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 12px;
-  text-align: left;
-}
-
-.profile-copy-actions button:hover {
-  color: var(--accent-strong);
 }
 
 .workspace-column {
@@ -1228,8 +1229,7 @@ button:focus-visible {
     grid-template-areas:
       "photo identity"
       "links links"
-      "primary primary"
-      "actions actions";
+      "primary primary";
     gap: 12px 18px;
     padding: 18px;
   }
@@ -1250,31 +1250,36 @@ button:focus-visible {
 
   .profile-links {
     grid-area: links;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: minmax(240px, 1.65fr) repeat(2, minmax(0, 1fr));
     gap: 4px;
     padding: 0;
   }
 
-  .profile-links a {
+  .profile-links a,
+  .profile-links button {
     min-height: 44px;
     padding: 4px 6px;
+  }
+
+  .profile-contact-button {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .profile-contact-button span {
+    overflow-wrap: normal;
+    white-space: nowrap;
+  }
+
+  .profile-links a:last-child {
+    grid-column: 3;
+    grid-row: 2;
   }
 
   .profile-primary-link {
     grid-area: primary;
     width: 100%;
     margin: 0;
-  }
-
-  .profile-copy-actions {
-    grid-area: actions;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 8px;
-    margin-top: 0;
-  }
-
-  .profile-copy-actions button {
-    text-align: center;
   }
 
   .workspace-nav {
@@ -1418,8 +1423,7 @@ button:focus-visible {
     grid-template-areas:
       "photo identity"
       "links links"
-      "primary primary"
-      "actions actions";
+      "primary primary";
     gap: 6px 10px;
     padding: 12px;
     border-radius: var(--radius);
@@ -1472,8 +1476,13 @@ button:focus-visible {
     grid-column: 1 / -1;
   }
 
+  .profile-links a:last-child {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
   .profile-links a,
-  .profile-copy-actions button {
+  .profile-links button {
     min-height: 44px;
     font-size: 12px;
   }
@@ -1483,6 +1492,18 @@ button:focus-visible {
     gap: 5px;
     padding: 4px;
     font-size: 12px;
+  }
+
+  .profile-links button {
+    grid-template-columns: 18px minmax(0, 1fr);
+    gap: 5px;
+    padding: 4px;
+    font-size: 12px;
+  }
+
+  .profile-contact-button {
+    grid-column: 1 / -1;
+    grid-row: auto;
   }
 
   .profile-links span {
@@ -1496,18 +1517,6 @@ button:focus-visible {
     min-height: 44px;
     margin: 0;
     font-size: 12px;
-  }
-
-  .profile-copy-actions {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 4px;
-    margin-top: 0;
-  }
-
-  .profile-copy-actions button {
-    padding: 4px;
-    font-size: 12px;
-    text-align: center;
   }
 
   .workspace-nav {
