@@ -90,10 +90,10 @@ export function buildAgentReply(question) {
     };
   }
 
-  if (/contact|email|collaborat|reach|联系|合作|邮箱/.test(normalized)) {
+  if (/contact|email|wechat|collaborat|reach|联系|合作|邮箱|微信/.test(normalized)) {
     return {
       topic: "contact",
-      answer: "I am happy to connect on AutoResearch, post-training, agentic reinforcement learning, and reliable AI agents. The fastest way to reach me is the email listed in my profile card.",
+      answer: "You can reach me by email at xinyuguanphd@outlook.com or WeChat: super_lucky_magic. No public phone number is listed. I am open to conversations about AutoResearch, post-training, agentic RL, and practical AI Agent systems.",
       sources: ["research", "experience"],
     };
   }
@@ -310,7 +310,6 @@ export function initCopyActions(doc, win) {
   const actions = [
     ["wechatCopyBtn", "data-wechat", "WeChat ID copied!"],
     ["contactMeBtn", "data-email", "Email copied!"],
-    ["phoneCopyBtn", "data-phone", "Phone number copied!"],
   ];
   actions.forEach(([id, attribute, message]) => {
     const action = doc.getElementById(id);

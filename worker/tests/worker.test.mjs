@@ -192,6 +192,9 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.equal(invocation.options.messages[1].content, "What does Xinyu research?");
   const systemMessage = invocation.options.messages[0].content;
   assert.match(systemMessage, /University of Glasgow professor and University of Oxford graduate/i);
+  assert.match(systemMessage, /Public WeChat ID: super_lucky_magic/i);
+  assert.match(systemMessage, /No public phone number is listed/i);
+  assert.doesNotMatch(systemMessage, /18018735289|\+8618018735289/);
   assert.match(systemMessage, /Xinyu Guan is the first author of ChronoMem/i);
   assert.match(systemMessage, /Optimizing Text Search:[\s\S]*Xinyu Guan and Shaohua Zhang/i);
   assert.match(systemMessage, /Basket-Enhanced Heterogenous Hypergraph[\s\S]*Yuening Zhou[\s\S]*Francisco Cisternas/i);

@@ -8,7 +8,7 @@ const css = read("phd-styles.css");
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20260817-iconip-accepted-2";
+const releaseToken = "20260907-contact-wechat-1";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -372,17 +372,14 @@ test("workspace navigation uses an opaque white toolbar and underlined active st
   assert.match(css, /\.workspace-nav a\.active::after\s*\{[^}]*height:\s*2px/);
 });
 
-test("copy contact actions use buttons instead of javascript URLs", () => {
+test("profile contact actions expose the public WeChat ID without a phone number", () => {
   for (const page of [index, life]) {
     assert.doesNotMatch(page, /href="javascript:void\(0\)"/);
     assert.match(
       page,
-      /<button\b(?=[^>]*\btype="button")(?=[^>]*\bid="wechatCopyBtn")(?=[^>]*\bdata-wechat="18018735289")[^>]*>WeChat: 18018735289<\/button>/,
+      /<button\b(?=[^>]*\btype="button")(?=[^>]*\bid="wechatCopyBtn")(?=[^>]*\bdata-wechat="super_lucky_magic")[^>]*>WeChat: super_lucky_magic<\/button>/,
     );
-    assert.match(
-      page,
-      /<button\b(?=[^>]*\btype="button")(?=[^>]*\bid="phoneCopyBtn")(?=[^>]*\bdata-phone="\+8618018735289")[^>]*>Phone: \+86 180 1873 5289<\/button>/,
-    );
+    assert.doesNotMatch(page, /phoneCopyBtn|data-phone=|Phone:|18018735289|\+86 180 1873 5289/);
   }
 });
 
@@ -533,7 +530,7 @@ test("mobile profile and navigation preserve first-screen usability", () => {
   assert.match(mobile, /\.profile-links a:first-child\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
   assert.match(mobile, /\.profile-links span\s*\{[^}]*overflow-wrap:\s*anywhere/s);
   assert.match(mobile, /\.workspace-nav a\s*\{[^}]*min-height:\s*44px/s);
-  assert.match(mobile, /\.profile-copy-actions\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/s);
+  assert.match(mobile, /\.profile-copy-actions\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
 });
 
 test("navigation and mobile auxiliary labels preserve readable type floors", () => {

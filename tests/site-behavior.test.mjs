@@ -404,6 +404,16 @@ test("buildAgentReply returns the concise current Alibaba experience fallback", 
   assert.doesNotMatch(reply.answer, /19 business-task|8 of 9|279 migration|97\.54%|30K orders/i);
 });
 
+test("buildAgentReply exposes WeChat without a public phone number", () => {
+  for (const question of ["What is your WeChat?", "你的微信是什么？"]) {
+    const reply = site.buildAgentReply(question);
+    assert.equal(reply.topic, "contact");
+    assert.match(reply.answer, /WeChat: super_lucky_magic/);
+    assert.match(reply.answer, /No public phone number is listed/);
+    assert.doesNotMatch(reply.answer, /18018735289|\+86 180 1873 5289/);
+  }
+});
+
 test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
   for (const question of [
     "What is SILICA?",
