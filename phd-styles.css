@@ -210,7 +210,6 @@ button:focus-visible {
   border: 0;
   background: transparent;
   cursor: pointer;
-  font: inherit;
   text-align: left;
 }
 

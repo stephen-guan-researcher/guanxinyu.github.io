@@ -8,7 +8,7 @@ const css = read("phd-styles.css");
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20260907-contact-wechat-profile-link-1";
+const releaseToken = "20260907-contact-type-match-1";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -387,6 +387,18 @@ test("profile contact list places the public WeChat ID immediately after email",
   assert.match(css, /\.profile-links button\s*\{[^}]*border:\s*0[^}]*background:\s*transparent/s);
   assert.match(css, /\.profile-contact-button\s*\{[^}]*grid-template-columns:\s*16px\s+minmax\(0,\s*1fr\)[^}]*gap:\s*4px/s);
   assert.match(css, /\.profile-contact-button span\s*\{[^}]*overflow-wrap:\s*anywhere[^}]*white-space:\s*normal/s);
+});
+
+test("desktop profile contacts keep one shared text size", () => {
+  const sharedTypography = /\.profile-links a,\s*\.profile-links button\s*\{([^}]*)\}/s.exec(css)?.[1] ?? "";
+  const buttonOverrides = /(?:^|})\s*\.profile-links button\s*\{([^}]*)\}/s.exec(css)?.[1] ?? "";
+
+  assert.match(sharedTypography, /font-size:\s*12px/);
+  assert.doesNotMatch(
+    buttonOverrides,
+    /(?:^|;)\s*font\s*:/,
+    "the WeChat button must not reset the shared contact font size",
+  );
 });
 
 test("narrow desktop gives the email and WeChat column enough width", () => {
