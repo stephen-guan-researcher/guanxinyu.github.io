@@ -377,6 +377,9 @@ test("buildAgentReply grounds research questions in the resume sections", () => 
   assert.match(reply.answer, /AutoResearch/);
   assert.match(reply.answer, /Post-Training/);
   assert.match(reply.answer, /Agentic RL/);
+  assert.match(reply.answer, /CVPR manuscript in progress is PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement/);
+  assert.match(reply.answer, /Agent Research Survey/);
+  assert.doesNotMatch(reply.answer, /CVPR 20\d{2}|submitted to CVPR|accepted at CVPR/);
 });
 
 test("buildAgentReply returns the concise current Alibaba experience fallback", () => {
@@ -420,6 +423,14 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     "Is the KL paper going to ICLR?",
     "Tell me about the EACL submission",
     "What happened with CICL?",
+    "What is TIMBRE?",
+    "Explain QESChunker",
+    "How does the VLA early exit work?",
+    "What is the LoRA paper?",
+    "Static Gradient Attribution",
+    "ACL ARR",
+    "What is PIVOT?",
+    "Tell me about CVPR",
   ]) {
     const reply = site.buildAgentReply(question);
     assert.equal(reply.topic, "papers");
@@ -427,10 +438,33 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   }
 
   const reply = site.buildAgentReply("Summarize your latest papers");
-  assert.match(reply.answer, /submitted to EACL in August 2026/);
+  const pivotSummary = reply.answer.split(" TIMBRE:")[0];
+  assert.match(pivotSummary, /PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement/);
+  assert.match(pivotSummary, /Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng/);
+  assert.match(pivotSummary, /is in preparation for CVPR/);
+  assert.match(pivotSummary, /not yet public and has no public paper URL/);
+  assert.match(pivotSummary, /no CVPR conference year, submission, or acceptance is confirmed/);
+  assert.doesNotMatch(pivotSummary, /https?:\/\/|CVPR 20\d{2}|submitted to CVPR|accepted at CVPR/);
+  assert.match(reply.answer, /submitted to ACL ARR in the August 2026 cycle, with EACL as its preferred venue/);
   assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
-  assert.match(reply.answer, /prepared for ICLR as of August 2026/);
-  assert.match(reply.answer, /ICASSP 2027 as of August 2026/);
+  assert.match(reply.answer, /last confirmed status in August 2026 was in preparation for ICLR, with no later submission verified/);
+  assert.match(reply.answer, /TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile/);
+  assert.match(reply.answer, /Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao/);
+  assert.match(reply.answer, /submitted to ICASSP 2027 \(submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed\)/);
+  assert.doesNotMatch(reply.answer, /submitted to ICASSP 2027 in September 2026/);
+  assert.match(reply.answer, /replaces the former ChronoMem record/);
+  assert.match(reply.answer, /paper is not yet public, but its code is available at https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
+  assert.doesNotMatch(reply.answer, /ChronoMem is in preparation/);
+  assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
+  for (const [title, forumId] of [
+    ["How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit", "x6BEwIFvUc"],
+    ["Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix", "g54eVrFPPI"],
+    ["QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG", "pvrvPinZif"],
+  ]) {
+    assert.ok(reply.answer.includes(title), `missing current publication ${title}`);
+    assert.ok(reply.answer.includes(`https://openreview.net/forum?id=${forumId}`));
+  }
+  assert.match(reply.answer, /none is confirmed accepted/);
   assert.match(
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents/,
@@ -440,6 +474,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /Springer CCIS proceedings/);
   assert.match(reply.answer, /publicly available on arXiv/);
   assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(reply.answer, /camera-ready v4 was revised on September 21, 2026/);
   assert.match(reply.answer, /It is not yet published\./);
   assert.doesNotMatch(
     reply.answer,

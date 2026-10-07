@@ -195,7 +195,13 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /Public WeChat ID: super_lucky_magic/i);
   assert.match(systemMessage, /No public phone number is listed/i);
   assert.doesNotMatch(systemMessage, /18018735289|\+8618018735289/);
-  assert.match(systemMessage, /Xinyu Guan is the first author of ChronoMem/i);
+  assert.match(systemMessage, /Xinyu Guan is the first author of TIMBRE/i);
+  assert.match(systemMessage, /TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile[^\n]*submitted to ICASSP 2027 \(submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed\)/i);
+  assert.doesNotMatch(systemMessage, /TIMBRE:[^\n]*submitted to ICASSP 2027 in September 2026/i);
+  assert.match(systemMessage, /authors are Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao, in that order/);
+  assert.match(systemMessage, /replacing the former ChronoMem homepage record, not a second separate paper/);
+  assert.match(systemMessage, /paper is not yet public; its public code URL is https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
+  assert.doesNotMatch(systemMessage, /ChronoMem:[^\n]*in preparation for ICASSP|first author of ChronoMem/);
   assert.match(systemMessage, /Optimizing Text Search:[\s\S]*Xinyu Guan and Shaohua Zhang/i);
   assert.match(systemMessage, /Basket-Enhanced Heterogenous Hypergraph[\s\S]*Yuening Zhou[\s\S]*Francisco Cisternas/i);
   assert.match(systemMessage, /arXiv:2512\.16927[\s\S]*Nov(?:ember)? 2025/i);
@@ -210,6 +216,8 @@ test("returns a Workers AI answer for a valid question", async () => {
     /Decision-Aware Memory Cards[\s\S]*Xinyu Guan, Qianyang Zhao, and Yuming Deng/i,
   );
   assert.match(systemMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(systemMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
+  assert.match(systemMessage, /camera-ready availability does not mean the proceedings have been published/);
   assert.match(systemMessage, /not yet published/i);
   assert.doesNotMatch(systemMessage, /Decision-Aware Memory Cards[^.]*was published/i);
   const researchParagraph = systemMessage.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
@@ -288,21 +296,59 @@ test("returns a Workers AI answer for a valid question", async () => {
   }
   assert.match(systemMessage, /CVPR manuscript/i);
   assert.match(systemMessage, /Agent Research Survey/i);
+  assert.match(researchParagraph, /CVPR manuscript in progress is PIVOT/);
+  const pivotParagraph = systemMessage.split("\n\n").find((entry) => entry.startsWith(
+    '"PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement"',
+  ));
+  assert.ok(pivotParagraph, "Agent context must include the owner-confirmed PIVOT manuscript");
+  assert.match(pivotParagraph, /is in preparation for CVPR, as confirmed by the homepage owner/);
+  assert.match(pivotParagraph, /authors are Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng, in that order/);
+  assert.match(pivotParagraph, /paper is not yet public and has no public paper URL/);
+  assert.match(pivotParagraph, /earlier ICLR 2027 submission was withdrawn/);
+  assert.match(pivotParagraph, /current homepage status is In Preparation \/ Preparing for CVPR/);
+  assert.match(pivotParagraph, /Do not infer a CVPR conference year or describe the manuscript as submitted to or accepted at CVPR/);
+  assert.doesNotMatch(pivotParagraph, /https?:\/\/|CVPR 20\d{2}|was submitted to CVPR|was accepted at CVPR/);
   assert.match(
     systemMessage,
     /When KL Regularization Fails[\s\S]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, Xinyu Guan, and Huiming Yang/i,
   );
   assert.match(
     systemMessage,
-    /Advantage Scale Calibration[\s\S]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, Xinyu Guan, and Huiming Yang/i,
+    /Advantage Scale Calibration[^\n]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, Xinyu Guan, and Huiming Yang/,
   );
   assert.match(systemMessage, /November 2023 to February 2024/);
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
-  assert.match(invocation.options.messages[0].content, /seven publication and manuscript records/i);
-  assert.match(invocation.options.messages[0].content, /SILICA[\s\S]*submitted to EACL/i);
+  assert.doesNotMatch(systemMessage, /lists seven publication and manuscript records/i);
+  assert.match(systemMessage, /SILICA[^\n]*submitted to ACL ARR in the August 2026 cycle, with EACL listed as the preferred venue/);
+  assert.match(systemMessage, /Do not describe preferred venue EACL as a confirmed EACL acceptance/);
   assert.match(invocation.options.messages[0].content, /authors of SILICA are Pengcheng Xu and Xinyu Guan, in that order/i);
-  assert.match(invocation.options.messages[0].content, /When KL Regularization Fails[\s\S]*being prepared for ICLR as of August 2026/i);
+  assert.match(systemMessage, /When KL Regularization Fails[^\n]*last confirmed status, in August 2026, was in preparation for ICLR; no later submission is verified/);
   assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*submitted to AAAI 2027 in July 2026/i);
+  for (const [title, authors, forumId] of [
+    [
+      "How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit",
+      "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, and Xinyu Guan",
+      "x6BEwIFvUc",
+    ],
+    [
+      "Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix",
+      "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu",
+      "g54eVrFPPI",
+    ],
+    [
+      "QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG",
+      "Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng",
+      "pvrvPinZif",
+    ],
+  ]) {
+    const paragraph = systemMessage.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
+    assert.ok(paragraph, `missing current ICLR publication: ${title}`);
+    assert.ok(paragraph.includes(`Its authors are ${authors}, in that order`));
+    assert.ok(paragraph.includes("submitted to ICLR 2027 in September 2026"));
+    assert.ok(paragraph.includes(`https://openreview.net/forum?id=${forumId}`));
+    assert.ok(paragraph.includes("It is a submission, not an accepted paper."));
+  }
+  assert.match(systemMessage, /preserve the spelling and capitalization "kai wei"/);
   for (const organization of ["Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences"]) {
     assert.match(invocation.options.messages[0].content, new RegExp(organization, "i"));
   }
@@ -348,6 +394,8 @@ test("expands CICL shorthand into the verified ICONIP publication record", async
   assert.match(userMessage, /Springer Communications in Computer and Information Science \(CCIS\) proceedings/i);
   assert.match(userMessage, /not yet published/i);
   assert.match(userMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
+  assert.match(userMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
+  assert.match(userMessage, /does not establish proceedings publication/);
   assert.match(userMessage, /Answer in the same language as the original question/i);
   assert.match(userMessage, /中文问题请务必使用中文回答/);
   assert.match(userMessage, new RegExp(`Original question: ${question}`));

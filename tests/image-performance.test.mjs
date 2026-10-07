@@ -23,7 +23,7 @@ test("every visual publication has correctly labelled responsive WebP variants",
   const variants = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
-    "paper-chronomem-overview": [320, 640, 960],
+    "paper-timbre-overview": [320, 640, 960],
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
@@ -65,7 +65,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20260907-contact-type-match-1";
+const releaseToken = "20261008-publications-1";
 
 test("both pages use the prioritized responsive avatar", () => {
   for (const page of [index, life]) {
@@ -89,7 +89,7 @@ test("publication figures are responsive and lazy", () => {
   const candidates = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
-    "paper-chronomem-overview": [320, 640, 960],
+    "paper-timbre-overview": [320, 640, 960],
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],

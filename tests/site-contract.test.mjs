@@ -8,7 +8,7 @@ const css = read("phd-styles.css");
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20260907-contact-type-match-1";
+const releaseToken = "20261008-publications-1";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -94,18 +94,23 @@ test("Now presents the verified 2026 milestones as a reverse-chronological timel
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 7, "Now must expose seven concise milestone cards");
-  assert.deepEqual(dates, ["2026-08", "2026-08", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
-  for (const status of ["Accepted", "Preparing", "Submitted", "Preprint", "Career"]) {
+  assert.equal(items.length, 9, "Now must expose nine concise milestone cards");
+  assert.deepEqual(dates, ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  for (const status of ["Accepted", "Preparing", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
   assert.match(
-    items[0],
+    items[4],
     /Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026\./,
   );
-  assert.match(items[0], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[4], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[0], /Preparing[\s\S]*PIVOT[\s\S]*for CVPR/);
+  assert.match(items[1], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
+  assert.match(items[2], /Three ICLR 2027 submissions/);
+  assert.match(items[3], /ICONIP 2026 camera-ready/);
   assert.ok(news.indexOf("Decision-Aware Memory Cards was accepted") < news.indexOf("Submitted SILICA"));
-  assert.match(news, /Preparing the KL regularization manuscript for ICLR/);
+  assert.match(news, /August 2026 ACL ARR cycle, with EACL as the preferred venue/);
+  assert.doesNotMatch(news, /Preparing an ICASSP 2027 manuscript/);
   assert.match(news, /Submitted Advantage Scale Calibration to AAAI 2027/);
   assert.match(news, /href="#experience"/);
 });
@@ -159,7 +164,7 @@ test("verified public metadata and profile wording stay synchronized", () => {
   );
   assert.match(contentSection("experience"), /Mathematical and biomedical capability enhancement/);
   assert.match(contentSection("experience"), /training time <strong>30%<\/strong> lower/);
-  assert.match(index, /<strong>Xinyu Guan<\/strong> et al\./);
+  assert.match(index, /<strong>Xinyu Guan<\/strong>, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, Qianyang Zhao/);
 
   const textSearch = cardWithText(
     "publication-card",
@@ -279,9 +284,9 @@ test("publication author lines use names only and preserve SILICA order", () => 
 
 test("every verified paper link makes its whole card keyboard-accessible and clickable", () => {
   const cards = cardsWithClass("publication-card");
-  const linkedCards = cards.filter((card) => /<a\b[^>]*href=/.test(card));
+  const linkedCards = cards.filter((card) => /<h3><a\b[^>]*href=/.test(card));
 
-  assert.equal(linkedCards.length, 3, "the three publications with verified public destinations should be linked");
+  assert.equal(linkedCards.length, 6, "the six publications with verified public paper destinations should be linked");
   for (const card of linkedCards) {
     assert.match(card, /class="publication-card publication-card-linked"/);
     assert.match(card, /target="_blank"/);
@@ -297,7 +302,7 @@ test("every verified paper link makes its whole card keyboard-accessible and cli
   assert.match(cssRule(css, ".publication-card-linked"), /cursor:\s*pointer/);
   assert.match(cssRule(css, ".publication-card-linked:focus-within"), /outline:\s*3px/);
 
-  for (const card of cards.filter((candidate) => !/<a\b[^>]*href=/.test(candidate))) {
+  for (const card of cards.filter((candidate) => !/<h3><a\b[^>]*href=/.test(candidate))) {
     assert.doesNotMatch(card, /\bpublication-card-linked\b/);
   }
 });
@@ -316,9 +321,9 @@ test("verified publication figures remain scoped to their corresponding cards", 
       alt: "MaxNorm-AC advantage-scale calibration pipeline",
     },
     {
-      title: "ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting",
-      src: "images/paper-chronomem-overview.png",
-      alt: "ChronoMem event-memory and residual-forecasting pipeline",
+      title: "TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile",
+      src: "images/paper-timbre-overview.png",
+      alt: "TIMBRE source-aware evidence, historical response memory, and reliability-guided fusion",
     },
     {
       title:
@@ -682,8 +687,8 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and seven independent publication cards", () => {
-  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "CVPR Manuscript", "Agent Research Survey"];
+test("homepage locks the current research program, career, and eleven independent publication cards", () => {
+  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "PIVOT · CVPR", "Agent Research Survey"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
   assert.equal(researchCards.length, 3);
@@ -697,7 +702,7 @@ test("homepage locks the current research program, career, and seven independent
   }
 
   assert.equal(cardsWithClass("career-item").length, 6);
-  assert.equal(cardsWithClass("publication-card").length, 7);
+  assert.equal(cardsWithClass("publication-card").length, 11);
 });
 
 test("verified career levels stay attached to their corresponding appointments", () => {
@@ -865,13 +870,12 @@ test("unpublished papers retain distinct venues and conservative public states",
   const klTitle = "When KL Regularization Fails in Online Reasoning RL: A Token-Level Gradient Contract";
   const advantageTitle =
     "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery";
-  const chronoMemTitle = "ChronoMem: Interpretable Event Memory for LLM-Augmented Time-Series Forecasting";
+  const timbreTitle = "TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile";
 
   const contracts = [
-    [silicaTitle, /Submitted/, /Submitted to EACL · Aug 2026/],
-    [klTitle, /In Preparation/, /Withdrawn from AAAI · In preparation for ICLR · Aug 2026/],
+    [silicaTitle, /Submitted/, /ACL ARR · Aug 2026 cycle · Preferred venue: EACL/],
+    [klTitle, /In Preparation/, /Withdrawn from AAAI · Preparing for ICLR \(last confirmed Aug 2026\)/],
     [advantageTitle, /Submitted/, /Submitted to AAAI 2027 · Jul 2026/],
-    [chronoMemTitle, /In Preparation/, /In preparation for ICASSP 2027 · Aug 2026/],
   ];
   for (const [title, status, venue] of contracts) {
     const card = cardWithText("publication-card", title);
@@ -883,6 +887,53 @@ test("unpublished papers retain distinct venues and conservative public states",
   }
   assert.match(cardWithText("publication-card", klTitle), /Withdrawn from AAAI/);
   assert.doesNotMatch(cardWithText("publication-card", silicaTitle), /\bACL Submission\b/);
+
+  const timbre = cardWithText("publication-card", timbreTitle);
+  assert.match(timbre, /Submitted to ICASSP 2027 · Paper not yet public/);
+  assert.doesNotMatch(timbre, /<h3><a\b/);
+  assert.match(timbre, /class="publication-inline-link" href="https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE"[^>]*>Code<\/a>/);
+  assert.doesNotMatch(contentSection("papers"), /ChronoMem: Interpretable Event Memory/);
+});
+
+test("PIVOT is preparing for CVPR, not an active ICLR submission or a public paper", () => {
+  const title = "PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement";
+  const card = cardWithText("publication-card", title);
+  assert.ok(card, "PIVOT must have an independent manuscript card");
+  assert.match(card, /class="status-label">In Preparation/);
+  assert.match(card, /Preparing for CVPR · Not yet public/);
+  assert.match(card, /<strong>Xinyu Guan<\/strong>, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng/);
+  assert.doesNotMatch(card, /<a\b|publication-card-linked|>Submitted<|>Accepted<|>Published<|ICLR|CVPR 20\d\d/);
+  assert.match(contentSection("research"), /PIVOT · CVPR/);
+  assert.doesNotMatch(contentSection("research"), /CVPR Manuscript/);
+});
+
+test("new public ICLR submissions preserve title, author order, and direct links", () => {
+  const contracts = [
+    [
+      "How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit",
+      "x6BEwIFvUc",
+      "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong>",
+    ],
+    [
+      "Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix",
+      "g54eVrFPPI",
+      "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, <strong>Xinyu Guan</strong>, Ruoyun Ma, Hailu Xu",
+    ],
+    [
+      "QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG",
+      "pvrvPinZif",
+      "Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, kai wei, Yuming Deng",
+    ],
+  ];
+  for (const [title, id, authors] of contracts) {
+    const card = cardWithText("publication-card", title);
+    assert.ok(card, `${title} must have an independent card`);
+    assert.match(card, /class="publication-card publication-card-linked"/);
+    assert.ok(card.includes(`href="https://openreview.net/forum?id=${id}"`));
+    assert.ok(card.includes(`<p class="publication-authors">${authors}</p>`));
+    assert.match(card, /Submitted to ICLR 2027 · Sep 2026 · OpenReview/);
+    assert.doesNotMatch(card, />Accepted<|>Published</);
+  }
 });
 
 test("reference shell and publication rows respond at the selected breakpoints", () => {

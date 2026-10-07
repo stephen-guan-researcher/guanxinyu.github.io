@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPERS = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
-    "paper-chronomem-overview": [320, 640, 960],
+    "paper-timbre-overview": [320, 640, 960],
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
