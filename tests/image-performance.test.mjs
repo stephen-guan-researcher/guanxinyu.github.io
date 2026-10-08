@@ -10,7 +10,7 @@ const normalizeSpace = (value) => (value ?? "").replace(/\s+/g, " ").trim();
 const srcsetCandidates = (source) => (attribute(source, "srcset") ?? "")
   .split(",").map(normalizeSpace);
 const publicationCoverStems = [
-  "paper-pivot-cover", "paper-zcpo-cover", "paper-runtime-cover",
+  "paper-pivot-cover", "paper-runtime-cover",
 ];
 const extractedFigureStems = ["paper-vla-early-exit", "paper-lora-attribution", "paper-qeschunker-overview"];
 
@@ -82,7 +82,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-5";
+const releaseToken = "20261008-editorial-6";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -107,7 +107,9 @@ test("publication figures are responsive and lazy", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 12, "all twelve publication articles need a real figure or concept illustration");
+  assert.equal(figures.length, 11, "all eleven visible publication articles need a real figure or concept illustration");
+  assert.doesNotMatch(index, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
+    "the unresolved KL manuscript must not remain in the public homepage");
   for (const figure of figures) {
     assert.equal(tags(figure, "picture").length, 1);
     const sources = tags(figure, "source");
@@ -130,9 +132,9 @@ test("publication figures are responsive and lazy", () => {
   const illustrations = figures.filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-illustration"),
   );
-  assert.equal(illustrations.length, 3, "only the three papers still without verified artwork use concept illustrations");
+  assert.equal(illustrations.length, 2, "only the two visible papers still without verified artwork use concept illustrations");
   const coverSources = illustrations.map((figure) => attribute(tags(figure, "img")[0], "src"));
-  assert.equal(new Set(coverSources).size, 3, "each concept illustration must use its own cover");
+  assert.equal(new Set(coverSources).size, 2, "each concept illustration must use its own cover");
   assert.deepEqual(coverSources.toSorted(), publicationCoverStems.map((stem) => `images/${stem}.png`).toSorted());
   for (const figure of illustrations) {
     assert.equal(attribute(tags(figure, "figure")[0], "data-figure-status"), "illustration");

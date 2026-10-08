@@ -100,10 +100,6 @@ const knownPapers = [
     "Pengcheng Xu, Xinyu Guan",
   ],
   [
-    "When KL Regularization Fails in Online Reasoning RL: A Token-Level Gradient Contract",
-    "Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, Xinyu Guan, Huiming Yang",
-  ],
-  [
     "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery",
     "Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, Xinyu Guan, Huiming Yang",
   ],
@@ -217,7 +213,7 @@ test("four compact career rows preserve all six original scopes and complete exp
   assert.equal(withClass(byId(pages.home, "education"), "education-item").length, 2);
 });
 
-test("publication rows retain all eleven papers and the exact runtime-stack survey title", () => {
+test("publication rows retain eleven visible manuscripts including the exact runtime-stack survey title", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => {
     const headings = all(card, (node) => node.tag === "h3");
@@ -225,6 +221,9 @@ test("publication rows retain all eleven papers and the exact runtime-stack surv
     return normalizedText(headings[0]);
   });
   assert.deepEqual(titles.toSorted(), [...knownPapers.map(([title]) => title), surveyTitle].toSorted());
+  assert.equal(cards.length, 11);
+  assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
+    "the unresolved KL manuscript must not remain in the public homepage");
   for (const card of cards) {
     assert.equal(card.tag, "article", "each publication must remain a semantic article");
     const bodies = withClass(card, "publication-body");
@@ -241,15 +240,21 @@ test("publication rows retain all eleven papers and the exact runtime-stack surv
   }
 });
 
+test("Agent context counts eleven distinct manuscripts without the unresolved KL record", () => {
+  const context = read("worker/src/index.mjs");
+  assert.match(context, /lists 11 distinct papers and manuscripts, not 11 published papers/);
+  assert.doesNotMatch(context, /When KL Regularization Fails|ZCPO/i);
+});
+
 test("verified public paper destinations and conservative manuscript states stay attached to their rows", () => {
   const publicLinks = [
     [knownPapers[1][0], "https://arxiv.org/abs/2610.04795"],
     [knownPapers[2][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
     [knownPapers[3][0], "https://openreview.net/forum?id=g54eVrFPPI"],
     [knownPapers[4][0], "https://openreview.net/forum?id=pvrvPinZif"],
-    [knownPapers[8][0], "https://arxiv.org/abs/2606.08151"],
-    [knownPapers[9][0], "https://arxiv.org/abs/2512.16927"],
-    [knownPapers[10][0], "https://doi.org/10.1109/ICASSP49660.2025.10887705"],
+    [knownPapers[7][0], "https://arxiv.org/abs/2606.08151"],
+    [knownPapers[8][0], "https://arxiv.org/abs/2512.16927"],
+    [knownPapers[9][0], "https://doi.org/10.1109/ICASSP49660.2025.10887705"],
   ];
   for (const [title, href] of publicLinks) {
     const card = publication(title);
@@ -267,18 +272,17 @@ test("verified public paper destinations and conservative manuscript states stay
     [knownPapers[3][0], "Submitted", /Submitted to ICLR 2027/],
     [knownPapers[4][0], "Submitted", /Submitted to ICLR 2027/],
     [knownPapers[5][0], "Submitted", /ACL ARR.*Preferred venue: EACL/],
-    [knownPapers[6][0], "In Preparation", /Withdrawn from AAAI.*Preparing for ICLR/],
-    [knownPapers[7][0], "Submitted", /Submitted to AAAI 2027/],
-    [knownPapers[8][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
-    [knownPapers[9][0], "Preprint", /arXiv:2512\.16927/],
-    [knownPapers[10][0], "Published", /ICASSP 2025/],
+    [knownPapers[6][0], "Submitted", /Submitted to AAAI 2027/],
+    [knownPapers[7][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
+    [knownPapers[8][0], "Preprint", /arXiv:2512\.16927/],
+    [knownPapers[9][0], "Published", /ICASSP 2025/],
   ];
   for (const [title, status, venue] of states) {
     const card = publication(title);
     assert.equal(normalizedText(withClass(card, "status-label")[0]), status);
     assert.match(normalizedText(withClass(card, "publication-meta")[0]), venue);
   }
-  for (const index of [0, 5, 6, 7]) {
+  for (const index of [0, 5, 6]) {
     const card = publication(knownPapers[index][0]);
     assert.match(normalizedText(card), /Not yet public/i);
     assert.equal(all(card, (node) => node.tag === "a").length, 0,
@@ -293,10 +297,10 @@ test("all publication rows have one real figure or an explicitly labeled concept
     [knownPapers[3][0], "images/paper-lora-attribution.png"],
     [knownPapers[4][0], "images/paper-qeschunker-overview.png"],
     [knownPapers[5][0], "images/paper-silica-identifiability.png"],
-    [knownPapers[7][0], "images/paper-advantage-maxnorm-ac.png"],
-    [knownPapers[8][0], "images/paper3-cicl-pipeline.png"],
-    [knownPapers[9][0], "images/paper2-suffix-tree.png"],
-    [knownPapers[10][0], "images/paper1-hypergraph.png"],
+    [knownPapers[6][0], "images/paper-advantage-maxnorm-ac.png"],
+    [knownPapers[7][0], "images/paper3-cicl-pipeline.png"],
+    [knownPapers[8][0], "images/paper2-suffix-tree.png"],
+    [knownPapers[9][0], "images/paper1-hypergraph.png"],
   ];
   for (const [title, src] of figures) {
     const card = publication(title);
@@ -311,10 +315,9 @@ test("all publication rows have one real figure or an explicitly labeled concept
   }
   const illustrations = [
     [knownPapers[0][0], "paper-pivot-cover", /PIVOT/],
-    [knownPapers[6][0], "paper-zcpo-cover", /KL/],
     [surveyTitle, "paper-runtime-cover", /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems/],
   ];
-  assert.equal(new Set(illustrations.map(([, stem]) => stem)).size, 3);
+  assert.equal(new Set(illustrations.map(([, stem]) => stem)).size, 2);
   for (const [title, stem, identifier] of illustrations) {
     const figure = withClass(publication(title), "publication-card-figure")[0];
     assert.ok(figure && hasClass(figure, "publication-card-figure-illustration"),
@@ -335,10 +338,10 @@ test("all publication rows have one real figure or an explicitly labeled concept
     assert.notEqual(captions[0].attrs["aria-hidden"], "true");
   }
   const cards = withClass(pages.home, "publication-card");
-  assert.equal(cards.length, 12);
+  assert.equal(cards.length, 11);
   const allFigures = withClass(pages.home, "publication-card-figure");
-  assert.equal(allFigures.length, 12);
-  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 3);
+  assert.equal(allFigures.length, 11);
+  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 2);
   assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-illustration")).length, 9);
   assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker)-cover/,
     "verified PDF figures must replace all three temporary covers");

@@ -525,7 +525,8 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.doesNotMatch(pivotSummary, /https?:\/\/|CVPR 20\d{2}|submitted to CVPR|accepted at CVPR/);
   assert.match(reply.answer, /submitted to ACL ARR in the August 2026 cycle, with EACL as its preferred venue/);
   assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
-  assert.match(reply.answer, /last confirmed status in August 2026 was in preparation for ICLR, with no later submission verified/);
+  assert.doesNotMatch(reply.answer, /KL regularization|ZCPO|1RCulySJU5/i,
+    "browser publication facts must not attribute the unresolved KL manuscript to the owner");
   assert.match(reply.answer, /TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile/);
   assert.match(reply.answer, /Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao/);
   assert.match(reply.answer, /submitted to ICASSP 2027 \(submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed\)/);

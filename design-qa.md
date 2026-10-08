@@ -2,6 +2,15 @@
 
 final result: passed
 
+## Latest revision — editorial-6 KL record temporarily excluded
+
+- At the owner's request, the unresolved KL/ZCPO manuscript is removed from the homepage, browser publication facts, and local Worker context. No anonymous OpenReview paper is attributed to the owner. This exclusion is not a finding that the historical manuscript belongs to someone else.
+- Current inventory: 11 distinct papers/manuscripts, nine authentic figures, two explicitly labeled concept covers. All other publication metadata and figures are unchanged. The old KL cover, variants, prompt notes, and previous committed entry remain recoverable; see `docs/publication-record-exclusions.md`.
+- Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-6#papers`. The in-app browser verified 11 cards, no KL card, all 11 paper images loaded through optimized WebP sources, no horizontal overflow, and no console warnings/errors.
+- Screenshot: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/papers-v6-kl-hidden.png` shows SILICA immediately followed by Advantage Scale Calibration, with no intervening KL row.
+- Verification: all 138 Node tests and three Python image tests passed. The cache token is synchronized across both pages and release tests. No website push or Worker deployment was performed; production is unchanged.
+- The sections below retain earlier revision evidence and are not the current publication inventory.
+
 ## Latest revision — editorial-5 authentic PDF figures
 
 - Request: replace the three OpenReview concept covers using the owner's downloaded PDFs. Verified first-page titles match VLA Early Exit (`1.pdf`), LoRA Attribution (`2.pdf`), and QESChunker (`3.pdf`). PDFs remain unchanged and are not added to the public site.

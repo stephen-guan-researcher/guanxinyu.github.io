@@ -1,6 +1,6 @@
 # Publication figure inventory — 2026-10-08
 
-All 12 manuscript rows contain one image. In editorial-5, nine rows use authentic paper figures: six previously retained figures plus three extracted from the PDFs supplied by the owner. Three rows still use clearly labeled conceptual covers. Concepts are not original paper figures or scientific evidence.
+All 11 visible manuscript rows contain one image in editorial-6. Nine rows use authentic paper figures: six previously retained figures plus three extracted from the PDFs supplied by the owner. Two rows use clearly labeled conceptual covers. Concepts are not original paper figures or scientific evidence. The unresolved KL/ZCPO record is no longer displayed or included in the Agent's verified facts, at the owner's request; its earlier metadata and image assets remain recoverable. See [record exclusions](publication-record-exclusions.md).
 
 ## Existing source artwork retained
 
@@ -40,12 +40,11 @@ Only these three figure sources and the related tests/cache token change in this
 
 The first OpenReview forum was also opened in the in-app browser and displayed its verification screen. The check was not bypassed or completed. These describe the earlier online access attempts; the owner subsequently downloaded and supplied three PDFs, which now resolve the VLA, LoRA, and QESChunker source-artwork gaps. The other three source gaps remain unresolved.
 
-## Current concept covers — three remaining
+## Current concept covers — two remaining
 
 | Manuscript | Fallback asset | Visual metaphor |
 | --- | --- | --- |
 | PIVOT | `images/paper-pivot-cover.png` | Prompt notebook, lens, and iterative choice |
-| When KL Regularization Fails | `images/paper-zcpo-cover.png` | Balanced reasoning paths |
 | Runtime Stack survey | `images/paper-runtime-cover.png` | Runtime layers, memory, and tools |
 
 - Method: built-in Image Gen, one separate call per asset in editorial-4. Each original is preserved, and site PNG fallbacks are resized to 1200 × 800.
@@ -53,7 +52,7 @@ The first OpenReview forum was also opened in the in-app browser and displayed i
 - Each remaining cover has 320px, 640px, and 960px WebP variants. The largest is 28374 bytes. Browser clients use these variants rather than downloading the full PNG by default.
 - Exact prompts and original generated-image paths: [PIVOT and VLA](publication-cover-prompts-a.md), [LoRA and QESChunker](publication-cover-prompts-b.md), [ZCPO and Runtime](publication-cover-prompts-c.md).
 - When authentic source figures become available, replace the corresponding cover while retaining the verified paper metadata. Existing six real figures were not replaced.
-- The former VLA, LoRA, and QESChunker concept-cover files and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list.
+- The former VLA, LoRA, QESChunker, and KL/ZCPO concept-cover files and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list.
 
 ## Retired placeholder asset — editorial-3 history
 

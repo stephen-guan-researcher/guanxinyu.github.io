@@ -308,10 +308,10 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(pivotParagraph, /current homepage status is In Preparation \/ Preparing for CVPR/);
   assert.match(pivotParagraph, /Do not infer a CVPR conference year or describe the manuscript as submitted to or accepted at CVPR/);
   assert.doesNotMatch(pivotParagraph, /https?:\/\/|CVPR 20\d{2}|was submitted to CVPR|was accepted at CVPR/);
-  assert.match(
-    systemMessage,
-    /When KL Regularization Fails[\s\S]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, Yuhao Liao, Xinyu Guan, and Huiming Yang/i,
-  );
+  assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
+    "unresolved KL authorship must not be included in the Agent's verified facts");
+  assert.match(systemMessage, /11 distinct papers and manuscripts, not 11 published papers/);
+  assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
   assert.match(
     systemMessage,
     /Advantage Scale Calibration[^\n]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, Xinyu Guan, and Huiming Yang/,
@@ -322,7 +322,6 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /SILICA[^\n]*submitted to ACL ARR in the August 2026 cycle, with EACL listed as the preferred venue/);
   assert.match(systemMessage, /Do not describe preferred venue EACL as a confirmed EACL acceptance/);
   assert.match(invocation.options.messages[0].content, /authors of SILICA are Pengcheng Xu and Xinyu Guan, in that order/i);
-  assert.match(systemMessage, /When KL Regularization Fails[^\n]*last confirmed status, in August 2026, was in preparation for ICLR; no later submission is verified/);
   assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*submitted to AAAI 2027 in July 2026/i);
   for (const [title, authors, forumId] of [
     [
@@ -425,7 +424,7 @@ test("includes the corrected Frontiers of Computer Science survey without invent
   assert.match(research, /owner corrected the venue name on October 8, 2026/);
   assert.match(research, /not as a merely planned manuscript/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
-  assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
+  assert.match(context, /11 distinct papers and manuscripts, not 11 published papers/);
 });
 
 test("expands CICL shorthand into the verified ICONIP publication record", async () => {

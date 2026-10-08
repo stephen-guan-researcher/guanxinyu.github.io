@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261008-editorial-5";
+const releaseToken = "20261008-editorial-6";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -691,7 +691,7 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and twelve independent publication rows", () => {
+test("homepage locks the current research program, career, and eleven independent publication rows", () => {
   const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "PIVOT · CVPR", "Agent Research Survey"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
@@ -706,7 +706,7 @@ test("homepage locks the current research program, career, and twelve independen
   }
 
   assert.equal(cardsWithClass("experience-item").length, 5);
-  assert.equal(cardsWithClass("publication-card").length, 12);
+  assert.equal(cardsWithClass("publication-card").length, 11);
 });
 
 test("verified career levels stay attached to their corresponding appointments", () => {
@@ -881,7 +881,6 @@ test("unpublished papers retain distinct venues and conservative public states",
 
   const contracts = [
     [silicaTitle, /Submitted/, /ACL ARR · Aug 2026 cycle · Preferred venue: EACL/],
-    [klTitle, /In Preparation/, /Withdrawn from AAAI · Preparing for ICLR \(last confirmed Aug 2026\)/],
     [advantageTitle, /Submitted/, /Submitted to AAAI 2027 · Jul 2026/],
   ];
   for (const [title, status, venue] of contracts) {
@@ -892,7 +891,9 @@ test("unpublished papers retain distinct venues and conservative public states",
     assert.match(card, /Not yet public/);
     assert.doesNotMatch(card, /<a\b[^>]*href=/);
   }
-  assert.match(cardWithText("publication-card", klTitle), /Withdrawn from AAAI/);
+  assert.equal(cardWithText("publication-card", klTitle), "",
+    "the unresolved KL manuscript must remain off the public homepage");
+  assert.doesNotMatch(contentSection("papers"), /paper-zcpo|ZCPO|1RCulySJU5/);
   assert.doesNotMatch(cardWithText("publication-card", silicaTitle), /\bACL Submission\b/);
 
   const timbre = cardWithText("publication-card", timbreTitle);
