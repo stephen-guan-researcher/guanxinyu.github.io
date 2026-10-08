@@ -9,7 +9,7 @@ const attribute = (tag, name) => tag?.match(new RegExp(`\\s${name}\\s*=\\s*(["']
 const normalizeSpace = (value) => (value ?? "").replace(/\s+/g, " ").trim();
 const srcsetCandidates = (source) => (attribute(source, "srcset") ?? "")
   .split(",").map(normalizeSpace);
-const publicationCoverStems = [
+const archivedPublicationCoverStems = [
   "paper-pivot-cover", "paper-runtime-cover",
 ];
 const extractedFigureStems = ["paper-vla-early-exit", "paper-lora-attribution", "paper-qeschunker-overview"];
@@ -29,7 +29,7 @@ test("responsive avatar variants are real compact WebP assets", () => {
   assert.equal(existsSync(asset("images/generated/avatar-528.jpg")), true);
 });
 
-test("real publication figures and distinct concept covers have responsive WebP variants", () => {
+test("real publication figures and retained archived covers have responsive WebP variants", () => {
   const variants = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
@@ -38,14 +38,14 @@ test("real publication figures and distinct concept covers have responsive WebP 
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
     ...Object.fromEntries(extractedFigureStems.map((stem) => [stem, [320, 640, 960]])),
-    ...Object.fromEntries(publicationCoverStems.map((stem) => [stem, [320, 640, 960]])),
+    ...Object.fromEntries(archivedPublicationCoverStems.map((stem) => [stem, [320, 640, 960]])),
   };
   for (const [stem, widths] of Object.entries(variants)) {
     for (const width of widths) {
       assertWebP(`images/generated/${stem}-${width}.webp`, 90_000);
     }
   }
-  for (const stem of [...publicationCoverStems, ...extractedFigureStems]) {
+  for (const stem of [...archivedPublicationCoverStems, ...extractedFigureStems]) {
     const png = readFileSync(asset(`images/${stem}.png`));
     assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10],
       `${stem} must be a real PNG image asset`);
@@ -82,7 +82,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-6";
+const releaseToken = "20261008-editorial-7";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -103,14 +103,30 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
   assert.equal(tags(life, "img").length, 18, "Life must not fetch an additional profile portrait");
 });
 
-test("publication figures are responsive and lazy", () => {
+test("nine publication images are responsive and lazy while two pending slots request no images", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 11, "all eleven visible publication articles need a real figure or concept illustration");
+  assert.equal(figures.length, 11, "all eleven visible publication articles need a real figure or pending artwork slot");
   assert.doesNotMatch(index, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const figure of figures) {
+    const figureTag = tags(figure, "figure")[0];
+    const isPending = (attribute(figureTag, "class") ?? "")
+      .split(/\s+/).includes("publication-card-figure-pending");
+    if (isPending) {
+      assert.equal(attribute(figureTag, "data-figure-status"), "pending");
+      assert.match(attribute(figureTag, "aria-label") ?? "", /图片待补充$/);
+      assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), "待补充");
+      const labels = tags(figure, "span").filter((tag) =>
+        (attribute(tag, "class") ?? "").split(/\s+/).includes("publication-figure-pending-label"));
+      assert.equal(labels.length, 1);
+      assert.notEqual(attribute(labels[0], "aria-hidden"), "true");
+      for (const tagName of ["img", "picture", "source", "figcaption"]) {
+        assert.equal(tags(figure, tagName).length, 0, `pending artwork must not contain ${tagName}`);
+      }
+      continue;
+    }
     assert.equal(tags(figure, "picture").length, 1);
     const sources = tags(figure, "source");
     assert.equal(sources.length, 1);
@@ -123,30 +139,20 @@ test("publication figures are responsive and lazy", () => {
     assert.equal(attribute(images[0], "decoding"), "async");
     assert.ok(Number(attribute(images[0], "width")) > 0);
     assert.ok(Number(attribute(images[0], "height")) > 0);
-    const isIllustration = (attribute(tags(figure, "figure")[0], "class") ?? "")
-      .split(/\s+/).includes("publication-card-figure-illustration");
-    assert.equal(tags(figure, "figcaption").length, isIllustration ? 1 : 0);
-    assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), isIllustration ? "Concept illustration" : "",
-      "only concept illustrations may add their disclosure caption");
+    assert.equal(tags(figure, "figcaption").length, 0);
+    assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), "",
+      "real paper figures retain their caption-free container");
   }
-  const illustrations = figures.filter((figure) =>
-    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-illustration"),
+  const pendingFigures = figures.filter((figure) =>
+    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-pending"),
   );
-  assert.equal(illustrations.length, 2, "only the two visible papers still without verified artwork use concept illustrations");
-  const coverSources = illustrations.map((figure) => attribute(tags(figure, "img")[0], "src"));
-  assert.equal(new Set(coverSources).size, 2, "each concept illustration must use its own cover");
-  assert.deepEqual(coverSources.toSorted(), publicationCoverStems.map((stem) => `images/${stem}.png`).toSorted());
-  for (const figure of illustrations) {
-    assert.equal(attribute(tags(figure, "figure")[0], "data-figure-status"), "illustration");
-    const stem = attribute(tags(figure, "img")[0], "src").slice("images/".length, -".png".length);
-    assert.match(attribute(tags(figure, "img")[0], "alt") ?? "", /^Concept illustration for .+; not an original paper figure$/);
-    assert.deepEqual(srcsetCandidates(tags(figure, "source")[0]),
-      [320, 640, 960].map((width) => `images/generated/${stem}-${width}.webp ${width}w`));
-    assert.equal(attribute(tags(figure, "figcaption")[0], "class"), "publication-figure-caption");
-  }
-  assert.equal(figures.length - illustrations.length, 9);
-  assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker)-cover/);
-  assert.doesNotMatch(index, /paper-figure-pending|publication-card-figure-pending|data-figure-status=["']pending|Figure pending for/i);
+  assert.equal(pendingFigures.length, 2, "only the two papers without verified artwork use pending labels");
+  assert.deepEqual(pendingFigures.map((figure) => attribute(tags(figure, "figure")[0], "aria-label")).toSorted(),
+    ["PIVOT：图片待补充", "Runtime Stack 综述：图片待补充"].toSorted());
+  assert.equal(figures.length - pendingFigures.length, 9);
+  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 9);
+  assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|publication-card-figure-illustration|Concept illustration/,
+    "the active homepage must not load archived concept covers");
 
   const candidates = {
     "paper-silica-identifiability": [320, 640, 960],

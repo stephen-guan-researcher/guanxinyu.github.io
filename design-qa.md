@@ -2,6 +2,15 @@
 
 final result: passed
 
+## Latest revision — editorial-7 missing figures labeled 待补充
+
+- At the owner's request, PIVOT and Runtime Stack concept covers are replaced by light-gray text-only “待补充” placeholders in the existing figure column. The figure labels identify the associated paper for assistive technology. No image or picture element is used in either slot, so these placeholders incur no image requests.
+- Inventory remains 11 distinct papers/manuscripts: nine unchanged authentic figures and two pending slots. Titles, authors, summaries, statuses, venues, and links are unchanged. All previous cover assets and prompt notes remain recoverable but are removed from the active image-generation list.
+- Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-7#papers`. Browser checks confirm exactly two accessible placeholders, each reading “待补充”, nine image elements, 11 rows, and no horizontal overflow.
+- Verification: all 138 Node tests and three Python image tests passed; the release token is synchronized across both pages and tests. No website push or Worker deployment was performed.
+- Screenshot: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/papers-v7-pending.png`.
+- The sections below retain earlier revision evidence.
+
 ## Latest revision — editorial-6 KL record temporarily excluded
 
 - At the owner's request, the unresolved KL/ZCPO manuscript is removed from the homepage, browser publication facts, and local Worker context. No anonymous OpenReview paper is attributed to the owner. This exclusion is not a finding that the historical manuscript belongs to someone else.

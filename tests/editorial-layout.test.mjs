@@ -290,7 +290,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("all publication rows have one real figure or an explicitly labeled concept illustration", () => {
+test("publication rows retain nine real figures and two accessible text-only pending blocks", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
     [knownPapers[2][0], "images/paper-vla-early-exit.png"],
@@ -313,45 +313,47 @@ test("all publication rows have one real figure or an explicitly labeled concept
     assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0,
       `${title} must retain its original caption-free figure`);
   }
-  const illustrations = [
-    [knownPapers[0][0], "paper-pivot-cover", /PIVOT/],
-    [surveyTitle, "paper-runtime-cover", /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems/],
+  const pendingFigures = [
+    [knownPapers[0][0], "PIVOT：图片待补充"],
+    [surveyTitle, "Runtime Stack 综述：图片待补充"],
   ];
-  assert.equal(new Set(illustrations.map(([, stem]) => stem)).size, 2);
-  for (const [title, stem, identifier] of illustrations) {
+  for (const [title, accessibleLabel] of pendingFigures) {
     const figure = withClass(publication(title), "publication-card-figure")[0];
-    assert.ok(figure && hasClass(figure, "publication-card-figure-illustration"),
-      `${title} must clearly distinguish its concept illustration from verified paper artwork`);
-    assert.equal(figure.attrs["data-figure-status"], "illustration");
-    const image = all(figure, (node) => node.tag === "img")[0];
-    assert.equal(image?.attrs.src, `images/${stem}.png`);
-    assert.match(image.attrs.alt, /^Concept illustration for .+; not an original paper figure$/);
-    assert.match(image.attrs.alt, identifier, `${title} needs its own accurate concept-illustration description`);
-    const source = all(figure, (node) => node.tag === "source")[0];
-    assert.deepEqual((source?.attrs.srcset ?? "").split(",").map((candidate) => candidate.replace(/\s+/g, " ").trim()),
-      [320, 640, 960].map((width) => `images/generated/${stem}-${width}.webp ${width}w`));
-    const captions = all(figure, (node) => node.tag === "figcaption");
-    assert.equal(captions.length, 1);
-    assert.ok(hasClass(captions[0], "publication-figure-caption"));
-    assert.equal(normalizedText(captions[0]), "Concept illustration");
-    assert.ok(!Object.hasOwn(captions[0].attrs, "hidden"));
-    assert.notEqual(captions[0].attrs["aria-hidden"], "true");
+    assert.ok(figure && hasClass(figure, "publication-card-figure-pending"),
+      `${title} must disclose missing artwork instead of showing a concept cover`);
+    assert.equal(figure.attrs["data-figure-status"], "pending");
+    assert.equal(figure.attrs["aria-label"], accessibleLabel);
+    assert.ok(!Object.hasOwn(figure.attrs, "hidden"));
+    assert.notEqual(figure.attrs["aria-hidden"], "true");
+    const labels = withClass(figure, "publication-figure-pending-label");
+    assert.equal(labels.length, 1);
+    assert.equal(labels[0].tag, "span");
+    assert.equal(normalizedText(labels[0]), "待补充");
+    assert.ok(!Object.hasOwn(labels[0].attrs, "hidden"));
+    assert.notEqual(labels[0].attrs["aria-hidden"], "true");
+    assert.equal(normalizedText(figure), "待补充");
+    assert.equal(all(figure, (node) => ["img", "picture", "source", "figcaption"].includes(node.tag)).length, 0,
+      "pending artwork must make no image request");
   }
   const cards = withClass(pages.home, "publication-card");
   assert.equal(cards.length, 11);
   const allFigures = withClass(pages.home, "publication-card-figure");
   assert.equal(allFigures.length, 11);
-  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 2);
-  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-illustration")).length, 9);
-  assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker)-cover/,
-    "verified PDF figures must replace all three temporary covers");
-  assert.doesNotMatch(source.home, /paper-figure-pending|publication-card-figure-pending|data-figure-status=["']pending|Figure pending for/i);
+  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
+  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 2);
+  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 9);
+  assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|Concept illustration/,
+    "concept cover assets must not be requested by the active homepage");
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
-    "every article now has a real figure or explicitly labeled concept illustration");
+    "every article must retain a real figure or an explicitly labeled pending slot");
   for (const card of cards) {
     const figures = withClass(card, "publication-card-figure");
     assert.equal(figures.length, 1, "each publication article must have exactly one figure");
     assert.equal(figures[0].tag, "figure");
+    if (hasClass(figures[0], "publication-card-figure-pending")) {
+      assert.equal(all(card, (node) => node.tag === "img").length, 0);
+      continue;
+    }
     assert.equal(all(figures[0], (node) => node.tag === "picture").length, 1);
     const sources = all(figures[0], (node) => node.tag === "source");
     assert.equal(sources.length, 1);
@@ -374,10 +376,9 @@ test("all publication rows have one real figure or an explicitly labeled concept
       hasClass(node, "publication-thumb") || hasClass(node, "publication-thumbnail") || hasClass(node, "publication-card-figure"))) {
       assert.ok(all(thumbnail, (node) => node.tag === "img").length > 0,
         "a thumbnail container must contain an actual image");
-      const isIllustration = hasClass(thumbnail, "publication-card-figure-illustration");
-      assert.equal(normalizedText(thumbnail), isIllustration ? "Concept illustration" : "",
-        "only concept illustration containers may have the disclosure caption");
-      assert.equal(all(thumbnail, (node) => node.tag === "figcaption").length, isIllustration ? 1 : 0);
+      assert.equal(normalizedText(thumbnail), "",
+        "real paper figures must retain their original caption-free container");
+      assert.equal(all(thumbnail, (node) => node.tag === "figcaption").length, 0);
     }
   }
 });

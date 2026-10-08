@@ -7,11 +7,9 @@ GENERATED = ROOT / "images" / "generated"
 LIFE_GENERATED = ROOT / "images" / "life" / "generated"
 
 PAPERS = [
-    "paper-pivot-cover.png",
     "paper-vla-early-exit.png",
     "paper-lora-attribution.png",
     "paper-qeschunker-overview.png",
-    "paper-runtime-cover.png",
     "paper-silica-identifiability.png",
     "paper-advantage-maxnorm-ac.png",
     "paper-timbre-overview.png",

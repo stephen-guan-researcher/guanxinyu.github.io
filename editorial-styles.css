@@ -255,6 +255,16 @@
 .editorial-page .publication-card-figure picture,
 .editorial-page .publication-card-figure img { display: block; width: 100%; height: auto; min-height: 0; max-height: 210px; object-fit: contain; object-position: top center; }
 .editorial-page .publication-figure-caption { margin-top: 6px; color: var(--muted); font-size: 11px; line-height: 1.4; text-align: center; }
+.editorial-page .publication-card-figure-pending {
+  display: grid;
+  place-items: center;
+  align-self: start;
+  aspect-ratio: 3 / 2;
+  max-height: 210px;
+  border: 1px dashed var(--line);
+  background: #fafafa;
+}
+.editorial-page .publication-figure-pending-label { color: var(--muted); font-size: 14px; font-weight: 400; line-height: 1.5; }
 .publication-body { min-width: 0; }
 .editorial-page .publication-card h3 { margin: 0 0 7px; color: #171a20; font-size: 19px; font-weight: 600; letter-spacing: -.15px; line-height: 1.4; }
 .editorial-page .publication-card h3 a { color: inherit; font-weight: inherit; text-decoration: none; }
