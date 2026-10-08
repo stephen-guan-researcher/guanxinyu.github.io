@@ -1,10 +1,10 @@
 # Publication figure inventory — 2026-10-08
 
-The 11 visible manuscript rows in editorial-10 use nine authentic paper figures and two “Figure coming soon” placeholders (PIVOT and the Runtime Stack survey), now with a shared decorative background at the owner's request. The English label remains HTML text; the background is explicitly decorative, not manuscript artwork. All earlier covers and theme illustrations remain recoverable but are not used on the current homepage. The unresolved KL/ZCPO record remains excluded; see [record exclusions](publication-record-exclusions.md).
+The 11 visible manuscript rows in editorial-11 use nine authentic paper figures and two venue-labeled decorative backgrounds (PIVOT and the Runtime Stack survey). The HTML overlays read “CVPR” and “Frontiers of Computer Science”; the background is explicitly decorative, not manuscript artwork. These labels do not imply acceptance: PIVOT remains In Preparation and the survey remains Submitted in the adjacent metadata. All earlier covers and theme illustrations remain recoverable but are not used on the current homepage. The unresolved KL/ZCPO record remains excluded; see [record exclusions](publication-record-exclusions.md).
 
-## Current pending-artwork background — editorial-10
+## Current pending-artwork background — editorial-11
 
-Both pending slots use `images/paper-figure-pending-background.png` with 320px/640px/960px WebP tiers, lazy loading, empty image alt text, and `aria-hidden="true"` on the decorative picture/image. Each figure retains its paper-specific “Figure coming soon” accessible label. [Prompt and provenance](pending-figure-background.md).
+Both pending slots use `images/paper-figure-pending-background.png` with 320px/640px/960px WebP tiers, lazy loading, empty image alt text, and `aria-hidden="true"` on the decorative picture/image. Each figure has a paper-specific accessible venue label. [Prompt and provenance](pending-figure-background.md).
 
 ## Retired thematic illustrations — editorial-8 history
 

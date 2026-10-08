@@ -2,6 +2,14 @@
 
 final result: passed
 
+## Latest revision — editorial-11 venue labels on decorative backgrounds
+
+- At the owner's request, the PIVOT background now reads “CVPR” and the Runtime Stack survey background reads “Frontiers of Computer Science”, replacing “Figure coming soon”. Paper-specific accessible venue labels and centered, wrapping text preserve readability in the 220px figure column.
+- The decorative asset, all nine authentic figures, publication titles, authors, summaries, links, and adjacent manuscript statuses are unchanged. PIVOT remains In Preparation; the survey remains Submitted. No acceptance or new submission is implied.
+- Browser verified both exact labels, loaded backgrounds, 11 rows, no horizontal overflow, and long-label containment. Preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-11#papers`. Proof: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/papers-v11-venue-background.png`.
+- Validation: all 138 Node tests and three Python image tests passed. No website push or Worker deployment was performed.
+- The sections below retain earlier revision evidence.
+
 ## Latest revision — editorial-10 decorative background for pending figures
 
 - The owner requested an attractive background while preserving English pending wording. A new pale blue-gray and sage paper-wave background was generated with built-in ImageGen. Root inspected the output: quiet central whitespace, restrained texture, no baked-in text, scientific diagram, or invented result.

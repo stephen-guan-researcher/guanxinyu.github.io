@@ -268,7 +268,7 @@
 }
 .editorial-page .publication-card-figure-pending picture,
 .editorial-page .publication-card-figure-pending img { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; object-fit: cover; object-position: center; }
-.editorial-page .publication-figure-pending-label { position: relative; z-index: 1; color: #4f5d73; font-size: 14px; font-weight: 400; line-height: 1.5; }
+.editorial-page .publication-figure-pending-label { position: relative; z-index: 1; max-width: 100%; padding: 0 16px; color: #4f5d73; font-size: 14px; font-weight: 400; line-height: 1.5; text-align: center; }
 .publication-body { min-width: 0; }
 .editorial-page .publication-card h3 { margin: 0 0 7px; color: #171a20; font-size: 19px; font-weight: 600; letter-spacing: -.15px; line-height: 1.4; }
 .editorial-page .publication-card h3 a { color: inherit; font-weight: inherit; text-decoration: none; }

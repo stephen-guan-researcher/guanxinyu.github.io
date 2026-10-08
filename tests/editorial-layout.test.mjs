@@ -290,7 +290,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("publication rows retain nine real figures and two accessible pending blocks with a shared decorative background", () => {
+test("publication rows retain nine real figures and two accessible venue labels on a shared decorative background", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
     [knownPapers[2][0], "images/paper-vla-early-exit.png"],
@@ -314,10 +314,10 @@ test("publication rows retain nine real figures and two accessible pending block
       `${title} must retain its original caption-free figure`);
   }
   const pendingFigures = [
-    [knownPapers[0][0], "PIVOT: Figure coming soon"],
-    [surveyTitle, "Runtime Stack survey: Figure coming soon"],
+    [knownPapers[0][0], "PIVOT: target venue CVPR", "CVPR"],
+    [surveyTitle, "Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
   ];
-  for (const [title, accessibleLabel] of pendingFigures) {
+  for (const [title, accessibleLabel, visibleLabel] of pendingFigures) {
     const figure = withClass(publication(title), "publication-card-figure")[0];
     assert.ok(figure && hasClass(figure, "publication-card-figure-pending"),
       `${title} must disclose missing artwork instead of showing a concept cover`);
@@ -328,10 +328,10 @@ test("publication rows retain nine real figures and two accessible pending block
     const labels = withClass(figure, "publication-figure-pending-label");
     assert.equal(labels.length, 1);
     assert.equal(labels[0].tag, "span");
-    assert.equal(normalizedText(labels[0]), "Figure coming soon");
+    assert.equal(normalizedText(labels[0]), visibleLabel);
     assert.ok(!Object.hasOwn(labels[0].attrs, "hidden"));
     assert.notEqual(labels[0].attrs["aria-hidden"], "true");
-    assert.equal(normalizedText(figure), "Figure coming soon");
+    assert.equal(normalizedText(figure), visibleLabel);
     const pictures = all(figure, (node) => node.tag === "picture");
     assert.equal(pictures.length, 1);
     assert.equal(pictures[0].attrs["aria-hidden"], "true",
@@ -362,7 +362,7 @@ test("publication rows retain nine real figures and two accessible pending block
   assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
   assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 2);
   assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 9);
-  assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|Concept illustration|待补充|示意配图/,
+  assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|Concept illustration|待补充|示意配图|Figure coming soon/,
     "concept cover assets must not be requested by the active homepage");
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
     "every article must retain a real figure or an explicitly labeled pending slot");

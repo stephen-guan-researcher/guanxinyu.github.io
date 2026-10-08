@@ -84,7 +84,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-10";
+const releaseToken = "20261008-editorial-11";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -106,6 +106,10 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
 });
 
 test("nine paper figures and two reused decorative backgrounds are responsive and lazy", () => {
+  const pendingLabelByAria = new Map([
+    ["PIVOT: target venue CVPR", "CVPR"],
+    ["Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
+  ]);
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
@@ -118,8 +122,9 @@ test("nine paper figures and two reused decorative backgrounds are responsive an
       .split(/\s+/).includes("publication-card-figure-pending");
     if (isPending) {
       assert.equal(attribute(figureTag, "data-figure-status"), "pending");
-      assert.match(attribute(figureTag, "aria-label") ?? "", /Figure coming soon$/);
-      assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), "Figure coming soon");
+      const expectedLabel = pendingLabelByAria.get(attribute(figureTag, "aria-label"));
+      assert.ok(expectedLabel, "each decorative background must expose its own exact venue label");
+      assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), expectedLabel);
       const labels = tags(figure, "span").filter((tag) =>
         (attribute(tag, "class") ?? "").split(/\s+/).includes("publication-figure-pending-label"));
       assert.equal(labels.length, 1);
@@ -167,12 +172,12 @@ test("nine paper figures and two reused decorative backgrounds are responsive an
   );
   assert.equal(pendingFigures.length, 2, "only the two papers without verified artwork use pending labels");
   assert.deepEqual(pendingFigures.map((figure) => attribute(tags(figure, "figure")[0], "aria-label")).toSorted(),
-    ["PIVOT: Figure coming soon", "Runtime Stack survey: Figure coming soon"].toSorted());
+    [...pendingLabelByAria.keys()].toSorted());
   assert.equal(figures.length - pendingFigures.length, 9);
   assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 11);
   assert.deepEqual([...new Set(pendingFigures.map((figure) => attribute(tags(figure, "img")[0], "src")))],
     [`images/${pendingBackgroundStem}.png`], "both pending slots reuse the same cacheable decorative asset");
-  assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|publication-card-figure-illustration|Concept illustration|待补充|示意配图/,
+  assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|publication-card-figure-illustration|Concept illustration|待补充|示意配图|Figure coming soon/,
     "the active homepage must not load archived concept covers");
 
   const candidates = {
