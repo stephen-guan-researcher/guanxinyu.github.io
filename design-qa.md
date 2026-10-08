@@ -2,6 +2,18 @@
 
 final result: passed
 
+## Latest revision — editorial-4 concept covers
+
+- Request: fill the six generic pending slots with other pictures. No publication metadata, original research figures, layout hierarchy, or Worker context changed in this revision.
+- Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-4#papers`. Production remains unchanged.
+- Six individually generated, topic-specific concept covers replace the shared pending image. Each uses a visible “Concept illustration” caption, descriptive alt text, and `data-figure-status="illustration"`; none claims to be source-paper artwork or scientific evidence. Exact prompts and provenance are linked in `docs/publication-figure-sources.md`.
+- Root visually inspected all six full-size covers. Their white backgrounds, restrained gray line work, muted blue/sage accents, and distinct subjects fit the existing editorial treatment.
+- Browser confirmed all 12 paper images loaded: six distinct concept covers and six untouched original figures. Desktop selected the optimized 640px WebP variants; all six cover variants at that tier together total 63030 bytes. Largest single cover variant at any tier is 28374 bytes.
+- Desktop evidence: `artifacts/editorial-qa/papers-v4-final.jpg`, CSS viewport 1190 × 1322, DPR 1, Publications selected, no horizontal overflow. The capture is the in-app viewport-only image (1190 × 1234, bottom strip omitted by the capture API), not a claim of a full-page capture.
+- Mobile evidence: `artifacts/editorial-qa/mobile-v4-final.jpg` (390 × 844) and `mobile-v4-320-final.jpg` (320 × 740), DPR 1, no horizontal overflow. At 390px the cover picture and image both render at 230px, with a readable caption and intact title/author/summary flow.
+- Automated verification: all 137 Node tests and 3 Python image tests passed, including unique cover mappings, unchanged original artwork, disclosure captions, real image signatures, responsive variant dimensions, image byte ceilings, and matching editorial-4 cache tokens. `git diff --check` is clean.
+- No actionable P0/P1/P2 visual issues remain in the changed surface. The following sections retain earlier editorial-3 comparison history and are not the latest cover inventory.
+
 ## Reference and scope
 
 - Approved image: `artifacts/editorial-qa/reference.png` (1190 × 1322 pixels).

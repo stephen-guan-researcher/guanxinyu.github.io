@@ -286,7 +286,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("all publication rows have one real figure or an explicitly pending image", () => {
+test("all publication rows have one real figure or an explicitly labeled concept illustration", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
     [knownPapers[5][0], "images/paper-silica-identifiability.png"],
@@ -299,35 +299,50 @@ test("all publication rows have one real figure or an explicitly pending image",
     const card = publication(title);
     assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === src).length === 1,
       `${title} must retain its corresponding actual figure`);
-    assert.equal(withClass(card, "publication-card-figure-pending").length, 0,
-      `${title} must not replace its real figure with a pending image`);
+    assert.equal(withClass(card, "publication-card-figure-illustration").length, 0,
+      `${title} must not replace its real figure with a concept illustration`);
+    const figure = withClass(card, "publication-card-figure")[0];
+    assert.equal(figure.attrs["data-figure-status"], undefined);
+    assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0,
+      `${title} must retain its original caption-free figure`);
   }
-  const pending = [
-    [knownPapers[0][0], /PIVOT/],
-    [knownPapers[2][0], /VLA/],
-    [knownPapers[3][0], /LoRA/],
-    [knownPapers[4][0], /QESChunker/],
-    [knownPapers[6][0], /KL/],
-    [surveyTitle, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems/],
+  const illustrations = [
+    [knownPapers[0][0], "paper-pivot-cover", /PIVOT/],
+    [knownPapers[2][0], "paper-vla-cover", /VLA/],
+    [knownPapers[3][0], "paper-lora-cover", /LoRA/],
+    [knownPapers[4][0], "paper-qeschunker-cover", /QESChunker/],
+    [knownPapers[6][0], "paper-zcpo-cover", /KL/],
+    [surveyTitle, "paper-runtime-cover", /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems/],
   ];
-  for (const [title, identifier] of pending) {
+  assert.equal(new Set(illustrations.map(([, stem]) => stem)).size, 6);
+  for (const [title, stem, identifier] of illustrations) {
     const figure = withClass(publication(title), "publication-card-figure")[0];
-    assert.ok(figure && hasClass(figure, "publication-card-figure-pending"),
-      `${title} must clearly distinguish its pending figure from verified paper artwork`);
-    assert.equal(figure.attrs["data-figure-status"], "pending");
+    assert.ok(figure && hasClass(figure, "publication-card-figure-illustration"),
+      `${title} must clearly distinguish its concept illustration from verified paper artwork`);
+    assert.equal(figure.attrs["data-figure-status"], "illustration");
     const image = all(figure, (node) => node.tag === "img")[0];
-    assert.equal(image?.attrs.src, "images/paper-figure-pending.png");
-    assert.match(image.attrs.alt, /^Figure pending for /);
-    assert.match(image.attrs.alt, identifier, `${title} needs its own accurate pending-image description`);
+    assert.equal(image?.attrs.src, `images/${stem}.png`);
+    assert.match(image.attrs.alt, /^Concept illustration for .+; not an original paper figure$/);
+    assert.match(image.attrs.alt, identifier, `${title} needs its own accurate concept-illustration description`);
     const source = all(figure, (node) => node.tag === "source")[0];
     assert.deepEqual((source?.attrs.srcset ?? "").split(",").map((candidate) => candidate.replace(/\s+/g, " ").trim()),
-      [320, 640, 960].map((width) => `images/generated/paper-figure-pending-${width}.webp ${width}w`));
+      [320, 640, 960].map((width) => `images/generated/${stem}-${width}.webp ${width}w`));
+    const captions = all(figure, (node) => node.tag === "figcaption");
+    assert.equal(captions.length, 1);
+    assert.ok(hasClass(captions[0], "publication-figure-caption"));
+    assert.equal(normalizedText(captions[0]), "Concept illustration");
+    assert.ok(!Object.hasOwn(captions[0].attrs, "hidden"));
+    assert.notEqual(captions[0].attrs["aria-hidden"], "true");
   }
   const cards = withClass(pages.home, "publication-card");
   assert.equal(cards.length, 12);
-  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 6);
+  const allFigures = withClass(pages.home, "publication-card-figure");
+  assert.equal(allFigures.length, 12);
+  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 6);
+  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-illustration")).length, 6);
+  assert.doesNotMatch(source.home, /paper-figure-pending|publication-card-figure-pending|data-figure-status=["']pending|Figure pending for/i);
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
-    "every article now has a real or explicitly pending image");
+    "every article now has a real figure or explicitly labeled concept illustration");
   for (const card of cards) {
     const figures = withClass(card, "publication-card-figure");
     assert.equal(figures.length, 1, "each publication article must have exactly one figure");
@@ -354,8 +369,10 @@ test("all publication rows have one real figure or an explicitly pending image",
       hasClass(node, "publication-thumb") || hasClass(node, "publication-thumbnail") || hasClass(node, "publication-card-figure"))) {
       assert.ok(all(thumbnail, (node) => node.tag === "img").length > 0,
         "a thumbnail container must contain an actual image");
-      assert.equal(normalizedText(thumbnail), "", "figure containers must not add HTML text or captions");
-      assert.equal(all(thumbnail, (node) => node.tag === "figcaption").length, 0);
+      const isIllustration = hasClass(thumbnail, "publication-card-figure-illustration");
+      assert.equal(normalizedText(thumbnail), isIllustration ? "Concept illustration" : "",
+        "only concept illustration containers may have the disclosure caption");
+      assert.equal(all(thumbnail, (node) => node.tag === "figcaption").length, isIllustration ? 1 : 0);
     }
   }
 });

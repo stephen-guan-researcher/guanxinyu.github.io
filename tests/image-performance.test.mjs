@@ -9,6 +9,10 @@ const attribute = (tag, name) => tag?.match(new RegExp(`\\s${name}\\s*=\\s*(["']
 const normalizeSpace = (value) => (value ?? "").replace(/\s+/g, " ").trim();
 const srcsetCandidates = (source) => (attribute(source, "srcset") ?? "")
   .split(",").map(normalizeSpace);
+const publicationCoverStems = [
+  "paper-pivot-cover", "paper-vla-cover", "paper-lora-cover",
+  "paper-qeschunker-cover", "paper-zcpo-cover", "paper-runtime-cover",
+];
 
 function assertWebP(path, maxBytes) {
   assert.equal(existsSync(asset(path)), true, `${path} must exist`);
@@ -25,7 +29,7 @@ test("responsive avatar variants are real compact WebP assets", () => {
   assert.equal(existsSync(asset("images/generated/avatar-528.jpg")), true);
 });
 
-test("real and explicitly pending publication figures have responsive WebP variants", () => {
+test("real publication figures and distinct concept covers have responsive WebP variants", () => {
   const variants = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
@@ -33,16 +37,18 @@ test("real and explicitly pending publication figures have responsive WebP varia
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
-    "paper-figure-pending": [320, 640, 960],
+    ...Object.fromEntries(publicationCoverStems.map((stem) => [stem, [320, 640, 960]])),
   };
   for (const [stem, widths] of Object.entries(variants)) {
     for (const width of widths) {
       assertWebP(`images/generated/${stem}-${width}.webp`, 90_000);
     }
   }
-  const pendingPng = readFileSync(asset("images/paper-figure-pending.png"));
-  assert.deepEqual([...pendingPng.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10],
-    "the explicit Figure pending fallback must be a real PNG asset");
+  for (const stem of publicationCoverStems) {
+    const png = readFileSync(asset(`images/${stem}.png`));
+    assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10],
+      `${stem} must be a real PNG concept-cover asset`);
+  }
 });
 
 test("every current Life Photo has compact 320-pixel and 640-pixel WebP variants", () => {
@@ -75,7 +81,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-3";
+const releaseToken = "20261008-editorial-4";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -100,7 +106,7 @@ test("publication figures are responsive and lazy", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 12, "all twelve publication articles need a real or pending image");
+  assert.equal(figures.length, 12, "all twelve publication articles need a real figure or concept illustration");
   for (const figure of figures) {
     assert.equal(tags(figure, "picture").length, 1);
     const sources = tags(figure, "source");
@@ -114,21 +120,29 @@ test("publication figures are responsive and lazy", () => {
     assert.equal(attribute(images[0], "decoding"), "async");
     assert.ok(Number(attribute(images[0], "width")) > 0);
     assert.ok(Number(attribute(images[0], "height")) > 0);
-    assert.doesNotMatch(figure, /<figcaption\b/i);
-    assert.equal(figure.replace(/<[^>]*>/g, "").trim(), "",
-      "Figure pending must be part of the image asset, not HTML caption text");
+    const isIllustration = (attribute(tags(figure, "figure")[0], "class") ?? "")
+      .split(/\s+/).includes("publication-card-figure-illustration");
+    assert.equal(tags(figure, "figcaption").length, isIllustration ? 1 : 0);
+    assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), isIllustration ? "Concept illustration" : "",
+      "only concept illustrations may add their disclosure caption");
   }
-  const pending = figures.filter((figure) =>
-    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-pending"),
+  const illustrations = figures.filter((figure) =>
+    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-illustration"),
   );
-  assert.equal(pending.length, 6, "only the six papers without verified artwork use the shared pending image");
-  for (const figure of pending) {
-    assert.equal(attribute(tags(figure, "figure")[0], "data-figure-status"), "pending");
-    assert.equal(attribute(tags(figure, "img")[0], "src"), "images/paper-figure-pending.png");
-    assert.match(attribute(tags(figure, "img")[0], "alt") ?? "", /^Figure pending for /);
+  assert.equal(illustrations.length, 6, "only the six papers without verified artwork use concept illustrations");
+  const coverSources = illustrations.map((figure) => attribute(tags(figure, "img")[0], "src"));
+  assert.equal(new Set(coverSources).size, 6, "each concept illustration must use its own cover");
+  assert.deepEqual(coverSources.toSorted(), publicationCoverStems.map((stem) => `images/${stem}.png`).toSorted());
+  for (const figure of illustrations) {
+    assert.equal(attribute(tags(figure, "figure")[0], "data-figure-status"), "illustration");
+    const stem = attribute(tags(figure, "img")[0], "src").slice("images/".length, -".png".length);
+    assert.match(attribute(tags(figure, "img")[0], "alt") ?? "", /^Concept illustration for .+; not an original paper figure$/);
     assert.deepEqual(srcsetCandidates(tags(figure, "source")[0]),
-      [320, 640, 960].map((width) => `images/generated/paper-figure-pending-${width}.webp ${width}w`));
+      [320, 640, 960].map((width) => `images/generated/${stem}-${width}.webp ${width}w`));
+    assert.equal(attribute(tags(figure, "figcaption")[0], "class"), "publication-figure-caption");
   }
+  assert.equal(figures.length - illustrations.length, 6);
+  assert.doesNotMatch(index, /paper-figure-pending|publication-card-figure-pending|data-figure-status=["']pending|Figure pending for/i);
 
   const candidates = {
     "paper-silica-identifiability": [320, 640, 960],
