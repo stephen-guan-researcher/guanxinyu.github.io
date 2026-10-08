@@ -898,6 +898,12 @@ test("unpublished papers retain distinct venues and conservative public states",
   const timbre = cardWithText("publication-card", timbreTitle);
   assert.match(timbre, /Submitted to ICASSP 2027 · arXiv:2610\.04795/);
   assert.match(timbre, /<h3><a\b[^>]*href="https:\/\/arxiv\.org\/abs\/2610\.04795"/);
+  assert.match(timbre, /class="publication-inline-link" href="https:\/\/arxiv\.org\/abs\/2610\.04795"[^>]*>arXiv<\/a>/);
+  assert.doesNotMatch(timbre, /class="status-label">(?:Accepted|Published)</);
+  const timbreNews = cardWithText("news-item", "TIMBRE");
+  assert.match(timbreNews, /submitted to ICASSP 2027/);
+  assert.match(timbreNews, /preprint is publicly available on/);
+  assert.match(timbreNews, /href="https:\/\/arxiv\.org\/abs\/2610\.04795"[^>]*>arXiv<\/a>/);
   assert.doesNotMatch(timbre, /Paper not yet public/);
   assert.match(timbre, /class="publication-inline-link" href="https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE"[^>]*>Code<\/a>/);
   assert.doesNotMatch(contentSection("papers"), /ChronoMem: Interpretable Event Memory/);
