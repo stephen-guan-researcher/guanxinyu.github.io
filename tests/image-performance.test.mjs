@@ -25,7 +25,7 @@ test("responsive avatar variants are real compact WebP assets", () => {
   assert.equal(existsSync(asset("images/generated/avatar-528.jpg")), true);
 });
 
-test("every visual publication has correctly labelled responsive WebP variants", () => {
+test("real and explicitly pending publication figures have responsive WebP variants", () => {
   const variants = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
@@ -33,12 +33,16 @@ test("every visual publication has correctly labelled responsive WebP variants",
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
+    "paper-figure-pending": [320, 640, 960],
   };
   for (const [stem, widths] of Object.entries(variants)) {
     for (const width of widths) {
       assertWebP(`images/generated/${stem}-${width}.webp`, 90_000);
     }
   }
+  const pendingPng = readFileSync(asset("images/paper-figure-pending.png"));
+  assert.deepEqual([...pendingPng.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10],
+    "the explicit Figure pending fallback must be a real PNG asset");
 });
 
 test("every current Life Photo has compact 320-pixel and 640-pixel WebP variants", () => {
@@ -71,7 +75,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-1";
+const releaseToken = "20261008-editorial-3";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -96,18 +100,34 @@ test("publication figures are responsive and lazy", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 6);
+  assert.equal(figures.length, 12, "all twelve publication articles need a real or pending image");
   for (const figure of figures) {
     assert.equal(tags(figure, "picture").length, 1);
     const sources = tags(figure, "source");
     assert.equal(sources.length, 1);
     assert.equal(attribute(sources[0], "type"), "image/webp");
+    assert.equal(normalizeSpace(attribute(sources[0], "sizes")),
+      "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
     const images = tags(figure, "img");
     assert.equal(images.length, 1);
     assert.equal(attribute(images[0], "loading"), "lazy");
     assert.equal(attribute(images[0], "decoding"), "async");
     assert.ok(Number(attribute(images[0], "width")) > 0);
     assert.ok(Number(attribute(images[0], "height")) > 0);
+    assert.doesNotMatch(figure, /<figcaption\b/i);
+    assert.equal(figure.replace(/<[^>]*>/g, "").trim(), "",
+      "Figure pending must be part of the image asset, not HTML caption text");
+  }
+  const pending = figures.filter((figure) =>
+    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-pending"),
+  );
+  assert.equal(pending.length, 6, "only the six papers without verified artwork use the shared pending image");
+  for (const figure of pending) {
+    assert.equal(attribute(tags(figure, "figure")[0], "data-figure-status"), "pending");
+    assert.equal(attribute(tags(figure, "img")[0], "src"), "images/paper-figure-pending.png");
+    assert.match(attribute(tags(figure, "img")[0], "alt") ?? "", /^Figure pending for /);
+    assert.deepEqual(srcsetCandidates(tags(figure, "source")[0]),
+      [320, 640, 960].map((width) => `images/generated/paper-figure-pending-${width}.webp ${width}w`));
   }
 
   const candidates = {
@@ -190,6 +210,6 @@ test("both pages use the release cache token for changed CSS and JavaScript", ()
     assert.equal(scripts.length, 1, "page must load the changed JavaScript through one script element");
     assert.equal(attribute(scripts[0], "src"), `phd-main.js?v=${releaseToken}`);
     assert.equal(attribute(scripts[0], "type"), "module");
-    assert.doesNotMatch(page, /20260806-profile-release-2|20261008-publications-1/);
+    assert.doesNotMatch(page, /20260806-profile-release-2|20261008-publications-1|20261008-editorial-1/);
   }
 });

@@ -445,6 +445,7 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
   .editorial-page .experience-details .career-projects { font-size: 14px; }
   .editorial-page .publication-card { grid-template-columns: minmax(0, 1fr); gap: 17px; padding: 24px 0; }
   .editorial-page .publication-card-figure { width: 100%; margin: 0; }
+  .editorial-page .publication-card-figure picture,
   .editorial-page .publication-card-figure img { max-height: 230px; }
   .editorial-page .publication-card h3 { font-size: 18px; }
   .editorial-page .publication-card .publication-authors { font-size: 13px; }

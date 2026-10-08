@@ -286,7 +286,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("real publication figures remain in their own rows with no fake thumbnail labels", () => {
+test("all publication rows have one real figure or an explicitly pending image", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
     [knownPapers[5][0], "images/paper-silica-identifiability.png"],
@@ -296,16 +296,57 @@ test("real publication figures remain in their own rows with no fake thumbnail l
     [knownPapers[10][0], "images/paper1-hypergraph.png"],
   ];
   for (const [title, src] of figures) {
-    assert.ok(all(publication(title), (node) => node.tag === "img" && node.attrs.src === src).length === 1,
+    const card = publication(title);
+    assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === src).length === 1,
       `${title} must retain its corresponding actual figure`);
+    assert.equal(withClass(card, "publication-card-figure-pending").length, 0,
+      `${title} must not replace its real figure with a pending image`);
   }
-  for (const card of withClass(pages.home, "publication-card")) {
-    for (const image of all(card, (node) => node.tag === "img")) {
+  const pending = [
+    [knownPapers[0][0], /PIVOT/],
+    [knownPapers[2][0], /VLA/],
+    [knownPapers[3][0], /LoRA/],
+    [knownPapers[4][0], /QESChunker/],
+    [knownPapers[6][0], /KL/],
+    [surveyTitle, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems/],
+  ];
+  for (const [title, identifier] of pending) {
+    const figure = withClass(publication(title), "publication-card-figure")[0];
+    assert.ok(figure && hasClass(figure, "publication-card-figure-pending"),
+      `${title} must clearly distinguish its pending figure from verified paper artwork`);
+    assert.equal(figure.attrs["data-figure-status"], "pending");
+    const image = all(figure, (node) => node.tag === "img")[0];
+    assert.equal(image?.attrs.src, "images/paper-figure-pending.png");
+    assert.match(image.attrs.alt, /^Figure pending for /);
+    assert.match(image.attrs.alt, identifier, `${title} needs its own accurate pending-image description`);
+    const source = all(figure, (node) => node.tag === "source")[0];
+    assert.deepEqual((source?.attrs.srcset ?? "").split(",").map((candidate) => candidate.replace(/\s+/g, " ").trim()),
+      [320, 640, 960].map((width) => `images/generated/paper-figure-pending-${width}.webp ${width}w`));
+  }
+  const cards = withClass(pages.home, "publication-card");
+  assert.equal(cards.length, 12);
+  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 6);
+  assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
+    "every article now has a real or explicitly pending image");
+  for (const card of cards) {
+    const figures = withClass(card, "publication-card-figure");
+    assert.equal(figures.length, 1, "each publication article must have exactly one figure");
+    assert.equal(figures[0].tag, "figure");
+    assert.equal(all(figures[0], (node) => node.tag === "picture").length, 1);
+    const sources = all(figures[0], (node) => node.tag === "source");
+    assert.equal(sources.length, 1);
+    assert.equal(sources[0].attrs.type, "image/webp");
+    assert.equal((sources[0].attrs.sizes ?? "").replace(/\s+/g, " ").trim(),
+      "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
+    const images = all(card, (node) => node.tag === "img");
+    assert.equal(images.length, 1, "one publication figure must load one fallback image");
+    for (const image of images) {
       assert.match(image.attrs.src ?? "", /^images\//, "publication images must use actual local assets");
       assert.ok(existsSync(asset(image.attrs.src)), `missing image ${image.attrs.src}`);
       assert.ok(image.attrs.alt?.trim(), "publication images need descriptive alt text");
       assert.ok(Number(image.attrs.width) > 0 && Number(image.attrs.height) > 0);
       assert.equal(image.attrs.loading, "lazy");
+      assert.equal(image.attrs.decoding, "async");
     }
     assert.equal(withClass(card, "publication-thumb-text").length, 0,
       "text blocks must not masquerade as publication thumbnails");
@@ -313,7 +354,8 @@ test("real publication figures remain in their own rows with no fake thumbnail l
       hasClass(node, "publication-thumb") || hasClass(node, "publication-thumbnail") || hasClass(node, "publication-card-figure"))) {
       assert.ok(all(thumbnail, (node) => node.tag === "img").length > 0,
         "a thumbnail container must contain an actual image");
-      assert.equal(normalizedText(thumbnail), "", "thumbnail containers must not contain invented label artwork");
+      assert.equal(normalizedText(thumbnail), "", "figure containers must not add HTML text or captions");
+      assert.equal(all(thumbnail, (node) => node.tag === "figcaption").length, 0);
     }
   }
 });
@@ -323,7 +365,8 @@ test("TIMBRE is publicly linked and the survey remains Submitted without invente
   assert.ok(all(timbre, (node) => node.tag === "a" && node.attrs.href === "https://arxiv.org/abs/2610.04795").length > 0);
   assert.doesNotMatch(normalizedText(timbre), /(?:paper )?not yet public/i);
   const survey = publication(surveyTitle);
-  assert.match(normalizedText(survey), /Frontiers in Computer Science/);
+  assert.match(normalizedText(survey), /Frontiers of Computer Science/);
+  assert.doesNotMatch(source.home, /Frontiers in Computer Science|Theoretical Computer Science/);
   assert.match(normalizedText(survey), /\bSubmitted\b/);
   assert.doesNotMatch(normalizedText(survey), /\b(?:Accepted|Published)\b/);
   const authors = withClass(survey, "publication-authors");

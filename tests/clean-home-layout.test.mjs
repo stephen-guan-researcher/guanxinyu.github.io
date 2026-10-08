@@ -157,6 +157,9 @@ test("illustrated paper rows preserve uncropped figures and stack image before t
   assert.equal(property(images, "object-fit"), "contain");
   assert.equal(property(images, "height"), "auto");
   assert.match(cssRule(mobile, ".publication-card"), /grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+  assert.equal(property(cssRule(mobile, ".publication-card-figure picture"), "max-height"), "230px",
+    "the picture wrapper must not clip a taller mobile image");
+  assert.equal(property(cssRule(mobile, ".publication-card-figure img"), "max-height"), "230px");
   assert.match(cssRule(desktop, ".publication-card-no-image"), /grid-template-columns:\s*minmax\(0,\s*1fr\)/);
   for (const card of index.match(/<article\b[^>]*class="[^"]*\bpublication-card\b[^"]*"[^>]*>[\s\S]*?<\/article>/g) ?? []) {
     if (card.includes('class="publication-card-figure"')) assert.ok(card.indexOf('class="publication-card-figure"') < card.indexOf('class="publication-body"'));

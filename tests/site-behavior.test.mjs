@@ -506,6 +506,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     "ACL ARR",
     "What is PIVOT?",
     "Tell me about CVPR",
+    "Which survey was submitted to Frontiers of Computer Science?",
     "What is the runtime stack survey?",
     "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems",
   ]) {
@@ -535,7 +536,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   const timbreSummary = reply.answer.split(" TIMBRE:")[1]?.split(" Three ICLR")[0] ?? "";
   assert.doesNotMatch(timbreSummary, /paper is not yet public|paper not yet public/i);
   assert.match(reply.answer, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack/);
-  assert.match(reply.answer, /submitted to Frontiers in Computer Science/i);
+  assert.match(reply.answer, /submitted to Frontiers of Computer Science, as reported by the homepage owner/i);
   assert.doesNotMatch(reply.answer, /ChronoMem is in preparation/);
   assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
   for (const [title, forumId] of [
@@ -562,6 +563,23 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents[^.]*\b(?:is|was) published\b/i,
   );
+});
+
+test("buildAgentReply preserves the owner's corrected survey venue without inventing submission details", () => {
+  const reply = site.buildAgentReply("Which journal did the runtime stack survey go to?");
+  const surveySummary = reply.answer.split("The survey “")[1]?.split(" My public papers")[0] ?? "";
+  assert.match(surveySummary, /submitted to Frontiers of Computer Science, as reported by the homepage owner/);
+  assert.match(surveySummary, /owner corrected the venue name on October 8, 2026; this is not the submission date/);
+  assert.match(surveySummary, /homepage label is Submitted; no acceptance or active review is claimed/);
+  assert.match(surveySummary, /author list, exact submission date, and public paper URL are unverified/);
+  assert.doesNotMatch(surveySummary, /Frontiers in Computer Science|Theoretical Computer Science|historical|submission history|currently under review|https?:\/\//i);
+
+  const research = site.buildAgentReply("What is your research direction?");
+  assert.equal(research.topic, "research");
+  assert.match(research.answer, /submitted to Frontiers of Computer Science, as reported by the homepage owner/);
+  assert.match(research.answer, /venue name was corrected on October 8, 2026/);
+  assert.match(research.answer, /exact submission date, public paper URL, and author list remain unverified/);
+  assert.doesNotMatch(research.answer, /Frontiers in Computer Science|historical|past submission/i);
 });
 
 function createAgentFixture(apiUrl) {

@@ -395,7 +395,7 @@ test("grounds TIMBRE in its public arXiv record while retaining submission-only 
   assert.doesNotMatch(record, /not yet public|was accepted|was published at ICASSP/i);
 });
 
-test("includes the submitted Frontiers runtime survey without inventing authors or active review", async () => {
+test("includes the corrected Frontiers of Computer Science survey without inventing authors or active review", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
@@ -411,14 +411,18 @@ test("includes the submitted Frontiers runtime survey without inventing authors 
   const title = "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack";
   const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
   assert.ok(record, "The verified Frontiers survey must be a separate manuscript record");
-  assert.match(record, /was submitted to Frontiers in Computer Science, section Theoretical Computer Science/);
-  assert.match(record, /historical label Submitted, meaning previously submitted/);
+  assert.match(record, /was submitted to Frontiers of Computer Science, as reported by the homepage owner/);
+  assert.match(record, /owner corrected the venue name on October 8, 2026; this date is not a verified submission date/);
+  assert.match(record, /homepage label remains Submitted/);
   assert.match(record, /not a claim of active review, acceptance, or publication/);
   assert.match(record, /author list, exact submission date, and public paper URL are not verified; do not invent them/);
   assert.match(record, /not another separate planned survey/);
   assert.doesNotMatch(record, /(?:Its |The )authors are|was accepted|was published|currently under review|https?:\/\//i);
+  assert.doesNotMatch(context, /Frontiers in Computer Science|Theoretical Computer Science|historical label|previously submitted/i);
   const research = context.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
+  assert.match(research, /was submitted to Frontiers of Computer Science, as reported by the homepage owner/);
+  assert.match(research, /owner corrected the venue name on October 8, 2026/);
   assert.match(research, /not as a merely planned manuscript/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
   assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
