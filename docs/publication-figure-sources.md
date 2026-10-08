@@ -1,8 +1,8 @@
 # Publication figure inventory — 2026-10-08
 
-The 11 visible manuscript rows in editorial-8 use nine authentic paper figures and two newly generated, clearly labeled thematic illustrations (PIVOT and the Runtime Stack survey). The owner requested images instead of the editorial-7 text placeholders. The new illustrations are not original paper figures or scientific evidence; each is captioned “示意配图”. Earlier concept covers remain recoverable but are not used on the homepage. The unresolved KL/ZCPO record remains excluded; see [record exclusions](publication-record-exclusions.md).
+The 11 visible manuscript rows in editorial-9 use nine authentic paper figures and two text-only “Figure coming soon” placeholders (PIVOT and the Runtime Stack survey). The owner requested English image-pending wording. All earlier covers and generated illustrations remain recoverable but are not used on the current homepage. The unresolved KL/ZCPO record remains excluded; see [record exclusions](publication-record-exclusions.md).
 
-## Current thematic illustrations — editorial-8
+## Retired thematic illustrations — editorial-8 history
 
 | Manuscript | Site asset | Theme |
 | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Publication theme illustrations v2 — 2026-10-08
 
-Method: built-in ImageGen, two separate generation calls. These are editorial topic metaphors, not scientific diagrams or figures from the manuscripts. The webpage labels each as “示意配图”.
+Method: built-in ImageGen, two separate generation calls. These are editorial topic metaphors, not scientific diagrams or figures from the manuscripts. Editorial-8 labeled each as “示意配图”. In editorial-9, the owner chose English “Figure coming soon” placeholders instead; these image files are retained as history and are not referenced by the current homepage.
 
 ## PIVOT
 
@@ -17,4 +17,3 @@ Method: built-in ImageGen, two separate generation calls. These are editorial to
 ## Delivery
 
 The originals are preserved. Site assets are proportionally resized to 1200 × 800 with compact 320px/640px/960px WebP derivatives. No text, formulas, invented results, author metadata, logos, or paper acceptance claims are added to these visuals. Original manuscript artwork can replace the illustration when supplied. Website publication and Worker deployment are not part of this local revision.
-

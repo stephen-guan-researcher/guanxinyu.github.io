@@ -2,6 +2,13 @@
 
 final result: passed
 
+## Latest revision — editorial-9 English pending labels
+
+- At the owner's request, PIVOT and Runtime Stack use text-only “Figure coming soon” image placeholders. Each has a paper-specific English accessible label. All nine authentic figures and all publication metadata are unchanged; prior generated images are retained but not fetched by the current homepage.
+- Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-9#papers`. Browser verified both exact English labels, 11 rows, and no horizontal overflow. Screenshot: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/papers-v9-english-pending.png`.
+- All 138 Node tests and three Python image tests passed; no website push or Worker deployment was performed.
+- The sections below retain earlier revision evidence.
+
 ## Latest revision — editorial-8 new theme illustrations
 
 - The owner requested pictures instead of the editorial-7 pending labels. Two fresh illustrations were generated in separate built-in ImageGen calls: a tactile prompt/evidence composition for PIVOT and a layered infrastructure composition for the Runtime Stack survey. Root inspected both full-size outputs for clean composition, restrained palette, and absence of text, equations, invented results, or logos.
