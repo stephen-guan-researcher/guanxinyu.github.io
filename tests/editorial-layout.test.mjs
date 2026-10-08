@@ -143,6 +143,10 @@ test("homepage opens with a real portrait and bilingual identity, then career be
   assert.ok(copy && portrait, "hero must separate copy from portrait");
   assert.match(normalizedText(copy), /Xinyu Guan/);
   assert.match(normalizedText(copy), /关鑫宇/);
+  const leads = withClass(copy, "hero-lead");
+  assert.equal(leads.length, 1, "hero must retain one owner-approved lead statement");
+  assert.equal(normalizedText(leads[0]),
+    "I build AI agents that don’t just answer questions—they pursue discovery and turn research into real-world impact.");
   const image = all(portrait, (node) => node.tag === "img")[0];
   assert.ok(image, "hero portrait must be an actual image");
   assert.equal(image.attrs.src, "images/generated/avatar-528.jpg");

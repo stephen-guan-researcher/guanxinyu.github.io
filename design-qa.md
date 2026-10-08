@@ -2,6 +2,13 @@
 
 final result: passed
 
+## Latest revision — editorial-12 approved discovery headline
+
+- Replaced only the homepage hero lead with the owner's approved sentence: “I build AI agents that don’t just answer questions—they pursue discovery and turn research into real-world impact.” Existing identity, research focus, layout, experience, publication metadata, figures, and Agent facts remain unchanged.
+- Added an exact hero-text regression assertion and synchronized the cache token across both pages and release tests. All 138 Node tests passed and `git diff --check` is clean.
+- Browser verified the exact sentence, loaded portrait, and no horizontal overflow. Preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-12#home`. Proof: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/home-v12-discovery-lead.png`.
+- This is a local preview revision; no website push or Worker deployment was performed.
+
 ## Latest revision — editorial-11 venue labels on decorative backgrounds
 
 - At the owner's request, the PIVOT background now reads “CVPR” and the Runtime Stack survey background reads “Frontiers of Computer Science”, replacing “Figure coming soon”. Paper-specific accessible venue labels and centered, wrapping text preserve readability in the 220px figure column.
