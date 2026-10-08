@@ -1,6 +1,6 @@
 # Publication figure inventory — 2026-10-08
 
-All 12 manuscript rows contain one image. Six existing figures are preserved. On the owner's request to fill the remaining slots with other pictures, six distinct conceptual cover illustrations replace the generic pending artwork. These are not original paper figures or scientific evidence.
+All 12 manuscript rows contain one image. In editorial-5, nine rows use authentic paper figures: six previously retained figures plus three extracted from the PDFs supplied by the owner. Three rows still use clearly labeled conceptual covers. Concepts are not original paper figures or scientific evidence.
 
 ## Existing source artwork retained
 
@@ -15,7 +15,19 @@ All 12 manuscript rows contain one image. Six existing figures are preserved. On
 
 These six assets were already part of the verified homepage; this update does not imply that their original PDFs were fetched again.
 
-## Original artwork source checks
+## Original figures supplied by the owner — editorial-5
+
+| Manuscript | Supplied PDF | Selected source figure | Site asset | Extraction record |
+| --- | --- | --- | --- | --- |
+| VLA Early Exit | `/Users/stephen/Downloads/1.pdf` | Page 2, Figure 1: Method, all three panels | `images/paper-vla-early-exit.png` | [Provenance](vla-figure-extraction.md) |
+| LoRA Attribution | `/Users/stephen/Downloads/2.pdf` | Page 2, Figure 1(a): Method and comparison | `images/paper-lora-attribution.png` | [Provenance](lora-figure-extraction.md) |
+| QESChunker | `/Users/stephen/Downloads/3.pdf` | Page 2, Figure 1: method overview | `images/paper-qeschunker-overview.png` | [Provenance](qeschunker-figure-extraction.md) |
+
+The first-page titles were checked before matching these PDFs to homepage rows. These images are faithful RGB raster extractions of source figures, preserving their natural aspect ratios and original labels/colors; no AI generation, redrawing, or reconstructed results are used. Captions, body text, running headers, review line numbers, and page numbers are excluded. Each has responsive 320px/640px/960px WebP tiers and lazy loading. The original PDFs are unchanged and are not copied into the public website.
+
+Only these three figure sources and the related tests/cache token change in this revision. Existing authors, summaries, venues, statuses, links, and the other nine images remain unchanged. The supplied LoRA PDF has a longer title including “on Loss-Based Forgetting”; title synchronization is awaiting the owner's preference and does not block image replacement.
+
+## Earlier OpenReview source checks — editorial-3 history
 
 | Manuscript | Source check | Result |
 | --- | --- | --- |
@@ -26,24 +38,22 @@ These six assets were already part of the verified homepage; this update does no
 | When KL Regularization Fails | Scoped local manuscript search | No matching source figure available. |
 | Diagnostics and Infrastructure / Runtime Stack survey | Scoped local manuscript search | No matching manuscript PDF available. |
 
-The first OpenReview forum was also opened in the in-app browser and displayed its verification screen. The check was not bypassed or completed. These source-check outcomes remain unchanged; concept covers do not imply that PDFs were retrieved. The paper titles, authors, summaries, statuses, and verified URLs are unchanged in this cover-only revision.
+The first OpenReview forum was also opened in the in-app browser and displayed its verification screen. The check was not bypassed or completed. These describe the earlier online access attempts; the owner subsequently downloaded and supplied three PDFs, which now resolve the VLA, LoRA, and QESChunker source-artwork gaps. The other three source gaps remain unresolved.
 
-## Current concept covers — editorial-4
+## Current concept covers — three remaining
 
 | Manuscript | Fallback asset | Visual metaphor |
 | --- | --- | --- |
 | PIVOT | `images/paper-pivot-cover.png` | Prompt notebook, lens, and iterative choice |
-| How Deep Should a VLA Think When Thinking Costs Time? | `images/paper-vla-cover.png` | Robot gripper, reasoning layers, and time |
-| Static Gradient Attribution Within LoRA's B-Matrix | `images/paper-lora-cover.png` | Sparse matrix selection |
-| QESChunker | `images/paper-qeschunker-cover.png` | Evidence chunks assembled into a document |
 | When KL Regularization Fails | `images/paper-zcpo-cover.png` | Balanced reasoning paths |
 | Runtime Stack survey | `images/paper-runtime-cover.png` | Runtime layers, memory, and tools |
 
-- Method: built-in Image Gen, one separate call per asset. Each original is preserved, and site PNG fallbacks are resized to 1200 × 800.
+- Method: built-in Image Gen, one separate call per asset in editorial-4. Each original is preserved, and site PNG fallbacks are resized to 1200 × 800.
 - Each cover has `data-figure-status="illustration"`, descriptive alternative text ending with “not an original paper figure”, and a visible “Concept illustration” caption. No formulas, results, or author metadata are invented.
-- Each cover has 320px, 640px, and 960px WebP variants. The largest is 28374 bytes; all six 640px variants together are 63030 bytes. Browser clients use these variants rather than downloading the full PNG by default.
+- Each remaining cover has 320px, 640px, and 960px WebP variants. The largest is 28374 bytes. Browser clients use these variants rather than downloading the full PNG by default.
 - Exact prompts and original generated-image paths: [PIVOT and VLA](publication-cover-prompts-a.md), [LoRA and QESChunker](publication-cover-prompts-b.md), [ZCPO and Runtime](publication-cover-prompts-c.md).
 - When authentic source figures become available, replace the corresponding cover while retaining the verified paper metadata. Existing six real figures were not replaced.
+- The former VLA, LoRA, and QESChunker concept-cover files and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list.
 
 ## Retired placeholder asset — editorial-3 history
 

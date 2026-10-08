@@ -2,6 +2,20 @@
 
 final result: passed
 
+## Latest revision — editorial-5 authentic PDF figures
+
+- Request: replace the three OpenReview concept covers using the owner's downloaded PDFs. Verified first-page titles match VLA Early Exit (`1.pdf`), LoRA Attribution (`2.pdf`), and QESChunker (`3.pdf`). PDFs remain unchanged and are not added to the public site.
+- Authentic selections: VLA page 2 Figure 1 (all method panels), LoRA page 2 Figure 1(a) (complete method/comparison panel), QESChunker page 2 Figure 1 (complete overview). Root inspected all three PNGs for source fidelity, natural aspect ratio, intact figure boundaries and labels, and absence of surrounding captions/body text/line numbers. No generative image editing was used.
+- LoRA's initial full Figure 1 included both method and results and was too dense for the small homepage slot. Selecting the complete method subfigure improved its ratio from near-square to 1344 × 728 and reduced the largest WebP below the unchanged 90000-byte ceiling. No result curve was selectively cropped or reconstructed.
+- Current inventory: nine authentic figures and three explicitly labeled concept covers (PIVOT, KL/ZCPO, Runtime Stack survey). The other nine complete figure blocks and all publication prose, authors, statuses, venues, and links are unchanged relative to `fae3c18`.
+- Final fallback dimensions: VLA 1584 × 792, LoRA 1344 × 728, QESChunker 1938 × 828, all RGB PNG. Responsive 320px/640px/960px WebP tiers are lazy-loaded; largest of the nine new variants is 72588 bytes. All three 640px tiers total 121252 bytes.
+- Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-5#paper-vla-early-exit`. The new cache token is consistent across both pages and tests. No Git push or Worker deployment was performed; production remains unchanged.
+- Browser evidence: `artifacts/editorial-20261008/papers-v5-real-figures.jpg` in the durable workspace captures all three updated rows. The actual default CSS viewport was 775 × 959 at DPR 2 (not the initially requested desktop override); the screenshot is 775 × 959. Images loaded successfully and had no concept captions or horizontal overflow. This is an actual tablet-width rendering, not a claimed 1190px desktop comparison.
+- Phone: actual CSS 390 × 844 at DPR 1, no overflow; all 12 paper images loaded and three concept captions remain. VLA, LoRA, QES display at 350 × 175, 350 × 189.765625, and 350 × 149.296875 respectively, with matching picture wrapper heights and no clipping. `artifacts/editorial-20261008/mobile-v5-real-figures.jpg` records VLA and LoRA at that state. Actual 320 × 740 at DPR 1 also has no horizontal overflow. Temporary viewport overrides were reset before handoff. Console error/warning check returned no entries.
+- Verification: 137 Node tests and 3 Python image tests passed; `git diff --check` is clean. Independent read-only review confirmed the exact three-slot scope and preserved metadata. PDF hashes, bounding boxes, source-page identification, selected figure content, and output hashes are recorded in the three extraction notes linked from `docs/publication-figure-sources.md`.
+- No actionable P0/P1/P2 image integration defects remain. LoRA title synchronization (the supplied PDF includes “on Loss-Based Forgetting”) was offered as an optional separate choice; no title changes are included without that choice.
+- The following sections are retained history for editorial-4 and earlier design revisions, not the current figure inventory.
+
 ## Latest revision — editorial-4 concept covers
 
 - Request: fill the six generic pending slots with other pictures. No publication metadata, original research figures, layout hierarchy, or Worker context changed in this revision.

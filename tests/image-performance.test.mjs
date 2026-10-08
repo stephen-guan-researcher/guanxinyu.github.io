@@ -10,9 +10,9 @@ const normalizeSpace = (value) => (value ?? "").replace(/\s+/g, " ").trim();
 const srcsetCandidates = (source) => (attribute(source, "srcset") ?? "")
   .split(",").map(normalizeSpace);
 const publicationCoverStems = [
-  "paper-pivot-cover", "paper-vla-cover", "paper-lora-cover",
-  "paper-qeschunker-cover", "paper-zcpo-cover", "paper-runtime-cover",
+  "paper-pivot-cover", "paper-zcpo-cover", "paper-runtime-cover",
 ];
+const extractedFigureStems = ["paper-vla-early-exit", "paper-lora-attribution", "paper-qeschunker-overview"];
 
 function assertWebP(path, maxBytes) {
   assert.equal(existsSync(asset(path)), true, `${path} must exist`);
@@ -37,6 +37,7 @@ test("real publication figures and distinct concept covers have responsive WebP 
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
+    ...Object.fromEntries(extractedFigureStems.map((stem) => [stem, [320, 640, 960]])),
     ...Object.fromEntries(publicationCoverStems.map((stem) => [stem, [320, 640, 960]])),
   };
   for (const [stem, widths] of Object.entries(variants)) {
@@ -44,10 +45,10 @@ test("real publication figures and distinct concept covers have responsive WebP 
       assertWebP(`images/generated/${stem}-${width}.webp`, 90_000);
     }
   }
-  for (const stem of publicationCoverStems) {
+  for (const stem of [...publicationCoverStems, ...extractedFigureStems]) {
     const png = readFileSync(asset(`images/${stem}.png`));
     assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10],
-      `${stem} must be a real PNG concept-cover asset`);
+      `${stem} must be a real PNG image asset`);
   }
 });
 
@@ -81,7 +82,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-4";
+const releaseToken = "20261008-editorial-5";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -129,9 +130,9 @@ test("publication figures are responsive and lazy", () => {
   const illustrations = figures.filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-illustration"),
   );
-  assert.equal(illustrations.length, 6, "only the six papers without verified artwork use concept illustrations");
+  assert.equal(illustrations.length, 3, "only the three papers still without verified artwork use concept illustrations");
   const coverSources = illustrations.map((figure) => attribute(tags(figure, "img")[0], "src"));
-  assert.equal(new Set(coverSources).size, 6, "each concept illustration must use its own cover");
+  assert.equal(new Set(coverSources).size, 3, "each concept illustration must use its own cover");
   assert.deepEqual(coverSources.toSorted(), publicationCoverStems.map((stem) => `images/${stem}.png`).toSorted());
   for (const figure of illustrations) {
     assert.equal(attribute(tags(figure, "figure")[0], "data-figure-status"), "illustration");
@@ -141,7 +142,8 @@ test("publication figures are responsive and lazy", () => {
       [320, 640, 960].map((width) => `images/generated/${stem}-${width}.webp ${width}w`));
     assert.equal(attribute(tags(figure, "figcaption")[0], "class"), "publication-figure-caption");
   }
-  assert.equal(figures.length - illustrations.length, 6);
+  assert.equal(figures.length - illustrations.length, 9);
+  assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker)-cover/);
   assert.doesNotMatch(index, /paper-figure-pending|publication-card-figure-pending|data-figure-status=["']pending|Figure pending for/i);
 
   const candidates = {
@@ -151,6 +153,7 @@ test("publication figures are responsive and lazy", () => {
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
+    ...Object.fromEntries(extractedFigureStems.map((stem) => [stem, [320, 640, 960]])),
   };
   for (const [stem, widths] of Object.entries(candidates)) {
     const figure = figures.find((entry) => entry.includes(`images/generated/${stem}-`));

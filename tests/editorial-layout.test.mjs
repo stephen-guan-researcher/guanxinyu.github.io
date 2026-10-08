@@ -289,6 +289,9 @@ test("verified public paper destinations and conservative manuscript states stay
 test("all publication rows have one real figure or an explicitly labeled concept illustration", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
+    [knownPapers[2][0], "images/paper-vla-early-exit.png"],
+    [knownPapers[3][0], "images/paper-lora-attribution.png"],
+    [knownPapers[4][0], "images/paper-qeschunker-overview.png"],
     [knownPapers[5][0], "images/paper-silica-identifiability.png"],
     [knownPapers[7][0], "images/paper-advantage-maxnorm-ac.png"],
     [knownPapers[8][0], "images/paper3-cicl-pipeline.png"],
@@ -308,13 +311,10 @@ test("all publication rows have one real figure or an explicitly labeled concept
   }
   const illustrations = [
     [knownPapers[0][0], "paper-pivot-cover", /PIVOT/],
-    [knownPapers[2][0], "paper-vla-cover", /VLA/],
-    [knownPapers[3][0], "paper-lora-cover", /LoRA/],
-    [knownPapers[4][0], "paper-qeschunker-cover", /QESChunker/],
     [knownPapers[6][0], "paper-zcpo-cover", /KL/],
     [surveyTitle, "paper-runtime-cover", /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems/],
   ];
-  assert.equal(new Set(illustrations.map(([, stem]) => stem)).size, 6);
+  assert.equal(new Set(illustrations.map(([, stem]) => stem)).size, 3);
   for (const [title, stem, identifier] of illustrations) {
     const figure = withClass(publication(title), "publication-card-figure")[0];
     assert.ok(figure && hasClass(figure, "publication-card-figure-illustration"),
@@ -338,8 +338,10 @@ test("all publication rows have one real figure or an explicitly labeled concept
   assert.equal(cards.length, 12);
   const allFigures = withClass(pages.home, "publication-card-figure");
   assert.equal(allFigures.length, 12);
-  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 6);
-  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-illustration")).length, 6);
+  assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 3);
+  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-illustration")).length, 9);
+  assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker)-cover/,
+    "verified PDF figures must replace all three temporary covers");
   assert.doesNotMatch(source.home, /paper-figure-pending|publication-card-figure-pending|data-figure-status=["']pending|Figure pending for/i);
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
     "every article now has a real figure or explicitly labeled concept illustration");

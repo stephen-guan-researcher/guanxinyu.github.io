@@ -7,9 +7,9 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS = {
     "paper-pivot-cover": [320, 640, 960],
-    "paper-vla-cover": [320, 640, 960],
-    "paper-lora-cover": [320, 640, 960],
-    "paper-qeschunker-cover": [320, 640, 960],
+    "paper-vla-early-exit": [320, 640, 960],
+    "paper-lora-attribution": [320, 640, 960],
+    "paper-qeschunker-overview": [320, 640, 960],
     "paper-zcpo-cover": [320, 640, 960],
     "paper-runtime-cover": [320, 640, 960],
     "paper-silica-identifiability": [320, 640, 960],
