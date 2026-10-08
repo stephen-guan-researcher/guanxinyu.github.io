@@ -5,87 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Life Photos | Xinyu Guan</title>
   <meta name="description" content="Personal photos and moments from Xinyu Guan." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261008-publications-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261008-editorial-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261008-editorial-1" />
 </head>
-<body class="life-page">
+<body class="life-page editorial-page">
   <div class="academic-shell beyond-shell">
-    <div class="sidebar-stack">
-      <aside class="profile-card" aria-labelledby="profile-name">
-      <figure class="profile-photo">
-        <picture>
-          <source
-            type="image/webp"
-            srcset="images/generated/avatar-208.webp 208w, images/generated/avatar-352.webp 352w, images/generated/avatar-528.webp 528w"
-            sizes="(max-width: 600px) 104px, (max-width: 1199px) 140px, 176px"
-          />
-          <img
-            src="images/generated/avatar-528.jpg"
-            width="528"
-            height="453"
-            alt="Portrait of Xinyu Guan"
-            fetchpriority="high"
-            decoding="async"
-          />
-        </picture>
-      </figure>
-
-      <div class="profile-identity">
-        <h1 id="profile-name">Xinyu Guan <span lang="zh-CN">关鑫宇</span></h1>
-        <p class="profile-role">AI Agent Researcher</p>
-        <p class="profile-affiliation">TaoTian Group @ Alibaba</p>
-        <p class="profile-focus-label">
-          <span class="profile-focus-kicker">Current Focus</span>
-          <span>AutoResearch · Post-Training · Agentic RL</span>
-        </p>
+    <aside class="editorial-sidebar" aria-label="Site navigation and contact">
+      <nav class="workspace-nav" aria-label="Primary navigation">
+        <a href="index.html#home" data-section-link="home">About</a>
+        <a href="index.html#experience" data-section-link="experience">Experience</a>
+        <a href="index.html#research" data-section-link="research">Research</a>
+        <a href="index.html#papers" data-section-link="papers">Publications</a>
+        <a class="active" aria-current="page" href="life.html">Life Photos</a>
+      </nav>
+      <div class="editorial-utilities">
+        <div class="profile-links" aria-label="Profile links">
+          <a href="mailto:xinyuguanphd@outlook.com" title="xinyuguanphd@outlook.com">Email</a>
+          <button type="button" class="profile-contact-button" id="wechatCopyBtn" data-wechat="super_lucky_magic" aria-label="Copy WeChat ID: super_lucky_magic" title="super_lucky_magic">WeChat</button>
+          <a href="https://scholar.google.com/citations?user=iIMa-mkAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener">Scholar</a>
+          <a href="https://github.com/stephen-guan-researcher" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://www.linkedin.com/in/xinyu-guan-uofgstudent/" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+        <a class="editorial-agent-link" href="index.html#ask-xinyu">Ask Xinyu <span aria-hidden="true">↗</span></a>
       </div>
-
-      <div class="profile-links" aria-label="Profile links">
-        <a href="mailto:xinyuguanphd@outlook.com">
-          <i class="ri-mail-line" aria-hidden="true"></i>
-          <span>xinyuguanphd@outlook.com</span>
-        </a>
-        <button type="button" class="profile-contact-button" id="wechatCopyBtn" data-wechat="super_lucky_magic" aria-label="Copy WeChat ID: super_lucky_magic">
-          <i class="ri-wechat-line" aria-hidden="true"></i>
-          <span>WeChat: super_lucky_magic</span>
-        </button>
-        <a href="https://scholar.google.com/citations?user=iIMa-mkAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener">
-          <i class="ri-graduation-cap-line" aria-hidden="true"></i>
-          <span>Google Scholar</span>
-        </a>
-        <a href="https://github.com/stephen-guan-researcher" target="_blank" rel="noopener">
-          <i class="ri-github-line" aria-hidden="true"></i>
-          <span>GitHub</span>
-        </a>
-        <a href="https://www.linkedin.com/in/xinyu-guan-uofgstudent/" target="_blank" rel="noopener">
-          <i class="ri-linkedin-box-line" aria-hidden="true"></i>
-          <span>LinkedIn</span>
-        </a>
-      </div>
-
-      <a class="profile-primary-link" href="https://scholar.google.com/citations?user=iIMa-mkAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener">
-        <i class="ri-search-eye-line" aria-hidden="true"></i>
-        View my research
-      </a>
-
-      </aside>
-    </div>
-
-    <nav class="workspace-nav" aria-label="Primary navigation">
-      <a href="index.html#home" data-section-link="home">Home</a>
-      <a href="index.html#research" data-section-link="research">Research</a>
-      <a href="index.html#papers" data-section-link="papers">Publications</a>
-      <a href="index.html#experience" data-section-link="experience">Experience</a>
-      <a class="active" aria-current="page" href="life.html">Life Photos</a>
-    </nav>
+    </aside>
 
     <main class="workspace-main">
         <section class="content-card beyond-card" aria-labelledby="beyond-title">
           <header class="card-heading">
-            <h2 id="beyond-title">Life Photos</h2>
+            <h1 id="beyond-title">Life Photos</h1>
           </header>
           <p>A collection of moments from everyday life, travel, and the world outside work.</p>
 
@@ -128,6 +77,6 @@
     </main>
   </div>
 
-  <script type="module" src="phd-main.js?v=20261008-publications-1"></script>
+  <script type="module" src="phd-main.js?v=20261008-editorial-1"></script>
 </body>
 </html>

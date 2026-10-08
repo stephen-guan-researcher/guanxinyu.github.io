@@ -220,8 +220,8 @@ test("initSectionNavigation resyncs active state after hash changes", () => {
   const win = {
     location: { hash: "#home" },
     addEventListener(name, handler) {
-      assert.equal(name, "hashchange");
-      hashChangeHandler = handler;
+      if (name === "hashchange") hashChangeHandler = handler;
+      else assert.ok(["scroll", "resize"].includes(name), `unexpected navigation event: ${name}`);
     },
   };
 
@@ -235,6 +235,81 @@ test("initSectionNavigation resyncs active state after hash changes", () => {
     [false, true],
   );
   assert.equal(links[1].attrs.get("aria-current"), "location");
+});
+
+test("section navigation follows long paper content and DOM position rather than intersection ratio or nav order", () => {
+  // Research precedes Papers in navigation, but follows the long paper list in
+  // the document. A small visible fraction of Papers must still own the marker.
+  const links = ["home", "experience", "research", "papers"].map((id) => ({
+    dataset: { sectionLink: id },
+    classList: { active: false, toggle(_name, force) { this.active = force; } },
+    attrs: new Map(),
+    setAttribute(name, value) { this.attrs.set(name, value); },
+    removeAttribute(name) { this.attrs.delete(name); },
+    addEventListener() {},
+  }));
+  const geometry = new Map([
+    ["home", { top: 0, height: 700 }],
+    ["experience", { top: 700, height: 500 }],
+    ["papers", { top: 1200, height: 9000 }],
+    ["research", { top: 10200, height: 500 }],
+  ]);
+  let scrollY = 1100;
+  const sections = new Map([...geometry].map(([id, bounds]) => [id, {
+    id,
+    getBoundingClientRect() {
+      return { top: bounds.top - scrollY, bottom: bounds.top + bounds.height - scrollY, height: bounds.height };
+    },
+  }]));
+  const listeners = new Map();
+  const frames = [];
+  let intersectionCallback;
+  const win = {
+    innerHeight: 800,
+    location: { hash: "" },
+    addEventListener(name, handler, options) { listeners.set(name, { handler, options }); },
+    requestAnimationFrame(callback) { frames.push(callback); return frames.length; },
+    IntersectionObserver: class {
+      constructor(callback) { intersectionCallback = callback; }
+      observe() {}
+    },
+  };
+  const doc = {
+    documentElement: { clientHeight: 800 },
+    querySelectorAll(selector) {
+      if (selector === "[data-section-link]") return links;
+      if (selector === "section[id]") return [...sections.values()];
+      assert.fail(`unexpected selector ${selector}`);
+    },
+    getElementById(id) { return sections.get(id); },
+  };
+  const active = () => links.filter((link) => link.classList.active).map((link) => link.dataset.sectionLink);
+  const flushFrames = () => { while (frames.length) frames.shift()(0); };
+
+  initSectionNavigation(doc, win);
+  intersectionCallback([
+    { target: sections.get("experience"), isIntersecting: true, intersectionRatio: 0.8 },
+    { target: sections.get("papers"), isIntersecting: true, intersectionRatio: 0.02 },
+  ]);
+  assert.deepEqual(active(), ["papers"], "a long paper list must win over a higher-ratio previous section");
+  flushFrames();
+  const scroll = listeners.get("scroll");
+  assert.ok(scroll, "scroll position must update navigation even when intersection thresholds do not change");
+  assert.equal(scroll.options?.passive, true);
+  scrollY = 6000;
+  scroll.handler();
+  scroll.handler();
+  assert.equal(frames.length, 1, "multiple scroll events must coalesce into one animation frame");
+  flushFrames();
+  assert.deepEqual(active(), ["papers"], "the marker remains on Papers throughout its long content");
+  assert.equal(links[3].attrs.get("aria-current"), "location");
+
+  scrollY = 10100;
+  scroll.handler();
+  flushFrames();
+  assert.deepEqual(active(), ["research"], "Research takes over only when its actual heading passes the marker");
+  assert.equal(links[2].attrs.get("aria-current"), "location");
+  assert.equal(links[3].attrs.has("aria-current"), false);
 });
 
 test("setAgentExpanded keeps the panel and accessible toggle state synchronized", () => {
@@ -431,6 +506,8 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     "ACL ARR",
     "What is PIVOT?",
     "Tell me about CVPR",
+    "What is the runtime stack survey?",
+    "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems",
   ]) {
     const reply = site.buildAgentReply(question);
     assert.equal(reply.topic, "papers");
@@ -453,7 +530,12 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /submitted to ICASSP 2027 \(submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed\)/);
   assert.doesNotMatch(reply.answer, /submitted to ICASSP 2027 in September 2026/);
   assert.match(reply.answer, /replaces the former ChronoMem record/);
-  assert.match(reply.answer, /paper is not yet public, but its code is available at https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
+  assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2610\.04795/);
+  assert.match(reply.answer, /https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
+  const timbreSummary = reply.answer.split(" TIMBRE:")[1]?.split(" Three ICLR")[0] ?? "";
+  assert.doesNotMatch(timbreSummary, /paper is not yet public|paper not yet public/i);
+  assert.match(reply.answer, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack/);
+  assert.match(reply.answer, /submitted to Frontiers in Computer Science/i);
   assert.doesNotMatch(reply.answer, /ChronoMem is in preparation/);
   assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
   for (const [title, forumId] of [

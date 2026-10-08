@@ -200,7 +200,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.doesNotMatch(systemMessage, /TIMBRE:[^\n]*submitted to ICASSP 2027 in September 2026/i);
   assert.match(systemMessage, /authors are Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao, in that order/);
   assert.match(systemMessage, /replacing the former ChronoMem homepage record, not a second separate paper/);
-  assert.match(systemMessage, /paper is not yet public; its public code URL is https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
+  assert.match(systemMessage, /paper is publicly available as arXiv:2610\.04795 at https:\/\/arxiv\.org\/abs\/2610\.04795; its public code URL is https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
   assert.doesNotMatch(systemMessage, /ChronoMem:[^\n]*in preparation for ICASSP|first author of ChronoMem/);
   assert.match(systemMessage, /Optimizing Text Search:[\s\S]*Xinyu Guan and Shaohua Zhang/i);
   assert.match(systemMessage, /Basket-Enhanced Heterogenous Hypergraph[\s\S]*Yuening Zhou[\s\S]*Francisco Cisternas/i);
@@ -368,6 +368,60 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(invocation.options.messages[0].content, /same language/i);
   assert.match(invocation.options.messages[0].content, /answer only the question asked/i);
   assert.match(invocation.options.messages[0].content, /do not add unrelated publications/i);
+});
+
+test("grounds TIMBRE in its public arXiv record while retaining submission-only conference status", async () => {
+  let context;
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question: "Where can I read TIMBRE, and has ICASSP accepted it?" }),
+  }), createEnv({
+    onRun(_model, options) {
+      context = options.messages[0].content;
+    },
+  }));
+
+  assert.equal(response.status, 200);
+  const record = context.split("\n\n").find((entry) => entry.startsWith(
+    '"TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile"',
+  ));
+  assert.ok(record, "TIMBRE must have its own verified publication record");
+  assert.match(record, /was submitted to ICASSP 2027/);
+  assert.match(record, /publicly available as arXiv:2610\.04795 at https:\/\/arxiv\.org\/abs\/2610\.04795/);
+  assert.match(record, /public code URL is https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
+  assert.match(record, /not a second separate paper/);
+  assert.match(record, /does not establish ICASSP acceptance or proceedings publication/);
+  assert.doesNotMatch(record, /not yet public|was accepted|was published at ICASSP/i);
+});
+
+test("includes the submitted Frontiers runtime survey without inventing authors or active review", async () => {
+  let context;
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question: "我的 Agent survey 是哪一篇？现在是什么状态？" }),
+  }), createEnv({
+    onRun(_model, options) {
+      context = options.messages[0].content;
+    },
+  }));
+
+  assert.equal(response.status, 200);
+  const title = "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack";
+  const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
+  assert.ok(record, "The verified Frontiers survey must be a separate manuscript record");
+  assert.match(record, /was submitted to Frontiers in Computer Science, section Theoretical Computer Science/);
+  assert.match(record, /historical label Submitted, meaning previously submitted/);
+  assert.match(record, /not a claim of active review, acceptance, or publication/);
+  assert.match(record, /author list, exact submission date, and public paper URL are not verified; do not invent them/);
+  assert.match(record, /not another separate planned survey/);
+  assert.doesNotMatch(record, /(?:Its |The )authors are|was accepted|was published|currently under review|https?:\/\//i);
+  const research = context.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
+  assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
+  assert.match(research, /not as a merely planned manuscript/);
+  assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
+  assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
 });
 
 test("expands CICL shorthand into the verified ICONIP publication record", async () => {

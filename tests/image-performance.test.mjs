@@ -4,6 +4,12 @@ import { existsSync, readFileSync, statSync } from "node:fs";
 
 const asset = (path) => new URL(`../${path}`, import.meta.url);
 
+const tags = (html, name) => html.match(new RegExp(`<${name}\\b[^>]*>`, "gi")) ?? [];
+const attribute = (tag, name) => tag?.match(new RegExp(`\\s${name}\\s*=\\s*(["'])([\\s\\S]*?)\\1`, "i"))?.[2];
+const normalizeSpace = (value) => (value ?? "").replace(/\s+/g, " ").trim();
+const srcsetCandidates = (source) => (attribute(source, "srcset") ?? "")
+  .split(",").map(normalizeSpace);
+
 function assertWebP(path, maxBytes) {
   assert.equal(existsSync(asset(path)), true, `${path} must exist`);
   const bytes = readFileSync(asset(path));
@@ -65,25 +71,43 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-publications-1";
+const releaseToken = "20261008-editorial-1";
 
-test("both pages use the prioritized responsive avatar", () => {
-  for (const page of [index, life]) {
-    assert.match(page, /avatar-208\.webp 208w,\s*images\/generated\/avatar-352\.webp 352w,\s*images\/generated\/avatar-528\.webp 528w/);
-    assert.match(page, /src="images\/generated\/avatar-528\.jpg"[^>]*width="528"[^>]*height="453"[^>]*fetchpriority="high"[^>]*decoding="async"/);
-  }
+test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
+  const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
+  assert.equal(portraits.length, 1, "homepage must retain one real hero portrait");
+  const portrait = portraits[0];
+  assert.equal(attribute(portrait, "width"), "528");
+  assert.equal(attribute(portrait, "height"), "453");
+  assert.equal(attribute(portrait, "fetchpriority"), "high");
+  assert.equal(attribute(portrait, "decoding"), "async");
+  assert.notEqual(attribute(portrait, "loading"), "lazy");
+
+  const source = tags(index, "source").find((tag) => attribute(tag, "srcset")?.includes("avatar-208.webp"));
+  assert.ok(source, "homepage portrait must retain its responsive source");
+  assert.equal(attribute(source, "type"), "image/webp");
+  assert.deepEqual(srcsetCandidates(source), [208, 352, 528].map((width) => `images/generated/avatar-${width}.webp ${width}w`));
+  assert.equal(normalizeSpace(attribute(source, "sizes")), "(max-width: 600px) 104px, (max-width: 1000px) 180px, 280px");
+  assert.doesNotMatch(life, /images\/generated\/avatar-/);
+  assert.equal(tags(life, "img").length, 18, "Life must not fetch an additional profile portrait");
 });
 
 test("publication figures are responsive and lazy", () => {
-  const figures = index.match(/<figure class="publication-card-figure">[\s\S]*?<\/figure>/g) ?? [];
+  const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
+    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
+  );
   assert.equal(figures.length, 6);
   for (const figure of figures) {
-    assert.match(figure, /<picture>/);
-    assert.match(figure, /type="image\/webp"/);
-    assert.match(figure, /loading="lazy"/);
-    assert.match(figure, /decoding="async"/);
-    assert.match(figure, /\bwidth="\d+"/);
-    assert.match(figure, /\bheight="\d+"/);
+    assert.equal(tags(figure, "picture").length, 1);
+    const sources = tags(figure, "source");
+    assert.equal(sources.length, 1);
+    assert.equal(attribute(sources[0], "type"), "image/webp");
+    const images = tags(figure, "img");
+    assert.equal(images.length, 1);
+    assert.equal(attribute(images[0], "loading"), "lazy");
+    assert.equal(attribute(images[0], "decoding"), "async");
+    assert.ok(Number(attribute(images[0], "width")) > 0);
+    assert.ok(Number(attribute(images[0], "height")) > 0);
   }
 
   const candidates = {
@@ -97,11 +121,23 @@ test("publication figures are responsive and lazy", () => {
   for (const [stem, widths] of Object.entries(candidates)) {
     const figure = figures.find((entry) => entry.includes(`images/generated/${stem}-`));
     assert.ok(figure, `${stem} must keep its own responsive figure`);
-    for (const width of widths) {
-      assert.match(figure, new RegExp(`${stem}-${width}\\.webp ${width}w`));
-    }
-    assert.match(figure, /sizes="\(max-width: 600px\) calc\(100vw - 90px\), \(max-width: 1199px\) 124px, 148px"/);
+    const source = tags(figure, "source")[0];
+    assert.deepEqual(srcsetCandidates(source), widths.map((width) => `images/generated/${stem}-${width}.webp ${width}w`));
+    assert.equal(attribute(tags(figure, "img")[0], "src"), `images/${stem}.png`, `${stem} must retain its real figure fallback`);
+    assert.equal(normalizeSpace(attribute(source, "sizes")), "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
   }
+});
+
+test("Life Photos retain all eighteen original fallbacks in their established order", () => {
+  const expected = [
+    "life-road-red-shirt", "life-camera-portrait", "life-jellyfish-aquarium",
+    "glasgow-graduation-group", "glasgow-bute-hall-night", "glasgow-graduation-portrait",
+    "glasgow-arches-portrait", "glasgow-graduation-contact-sheet", "glasgow-graduation-reception",
+    "glasgow-graduation-friends", "ntu-campus", "seaside-cafe", "red-pavilion-portrait",
+    "ninghai-swing-seated", "ninghai-swing-front", "beach-walk", "garden-rabbit", "coastal-temple",
+  ];
+  assert.deepEqual(tags(life, "img").map((image) => attribute(image, "src")), expected.map((stem) => `images/life/${stem}.jpg`));
+  for (const stem of expected) assert.equal(existsSync(asset(`images/life/${stem}.jpg`)), true);
 });
 
 test("Life Photos keep one prioritized gallery image and seventeen lazy images", () => {
@@ -143,17 +179,17 @@ test("Life Photo sizes match every final mosaic slot without crossing image tier
 
 test("both pages use the release cache token for changed CSS and JavaScript", () => {
   for (const page of [index, life]) {
-    const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
-      /\brel="stylesheet"/.test(tag) && /\bhref="phd-styles\.css\?v=/.test(tag),
-    );
-    const script = (page.match(/<script\b[^>]*>/g) ?? []).find((tag) =>
-      /\bsrc="phd-main\.js\?v=/.test(tag),
-    );
+    const stylesheets = tags(page, "link").filter((tag) => attribute(tag, "rel") === "stylesheet");
+    const siteStylesheets = stylesheets.filter((tag) => /^(?:phd|editorial)-styles\.css(?:\?|$)/.test(attribute(tag, "href") ?? ""));
+    assert.deepEqual(siteStylesheets.map((tag) => attribute(tag, "href")), [
+      `phd-styles.css?v=${releaseToken}`,
+      `editorial-styles.css?v=${releaseToken}`,
+    ], "both pages must load the base skin before the release-matched editorial overrides");
+    const scripts = tags(page, "script").filter((tag) => /^phd-main\.js(?:\?|$)/.test(attribute(tag, "src") ?? ""));
 
-    assert.ok(stylesheet, "page must load the changed stylesheet through a link element");
-    assert.ok(script, "page must load the changed JavaScript through a script element");
-    assert.match(stylesheet, new RegExp(`\\bhref="phd-styles\\.css\\?v=${releaseToken}"`));
-    assert.match(script, new RegExp(`\\bsrc="phd-main\\.js\\?v=${releaseToken}"`));
-    assert.doesNotMatch(page, /20260806-profile-release-2/);
+    assert.equal(scripts.length, 1, "page must load the changed JavaScript through one script element");
+    assert.equal(attribute(scripts[0], "src"), `phd-main.js?v=${releaseToken}`);
+    assert.equal(attribute(scripts[0], "type"), "module");
+    assert.doesNotMatch(page, /20260806-profile-release-2|20261008-publications-1/);
   }
 });

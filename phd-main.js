@@ -46,12 +46,36 @@ export function initSectionNavigation(doc, win) {
         setActiveSection(links, link.dataset.sectionLink);
       });
     });
+  const syncFromScroll = () => {
+    const positions = sections
+      .filter((section) => typeof section.getBoundingClientRect === "function")
+      .map((section) => ({ id: section.id, top: section.getBoundingClientRect().top }))
+      .sort((a, b) => a.top - b.top);
+    if (!positions.length) return;
+    const marker = Math.min(180, Math.max(90, (win.innerHeight ?? 800) * 0.2));
+    const current = positions.filter((section) => section.top <= marker).at(-1) ?? positions[0];
+    setActiveSection(links, current.id);
+  };
+  let scrollScheduled = false;
+  win.addEventListener?.("scroll", () => {
+    if (typeof win.requestAnimationFrame !== "function") {
+      syncFromScroll();
+      return;
+    }
+    if (scrollScheduled) return;
+    scrollScheduled = true;
+    win.requestAnimationFrame(() => {
+      scrollScheduled = false;
+      syncFromScroll();
+    });
+  }, { passive: true });
   if (typeof win.IntersectionObserver !== "function") return;
   const observer = new win.IntersectionObserver((entries) => {
     const visible = entries
       .filter((entry) => entry.isIntersecting)
       .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
     if (visible) setActiveSection(links, visible.target.id);
+    syncFromScroll();
   }, { rootMargin: "-18% 0px -62% 0px", threshold: [0, 0.2, 0.5] });
   sections.forEach((section) => observer.observe(section));
 }
@@ -64,6 +88,58 @@ export function setAgentExpanded(toggle, panel, expanded) {
   if (icon) icon.className = expanded ? "ri-arrow-up-s-line" : "ri-arrow-down-s-line";
 }
 
+export function initAgentDialog(doc, win) {
+  const dialog = doc.getElementById("xinyu-agent-dialog");
+  if (!dialog) return;
+  const openers = [...doc.querySelectorAll("[data-agent-open]")];
+  const closeButton = dialog.querySelector("[data-agent-close]");
+  const toggle = dialog.querySelector("[data-agent-toggle]");
+  const panel = dialog.querySelector("#xinyu-agent-panel");
+  const input = dialog.querySelector("input[name='question']");
+  let lastOpener;
+
+  const close = () => {
+    if (typeof dialog.close === "function") dialog.close();
+    else dialog.removeAttribute("open");
+    openers.forEach((opener) => opener.setAttribute("aria-expanded", "false"));
+    lastOpener?.focus();
+  };
+  const open = (opener) => {
+    lastOpener = opener ?? lastOpener;
+    if (!dialog.open) {
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
+    }
+    if (toggle && panel) setAgentExpanded(toggle, panel, true);
+    openers.forEach((button) => button.setAttribute("aria-expanded", "true"));
+    if (!input?.disabled) input?.focus();
+  };
+
+  openers.forEach((opener) => {
+    opener.setAttribute("aria-expanded", "false");
+    opener.addEventListener("click", () => open(opener));
+  });
+  closeButton?.addEventListener("click", close);
+  dialog.addEventListener("cancel", (event) => {
+    event.preventDefault();
+    close();
+  });
+  dialog.addEventListener("click", (event) => {
+    if (event.target !== dialog) return;
+    const rect = dialog.getBoundingClientRect();
+    if (event.clientX < rect.left || event.clientX > rect.right
+      || event.clientY < rect.top || event.clientY > rect.bottom) close();
+  });
+  dialog.querySelectorAll("[data-agent-source]").forEach((link) => {
+    link.addEventListener("click", close);
+  });
+  const openFromHash = () => {
+    if (win.location?.hash === "#ask-xinyu") open(openers[0]);
+  };
+  win.addEventListener?.("hashchange", openFromHash);
+  openFromHash();
+}
+
 export function formatAgentModelName(model) {
   if (!model) return "Workers AI";
   if (model === "@cf/meta/llama-4-scout-17b-16e-instruct") return "Llama 4 Scout";
@@ -74,10 +150,10 @@ export function formatAgentModelName(model) {
 export function buildAgentReply(question) {
   const normalized = question.trim().toLowerCase();
 
-  if (/paper|publication|aaai|iclr|eacl|acl arr|icassp|cvpr|cicl|silica|zcpo|pivot|timbre|qeschunker|vla|lora|static gradient attribution|advantage scale|论文|文章/.test(normalized)) {
+  if (/paper|publication|aaai|iclr|eacl|acl arr|icassp|cvpr|cicl|silica|zcpo|pivot|timbre|qeschunker|vla|lora|static gradient attribution|advantage scale|frontiers|diagnostics and infrastructure|runtime stack|survey|论文|文章|综述/.test(normalized)) {
     return {
       topic: "papers",
-      answer: "PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement, by Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng, is in preparation for CVPR. It is not yet public and has no public paper URL; no CVPR conference year, submission, or acceptance is confirmed. TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile, by Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao, was submitted to ICASSP 2027 (submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed). It replaces the former ChronoMem record; the paper is not yet public, but its code is available at https://github.com/stephen-guan-researcher/TIMBRE. Three ICLR 2027 submissions from September 2026 are publicly available on OpenReview: “How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit” (https://openreview.net/forum?id=x6BEwIFvUc), “Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix” (https://openreview.net/forum?id=g54eVrFPPI), and “QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG” (https://openreview.net/forum?id=pvrvPinZif); none is confirmed accepted. SILICA was submitted to ACL ARR in the August 2026 cycle, with EACL as its preferred venue, and Advantage Scale Calibration was submitted to AAAI 2027 in July 2026. The KL regularization manuscript was withdrawn from AAAI; its last confirmed status in August 2026 was in preparation for ICLR, with no later submission verified. “Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents” by Xinyu Guan, Qianyang Zhao, and Yuming Deng was accepted at ICONIP 2026 for publication in the Springer CCIS proceedings and remains publicly available on arXiv at https://arxiv.org/abs/2606.08151; its camera-ready v4 was revised on September 21, 2026. It is not yet published. My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
+      answer: "PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement, by Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng, is in preparation for CVPR. It is not yet public and has no public paper URL; no CVPR conference year, submission, or acceptance is confirmed. TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile, by Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao, was submitted to ICASSP 2027 (submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed). It replaces the former ChronoMem record; the paper is publicly available at https://arxiv.org/abs/2610.04795, and its code is available at https://github.com/stephen-guan-researcher/TIMBRE. Three ICLR 2027 submissions from September 2026 are publicly available on OpenReview: “How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit” (https://openreview.net/forum?id=x6BEwIFvUc), “Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix” (https://openreview.net/forum?id=g54eVrFPPI), and “QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG” (https://openreview.net/forum?id=pvrvPinZif); none is confirmed accepted. SILICA was submitted to ACL ARR in the August 2026 cycle, with EACL as its preferred venue, and Advantage Scale Calibration was submitted to AAAI 2027 in July 2026. The KL regularization manuscript was withdrawn from AAAI; its last confirmed status in August 2026 was in preparation for ICLR, with no later submission verified. “Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents” by Xinyu Guan, Qianyang Zhao, and Yuming Deng was accepted at ICONIP 2026 for publication in the Springer CCIS proceedings and remains publicly available on arXiv at https://arxiv.org/abs/2606.08151; its camera-ready v4 was revised on September 21, 2026. It is not yet published. The survey “Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack” was submitted to Frontiers in Computer Science. Its homepage label is Submitted, describing its submission history; no acceptance or active review is claimed, and its author list is not confirmed here. My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
       sources: ["papers", "research"],
     };
   }
@@ -101,7 +177,7 @@ export function buildAgentReply(question) {
   if (/research|autoresearch|post[- ]?training|agentic|reinforcement|研究|方向/.test(normalized)) {
     return {
       topic: "research",
-      answer: "I am currently focused on three core directions—AutoResearch, Post-Training, and Agentic RL—with Xianyu AI as a practical application domain. The CVPR manuscript in progress is PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement. An Agent Research Survey is also in progress.",
+      answer: "I am currently focused on three core directions—AutoResearch, Post-Training, and Agentic RL—with Xianyu AI as a practical application domain. The CVPR manuscript in progress is PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement. The runtime-stack Agent Research Survey was submitted to Frontiers in Computer Science; its homepage label describes past submission, not acceptance or active review.",
       sources: ["research", "experience", "papers"],
     };
   }
@@ -326,6 +402,7 @@ export function initSite(doc, win) {
   initCopyActions(doc, win);
   initSectionNavigation(doc, win);
   initAgent(doc);
+  initAgentDialog(doc, win);
   initIcons(win);
 }
 
