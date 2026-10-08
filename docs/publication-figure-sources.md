@@ -1,6 +1,15 @@
 # Publication figure inventory — 2026-10-08
 
-The 11 visible manuscript rows in editorial-7 use nine authentic paper figures and two text-only “待补充” placeholders (PIVOT and the Runtime Stack survey), at the owner's request. Placeholders retain the image-column space without fetching a fabricated or unrelated image. Earlier concept covers remain recoverable, but are no longer used on the homepage. The unresolved KL/ZCPO record remains excluded from the homepage and the Agent's verified facts; see [record exclusions](publication-record-exclusions.md).
+The 11 visible manuscript rows in editorial-8 use nine authentic paper figures and two newly generated, clearly labeled thematic illustrations (PIVOT and the Runtime Stack survey). The owner requested images instead of the editorial-7 text placeholders. The new illustrations are not original paper figures or scientific evidence; each is captioned “示意配图”. Earlier concept covers remain recoverable but are not used on the homepage. The unresolved KL/ZCPO record remains excluded; see [record exclusions](publication-record-exclusions.md).
+
+## Current thematic illustrations — editorial-8
+
+| Manuscript | Site asset | Theme |
+| --- | --- | --- |
+| PIVOT | `images/paper-pivot-concept-v2.png` | Prompt and visual-evidence tiles |
+| Runtime Stack survey | `images/paper-runtime-concept-v2.png` | Layered runtime infrastructure |
+
+Generated separately with the built-in ImageGen tool. Both have 1200 × 800 PNG fallbacks and 320px/640px/960px WebP variants. Full prompts and original output paths are recorded in [generation notes](publication-theme-illustrations-v2.md). Nine authentic paper figures and all publication metadata are unchanged.
 
 ## Existing source artwork retained
 
@@ -52,7 +61,7 @@ The first OpenReview forum was also opened in the in-app browser and displayed i
 - Each remaining cover has 320px, 640px, and 960px WebP variants. The largest is 28374 bytes. Browser clients use these variants rather than downloading the full PNG by default.
 - Exact prompts and original generated-image paths: [PIVOT and VLA](publication-cover-prompts-a.md), [LoRA and QESChunker](publication-cover-prompts-b.md), [ZCPO and Runtime](publication-cover-prompts-c.md).
 - When authentic source figures become available, replace the corresponding cover while retaining the verified paper metadata. Existing six real figures were not replaced.
-- All former concept-cover files (PIVOT, VLA, LoRA, QESChunker, KL/ZCPO, and Runtime Stack) and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list.
+- All first-version concept-cover files (PIVOT, VLA, LoRA, QESChunker, KL/ZCPO, and Runtime Stack) and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list. The two editorial-8 illustrations use distinct `concept-v2` filenames.
 
 ## Retired placeholder asset — editorial-3 history
 

@@ -6,6 +6,8 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 PAPERS = {
+    "paper-pivot-concept-v2": [320, 640, 960],
+    "paper-runtime-concept-v2": [320, 640, 960],
     "paper-vla-early-exit": [320, 640, 960],
     "paper-lora-attribution": [320, 640, 960],
     "paper-qeschunker-overview": [320, 640, 960],

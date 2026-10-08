@@ -2,6 +2,16 @@
 
 final result: passed
 
+## Latest revision — editorial-8 new theme illustrations
+
+- The owner requested pictures instead of the editorial-7 pending labels. Two fresh illustrations were generated in separate built-in ImageGen calls: a tactile prompt/evidence composition for PIVOT and a layered infrastructure composition for the Runtime Stack survey. Root inspected both full-size outputs for clean composition, restrained palette, and absence of text, equations, invented results, or logos.
+- Each illustration is visibly captioned “示意配图”, marked `data-figure-status="illustration"`, and has alt text stating it is not an original paper figure. Exact prompts, original paths, and final project paths are in `docs/publication-theme-illustrations-v2.md`.
+- Both outputs are saved as 1200 × 800 PNG fallbacks with 320px/640px/960px WebP tiers. The two 640px variants total 20672 bytes; the largest tier is 20496 bytes. Original generated images, earlier covers, and manuscript artwork are preserved.
+- Current inventory: 11 rows, nine unchanged original figures, two new illustrations. No paper title, author, status, venue, description, URL, or Worker fact changed.
+- Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-8#papers`. Browser verified both new 640px WebP images loaded, exact Chinese captions, 11 rows, no horizontal overflow, and no console warnings/errors. Proof: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/papers-v8-theme-illustrations.png`.
+- Validation: all 138 Node tests and three Python image tests passed; `git diff --check` is clean. No website push or Worker deployment was performed.
+- The sections below retain earlier revision evidence.
+
 ## Latest revision — editorial-7 missing figures labeled 待补充
 
 - At the owner's request, PIVOT and Runtime Stack concept covers are replaced by light-gray text-only “待补充” placeholders in the existing figure column. The figure labels identify the associated paper for assistive technology. No image or picture element is used in either slot, so these placeholders incur no image requests.
