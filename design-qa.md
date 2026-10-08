@@ -2,6 +2,15 @@
 
 final result: passed
 
+## Latest revision — editorial-10 decorative background for pending figures
+
+- The owner requested an attractive background while preserving English pending wording. A new pale blue-gray and sage paper-wave background was generated with built-in ImageGen. Root inspected the output: quiet central whitespace, restrained texture, no baked-in text, scientific diagram, or invented result.
+- PIVOT and Runtime Stack retain exact “Figure coming soon” HTML text and paper-specific accessible labels. Their shared responsive background is decorative, with empty alt text and hidden picture/image accessibility. All nine authentic figures and publication metadata are unchanged.
+- The 1200 × 800 PNG fallback has 320px/640px/960px WebP tiers of 3068/10742/26446 bytes. Both slots use the same URL at a given tier, enabling normal browser reuse. Source and full prompt: `docs/pending-figure-background.md`.
+- Browser verified both backgrounds loaded from the 640px tier, exact labels, 220 × 146.67 display slots, 11 rows, no horizontal overflow, and no console warnings/errors. Local preview: `http://127.0.0.1:8000/index.html?v=20261008-editorial-10#papers`. Proof: `/Users/stephen/Desktop/research_project/guanxinyu.github.io/artifacts/editorial-20261008/papers-v10-pending-background.png`.
+- Validation: 138 Node tests and three Python image tests passed. A test-only stale-release regex was corrected to distinguish editorial-1 from editorial-10. No website push or Worker deployment was performed.
+- The sections below retain earlier revision evidence.
+
 ## Latest revision — editorial-9 English pending labels
 
 - At the owner's request, PIVOT and Runtime Stack use text-only “Figure coming soon” image placeholders. Each has a paper-specific English accessible label. All nine authentic figures and all publication metadata are unchanged; prior generated images are retained but not fetched by the current homepage.

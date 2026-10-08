@@ -13,6 +13,7 @@ const archivedPublicationCoverStems = [
   "paper-pivot-cover", "paper-runtime-cover", "paper-pivot-concept-v2", "paper-runtime-concept-v2",
 ];
 const extractedFigureStems = ["paper-vla-early-exit", "paper-lora-attribution", "paper-qeschunker-overview"];
+const pendingBackgroundStem = "paper-figure-pending-background";
 
 function assertWebP(path, maxBytes) {
   assert.equal(existsSync(asset(path)), true, `${path} must exist`);
@@ -29,7 +30,7 @@ test("responsive avatar variants are real compact WebP assets", () => {
   assert.equal(existsSync(asset("images/generated/avatar-528.jpg")), true);
 });
 
-test("real publication figures and retained archived covers have responsive WebP variants", () => {
+test("real figures, the shared pending background, and retained archived covers have responsive WebP variants", () => {
   const variants = {
     "paper-silica-identifiability": [320, 640, 960],
     "paper-advantage-maxnorm-ac": [320, 640, 960],
@@ -38,6 +39,7 @@ test("real publication figures and retained archived covers have responsive WebP
     "paper2-suffix-tree": [320, 640, 678],
     "paper1-hypergraph": [320, 640, 692],
     ...Object.fromEntries(extractedFigureStems.map((stem) => [stem, [320, 640, 960]])),
+    [pendingBackgroundStem]: [320, 640, 960],
     ...Object.fromEntries(archivedPublicationCoverStems.map((stem) => [stem, [320, 640, 960]])),
   };
   for (const [stem, widths] of Object.entries(variants)) {
@@ -45,7 +47,7 @@ test("real publication figures and retained archived covers have responsive WebP
       assertWebP(`images/generated/${stem}-${width}.webp`, 90_000);
     }
   }
-  for (const stem of [...archivedPublicationCoverStems, ...extractedFigureStems]) {
+  for (const stem of [...archivedPublicationCoverStems, ...extractedFigureStems, pendingBackgroundStem]) {
     const png = readFileSync(asset(`images/${stem}.png`));
     assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10],
       `${stem} must be a real PNG image asset`);
@@ -82,7 +84,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261008-editorial-9";
+const releaseToken = "20261008-editorial-10";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
@@ -103,7 +105,7 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
   assert.equal(tags(life, "img").length, 18, "Life must not fetch an additional profile portrait");
 });
 
-test("nine publication images are responsive and lazy while two pending slots request no images", () => {
+test("nine paper figures and two reused decorative backgrounds are responsive and lazy", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
@@ -122,9 +124,26 @@ test("nine publication images are responsive and lazy while two pending slots re
         (attribute(tag, "class") ?? "").split(/\s+/).includes("publication-figure-pending-label"));
       assert.equal(labels.length, 1);
       assert.notEqual(attribute(labels[0], "aria-hidden"), "true");
-      for (const tagName of ["img", "picture", "source", "figcaption"]) {
-        assert.equal(tags(figure, tagName).length, 0, `pending artwork must not contain ${tagName}`);
-      }
+      const pictures = tags(figure, "picture");
+      assert.equal(pictures.length, 1);
+      assert.equal(attribute(pictures[0], "aria-hidden"), "true");
+      const images = tags(figure, "img");
+      assert.equal(images.length, 1);
+      assert.equal(attribute(images[0], "src"), `images/${pendingBackgroundStem}.png`);
+      assert.equal(attribute(images[0], "alt"), "");
+      assert.equal(attribute(images[0], "aria-hidden"), "true");
+      assert.equal(attribute(images[0], "width"), "1200");
+      assert.equal(attribute(images[0], "height"), "800");
+      assert.equal(attribute(images[0], "loading"), "lazy");
+      assert.equal(attribute(images[0], "decoding"), "async");
+      const sources = tags(figure, "source");
+      assert.equal(sources.length, 1);
+      assert.equal(attribute(sources[0], "type"), "image/webp");
+      assert.deepEqual(srcsetCandidates(sources[0]),
+        [320, 640, 960].map((width) => `images/generated/${pendingBackgroundStem}-${width}.webp ${width}w`));
+      assert.equal(normalizeSpace(attribute(sources[0], "sizes")),
+        "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
+      assert.equal(tags(figure, "figcaption").length, 0);
       continue;
     }
     assert.equal(tags(figure, "picture").length, 1);
@@ -150,7 +169,9 @@ test("nine publication images are responsive and lazy while two pending slots re
   assert.deepEqual(pendingFigures.map((figure) => attribute(tags(figure, "figure")[0], "aria-label")).toSorted(),
     ["PIVOT: Figure coming soon", "Runtime Stack survey: Figure coming soon"].toSorted());
   assert.equal(figures.length - pendingFigures.length, 9);
-  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 9);
+  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 11);
+  assert.deepEqual([...new Set(pendingFigures.map((figure) => attribute(tags(figure, "img")[0], "src")))],
+    [`images/${pendingBackgroundStem}.png`], "both pending slots reuse the same cacheable decorative asset");
   assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|publication-card-figure-illustration|Concept illustration|待补充|示意配图/,
     "the active homepage must not load archived concept covers");
 
@@ -235,6 +256,6 @@ test("both pages use the release cache token for changed CSS and JavaScript", ()
     assert.equal(scripts.length, 1, "page must load the changed JavaScript through one script element");
     assert.equal(attribute(scripts[0], "src"), `phd-main.js?v=${releaseToken}`);
     assert.equal(attribute(scripts[0], "type"), "module");
-    assert.doesNotMatch(page, /20260806-profile-release-2|20261008-publications-1|20261008-editorial-1/);
+    assert.doesNotMatch(page, /20260806-profile-release-2|20261008-publications-1|20261008-editorial-1(?!\d)/);
   }
 });

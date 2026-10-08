@@ -290,7 +290,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("publication rows retain nine real figures and two accessible text-only pending blocks", () => {
+test("publication rows retain nine real figures and two accessible pending blocks with a shared decorative background", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
     [knownPapers[2][0], "images/paper-vla-early-exit.png"],
@@ -332,8 +332,28 @@ test("publication rows retain nine real figures and two accessible text-only pen
     assert.ok(!Object.hasOwn(labels[0].attrs, "hidden"));
     assert.notEqual(labels[0].attrs["aria-hidden"], "true");
     assert.equal(normalizedText(figure), "Figure coming soon");
-    assert.equal(all(figure, (node) => ["img", "picture", "source", "figcaption"].includes(node.tag)).length, 0,
-      "pending artwork must make no image request");
+    const pictures = all(figure, (node) => node.tag === "picture");
+    assert.equal(pictures.length, 1);
+    assert.equal(pictures[0].attrs["aria-hidden"], "true",
+      "the pending background is decorative, not paper evidence");
+    const images = all(pictures[0], (node) => node.tag === "img");
+    assert.equal(images.length, 1);
+    assert.equal(images[0].attrs.src, "images/paper-figure-pending-background.png");
+    assert.ok(existsSync(asset(images[0].attrs.src)));
+    assert.equal(images[0].attrs.alt, "");
+    assert.equal(images[0].attrs["aria-hidden"], "true");
+    assert.equal(images[0].attrs.width, "1200");
+    assert.equal(images[0].attrs.height, "800");
+    assert.equal(images[0].attrs.loading, "lazy");
+    assert.equal(images[0].attrs.decoding, "async");
+    const sources = all(pictures[0], (node) => node.tag === "source");
+    assert.equal(sources.length, 1);
+    assert.equal(sources[0].attrs.type, "image/webp");
+    assert.deepEqual((sources[0].attrs.srcset ?? "").split(",").map((candidate) => candidate.replace(/\s+/g, " ").trim()),
+      [320, 640, 960].map((width) => `images/generated/paper-figure-pending-background-${width}.webp ${width}w`));
+    assert.equal((sources[0].attrs.sizes ?? "").replace(/\s+/g, " ").trim(),
+      "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
+    assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0);
   }
   const cards = withClass(pages.home, "publication-card");
   assert.equal(cards.length, 11);
@@ -351,7 +371,8 @@ test("publication rows retain nine real figures and two accessible text-only pen
     assert.equal(figures.length, 1, "each publication article must have exactly one figure");
     assert.equal(figures[0].tag, "figure");
     if (hasClass(figures[0], "publication-card-figure-pending")) {
-      assert.equal(all(card, (node) => node.tag === "img").length, 0);
+      assert.equal(all(card, (node) => node.tag === "img").length, 1,
+        "each pending slot reuses the one decorative background asset");
       continue;
     }
     assert.equal(all(figures[0], (node) => node.tag === "picture").length, 1);
