@@ -310,7 +310,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.doesNotMatch(pivotParagraph, /https?:\/\/|CVPR 20\d{2}|was submitted to CVPR|was accepted at CVPR/);
   assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
     "unresolved KL authorship must not be included in the Agent's verified facts");
-  assert.match(systemMessage, /11 distinct papers and manuscripts, not 11 published papers/);
+  assert.match(systemMessage, /12 distinct papers and manuscripts, not 12 published papers/);
   assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
   assert.match(
     systemMessage,
@@ -330,7 +330,7 @@ test("returns a Workers AI answer for a valid question", async () => {
       "x6BEwIFvUc",
     ],
     [
-      "Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix",
+      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix",
       "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu",
       "g54eVrFPPI",
     ],
@@ -394,7 +394,7 @@ test("grounds TIMBRE in its public arXiv record while retaining submission-only 
   assert.doesNotMatch(record, /not yet public|was accepted|was published at ICASSP/i);
 });
 
-test("includes the corrected Frontiers of Computer Science survey without inventing authors or active review", async () => {
+test("includes the confirmed FCS survey submission receipt without inventing authors or external review", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
@@ -410,21 +410,78 @@ test("includes the corrected Frontiers of Computer Science survey without invent
   const title = "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack";
   const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
   assert.ok(record, "The verified Frontiers survey must be a separate manuscript record");
-  assert.match(record, /was submitted to Frontiers of Computer Science, as reported by the homepage owner/);
-  assert.match(record, /owner corrected the venue name on October 8, 2026; this date is not a verified submission date/);
-  assert.match(record, /homepage label remains Submitted/);
-  assert.match(record, /not a claim of active review, acceptance, or publication/);
-  assert.match(record, /author list, exact submission date, and public paper URL are not verified; do not invent them/);
+  assert.match(record, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
+  assert.match(record, /homepage label is Submitted/);
+  assert.match(record, /does not confirm external peer review, acceptance, or publication/);
+  assert.match(record, /current live system status has not been checked/);
+  assert.match(record, /author list and public paper URL are not verified; do not invent them/);
   assert.match(record, /not another separate planned survey/);
-  assert.doesNotMatch(record, /(?:Its |The )authors are|was accepted|was published|currently under review|https?:\/\//i);
-  assert.doesNotMatch(context, /Frontiers in Computer Science|Theoretical Computer Science|historical label|previously submitted/i);
+  assert.doesNotMatch(record, /(?:Its |The )authors are|was accepted|was published|FCS-262084|https?:\/\//i);
+  assert.doesNotMatch(context, /Frontiers in Computer Science|homepage label (?:is|remains) Manuscript|received a rejection decision/i);
   const research = context.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
-  assert.match(research, /was submitted to Frontiers of Computer Science, as reported by the homepage owner/);
-  assert.match(research, /owner corrected the venue name on October 8, 2026/);
-  assert.match(research, /not as a merely planned manuscript/);
+  assert.match(research, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
+  assert.match(research, /does not confirm external peer review, acceptance, or publication/);
+  assert.match(research, /current live system status has not been checked/);
+  assert.match(research, /homepage label is Submitted/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
-  assert.match(context, /11 distinct papers and manuscripts, not 11 published papers/);
+  assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
+});
+
+test("grounds English and Chinese BigData aliases in the verified submission receipt", async () => {
+  const title = "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning";
+  for (const question of [
+    "What is the BigData manuscript status?",
+    "Who wrote the Big Data paper?",
+    "MIP",
+    "Nominate-then-Adjudicate",
+    "Explain solver tuning",
+    "我的大数据论文录用了吗？",
+    "BigData 的作者顺序是什么？",
+  ]) {
+    let invocation;
+    const response = await handleRequest(request("/api/chat", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question }),
+    }), createEnv({
+      onRun(_model, options) {
+        invocation = options;
+      },
+    }));
+
+    assert.equal(response.status, 200);
+    const context = invocation.messages[0].content;
+    const routedQuestion = invocation.messages[1].content;
+    const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
+    assert.ok(record, "BigData must have a distinct, verified manuscript record");
+    for (const facts of [record, routedQuestion]) {
+      assert.ok(facts.includes(title));
+      assert.match(facts, /authors are Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, and Yuming Deng, in that order/);
+      assert.match(facts, /submitted to IEEE BigData 2026/);
+      assert.match(facts, /successful full-paper upload on August 21, 2026/);
+      assert.match(facts, /homepage label is Submitted/);
+      assert.match(facts, /privately retrieved submission PDF has been inspected/);
+      assert.match(facts, /authentic overview from Figure 1/);
+      assert.match(facts, /does not make the full PDF publicly available/);
+      assert.match(facts, /No public PDF or paper URL is verified/);
+      assert.match(facts, /empirical performance model nominates a shortlist from a fixed solver-configuration portfolio/);
+      assert.match(facts, /compressed constraint matrix, and offline textual skill memory/);
+      assert.match(facts, /one model call, zero solver calls, and no foundation-model weight update/);
+      assert.match(facts, /end-to-end latency is unmeasured/);
+      assert.doesNotMatch(facts, /Based only on the title|no verified figure|publicly available at|latency (?:is|was) measured/i);
+      assert.doesNotMatch(facts, /https?:\/\/|was accepted|was published|BigD\d+|paper password|reference number|\d+%/i);
+    }
+    assert.match(record, /No acceptance or publication is confirmed/);
+    assert.match(routedQuestion, /not Accepted or Published/);
+    assert.match(routedQuestion, /Original question: /);
+    assert.ok(routedQuestion.includes(question));
+    assert.match(routedQuestion, /Answer in the same language as the original question/);
+    assert.match(routedQuestion, /中文问题请务必使用中文回答/);
+    assert.match(routedQuestion, /Do not invent experimental results, additional mechanisms, or a paper URL/);
+    assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
+    assert.doesNotMatch(context, /11 distinct papers and manuscripts|11 published papers/);
+  }
 });
 
 test("expands CICL shorthand into the verified ICONIP publication record", async () => {

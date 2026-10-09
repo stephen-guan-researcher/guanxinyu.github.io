@@ -6,10 +6,12 @@
   <title>Life Photos | Xinyu Guan</title>
   <meta name="description" content="Personal photos and moments from Xinyu Guan." />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261008-editorial-12" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261008-editorial-12" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261009-submission-order-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261009-submission-order-1" />
 </head>
 <body class="life-page editorial-page">
+  <a class="editorial-skip-link" href="#life-main">Skip to content</a>
+  <div class="reading-progress" data-reading-progress aria-hidden="true" hidden></div>
   <div class="academic-shell beyond-shell">
     <aside class="editorial-sidebar" aria-label="Site navigation and contact">
       <nav class="workspace-nav" aria-label="Primary navigation">
@@ -31,7 +33,7 @@
       </div>
     </aside>
 
-    <main class="workspace-main">
+    <main class="workspace-main" id="life-main">
         <section class="content-card beyond-card" aria-labelledby="beyond-title">
           <header class="card-heading">
             <h1 id="beyond-title">Life Photos</h1>
@@ -77,6 +79,8 @@
     </main>
   </div>
 
-  <script type="module" src="phd-main.js?v=20261008-editorial-12"></script>
+  <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
+  <script type="module" src="phd-main.js?v=20261009-submission-order-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261009-submission-order-1"></script>
 </body>
 </html>

@@ -65,6 +65,23 @@ const text = (node) => node == null ? "" : typeof node === "string" ? node : nod
 const normalizedText = (node) => text(node).replace(/\s+/g, " ").trim();
 const pages = { home: parseHtml(source.home), life: parseHtml(source.life) };
 
+test("the optional opening owns the role and focus without repeating them in the hero", () => {
+  const entry = byId(pages.home, "site-entry");
+  assert.equal(entry.tag, "dialog");
+  assert.ok(!("open" in entry.attrs), "without JavaScript the opening must remain closed");
+  assert.match(normalizedText(entry), /AI Agent Researcher/);
+  assert.match(normalizedText(entry), /Alibaba Group/);
+  assert.equal(all(entry, (node) => node.tag === "button").length, 1);
+  assert.doesNotMatch(normalizedText(entry), /Skip intro/);
+  assert.match(normalizedText(entry), /AutoResearch \/ Post-Training \/ Agentic RL/);
+  assert.equal(all(entry, (node) => node.tag === "h2").length, 1);
+  const hero = withClass(pages.home, "editorial-hero")[0];
+  assert.equal(withClass(hero, "hero-role").length, 0);
+  assert.equal(withClass(hero, "hero-focus").length, 0);
+  assert.equal(all(pages.home, (node) => node.tag === "h1").length, 1);
+  assert.ok(!byId(pages.life, "site-entry"), "Life Photos must never gain an entry gate");
+});
+
 function publication(title) {
   const card = withClass(pages.home, "publication-card").find((node) =>
     all(node, (child) => child.tag === "h3").some((heading) => normalizedText(heading) === title),
@@ -88,7 +105,7 @@ const knownPapers = [
     "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan",
   ],
   [
-    "Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix",
+    "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix",
     "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, Hailu Xu",
   ],
   [
@@ -114,6 +131,10 @@ const knownPapers = [
   [
     "Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation",
     "Yuening Zhou, Yulin Wang, Qian Cui, Xinyu Guan, Francisco Cisternas",
+  ],
+  [
+    "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning",
+    "Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, Yuming Deng",
   ],
 ];
 
@@ -217,7 +238,7 @@ test("four compact career rows preserve all six original scopes and complete exp
   assert.equal(withClass(byId(pages.home, "education"), "education-item").length, 2);
 });
 
-test("publication rows retain eleven visible manuscripts including the exact runtime-stack survey title", () => {
+test("publication rows retain twelve visible manuscripts including the exact runtime-stack survey title", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => {
     const headings = all(card, (node) => node.tag === "h3");
@@ -225,7 +246,7 @@ test("publication rows retain eleven visible manuscripts including the exact run
     return normalizedText(headings[0]);
   });
   assert.deepEqual(titles.toSorted(), [...knownPapers.map(([title]) => title), surveyTitle].toSorted());
-  assert.equal(cards.length, 11);
+  assert.equal(cards.length, 12);
   assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const card of cards) {
@@ -244,9 +265,32 @@ test("publication rows retain eleven visible manuscripts including the exact run
   }
 });
 
-test("Agent context counts eleven distinct manuscripts without the unresolved KL record", () => {
+test("PIVOT stays pinned above submission-ordered manuscripts and undated archival rows", () => {
+  const cards = withClass(byId(pages.home, "papers"), "publication-card");
+  const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
+  // Month-only records keep their relative order; acceptance and revision dates
+  // are not substituted for unverified initial submission dates.
+  assert.deepEqual(titles, [
+    knownPapers[0][0],
+    surveyTitle,
+    knownPapers[1][0],
+    knownPapers[2][0],
+    knownPapers[3][0],
+    knownPapers[4][0],
+    knownPapers[10][0],
+    knownPapers[5][0],
+    knownPapers[6][0],
+    knownPapers[7][0],
+    knownPapers[8][0],
+    knownPapers[9][0],
+  ]);
+  assert.equal(cards[0].attrs.id, "paper-pivot");
+  assert.match(normalizedText(withClass(cards[0], "publication-meta")[0]), /Preparing for CVPR/);
+});
+
+test("Agent context counts twelve distinct manuscripts without the unresolved KL record", () => {
   const context = read("worker/src/index.mjs");
-  assert.match(context, /lists 11 distinct papers and manuscripts, not 11 published papers/);
+  assert.match(context, /lists 12 distinct papers and manuscripts, not 12 published papers/);
   assert.doesNotMatch(context, /When KL Regularization Fails|ZCPO/i);
 });
 
@@ -280,13 +324,14 @@ test("verified public paper destinations and conservative manuscript states stay
     [knownPapers[7][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
     [knownPapers[8][0], "Preprint", /arXiv:2512\.16927/],
     [knownPapers[9][0], "Published", /ICASSP 2025/],
+    [knownPapers[10][0], "Submitted", /Submitted to IEEE BigData 2026/],
   ];
   for (const [title, status, venue] of states) {
     const card = publication(title);
     assert.equal(normalizedText(withClass(card, "status-label")[0]), status);
     assert.match(normalizedText(withClass(card, "publication-meta")[0]), venue);
   }
-  for (const index of [0, 5, 6]) {
+  for (const index of [0, 5, 6, 10]) {
     const card = publication(knownPapers[index][0]);
     assert.match(normalizedText(card), /Not yet public/i);
     assert.equal(all(card, (node) => node.tag === "a").length, 0,
@@ -294,7 +339,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("publication rows retain nine real figures and two accessible venue labels on a shared decorative background", () => {
+test("publication rows retain ten real figures and two accessible venue labels on a shared decorative background", () => {
   const figures = [
     [knownPapers[1][0], "images/paper-timbre-overview.png"],
     [knownPapers[2][0], "images/paper-vla-early-exit.png"],
@@ -305,6 +350,7 @@ test("publication rows retain nine real figures and two accessible venue labels 
     [knownPapers[7][0], "images/paper3-cicl-pipeline.png"],
     [knownPapers[8][0], "images/paper2-suffix-tree.png"],
     [knownPapers[9][0], "images/paper1-hypergraph.png"],
+    [knownPapers[10][0], "images/paper-nominate-adjudicate-overview.png"],
   ];
   for (const [title, src] of figures) {
     const card = publication(title);
@@ -360,12 +406,12 @@ test("publication rows retain nine real figures and two accessible venue labels 
     assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0);
   }
   const cards = withClass(pages.home, "publication-card");
-  assert.equal(cards.length, 11);
+  assert.equal(cards.length, 12);
   const allFigures = withClass(pages.home, "publication-card-figure");
-  assert.equal(allFigures.length, 11);
+  assert.equal(allFigures.length, 12);
   assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
   assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 2);
-  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 9);
+  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 10);
   assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|Concept illustration|待补充|示意配图|Figure coming soon/,
     "concept cover assets must not be requested by the active homepage");
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
@@ -408,15 +454,14 @@ test("publication rows retain nine real figures and two accessible venue labels 
   }
 });
 
-test("TIMBRE is publicly linked and the survey remains Submitted without invented authors", () => {
+test("TIMBRE is publicly linked and the survey uses the confirmed FCS submission receipt without invented authors", () => {
   const timbre = publication(knownPapers[1][0]);
   assert.ok(all(timbre, (node) => node.tag === "a" && node.attrs.href === "https://arxiv.org/abs/2610.04795").length > 0);
   assert.doesNotMatch(normalizedText(timbre), /(?:paper )?not yet public/i);
   const survey = publication(surveyTitle);
-  assert.match(normalizedText(survey), /Frontiers of Computer Science/);
-  assert.doesNotMatch(source.home, /Frontiers in Computer Science|Theoretical Computer Science/);
+  assert.match(normalizedText(survey), /Submitted to Frontiers of Computer Science · Oct 2026/);
   assert.match(normalizedText(survey), /\bSubmitted\b/);
-  assert.doesNotMatch(normalizedText(survey), /\b(?:Accepted|Published)\b/);
+  assert.doesNotMatch(normalizedText(survey), /Frontiers in Computer Science|Previous submission|\b(?:Accepted|Published)\b|currently under review|external peer review|FCS-262084/i);
   const authors = withClass(survey, "publication-authors");
   for (const authorLine of authors) {
     assert.match(normalizedText(authorLine), /(?:author.*(?:pending|unconfirmed|not (?:provided|confirmed|available))|(?:pending|unconfirmed).*author)/i,

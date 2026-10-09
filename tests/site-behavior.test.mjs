@@ -492,6 +492,59 @@ test("buildAgentReply exposes WeChat without a public phone number", () => {
   }
 });
 
+test("buildAgentReply resolves BigData manuscript aliases and preserves submission-only facts", () => {
+  const title = "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning";
+  for (const question of [
+    "What is the BigData paper?",
+    "What was submitted to Big Data?",
+    "Explain the MIP manuscript",
+    "Nominate-then-Adjudicate",
+    "Tell me about solver tuning",
+    "我的大数据论文录用了吗？",
+    "BigData 的作者和状态是什么？",
+    "MIP 那篇能在哪里看 PDF？",
+  ]) {
+    const reply = site.buildAgentReply(question);
+    assert.equal(reply.topic, "papers");
+    assert.deepEqual(reply.sources, ["papers"]);
+    assert.ok(reply.answer.includes(title));
+    assert.ok(reply.answer.includes("Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, Yuming Deng")
+      || reply.answer.includes("Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, and Yuming Deng"));
+    assert.match(reply.answer, /IEEE BigData 2026/);
+    assert.match(reply.answer, /Submitted/);
+    if (/[\p{Script=Han}]/u.test(question)) {
+      assert.match(reply.answer, /2026 年 8 月 21 日上传成功/);
+      assert.match(reply.answer, /不是 Accepted 或 Published/);
+      assert.match(reply.answer, /已核对私下获取的投稿 PDF/);
+      assert.match(reply.answer, /原文 Figure 1/);
+      assert.match(reply.answer, /不代表全文 PDF 已公开/);
+      assert.match(reply.answer, /尚未核实公开 PDF 或论文链接/);
+      assert.match(reply.answer, /经验性能模型.*固定求解器配置组合.*提名候选/);
+      assert.match(reply.answer, /压缩的约束矩阵和离线文本技能记忆/);
+      assert.match(reply.answer, /1 次模型调用、0 次求解器调用，不更新基座模型权重/);
+      assert.match(reply.answer, /端到端延迟尚未测量/);
+    } else {
+      assert.match(reply.answer, /successful full-paper upload on August 21, 2026/);
+      assert.match(reply.answer, /not Accepted or Published/);
+      assert.match(reply.answer, /privately retrieved submission PDF has been inspected/);
+      assert.match(reply.answer, /authentic overview from Figure 1/);
+      assert.match(reply.answer, /does not make the full PDF publicly available/);
+      assert.match(reply.answer, /No public PDF or paper URL is verified/);
+      assert.match(reply.answer, /empirical performance model nominates a shortlist from a fixed solver-configuration portfolio/);
+      assert.match(reply.answer, /compressed constraint matrix, and offline textual skill memory/);
+      assert.match(reply.answer, /one model call, zero solver calls, and no foundation-model weight update/);
+      assert.match(reply.answer, /end-to-end latency is unmeasured/);
+    }
+    assert.doesNotMatch(reply.answer, /https?:\/\/|was accepted|was published|paper password|reference number|BigD\d+/i);
+    assert.doesNotMatch(reply.answer, /accuracy|benchmark|improv(?:ed|ement)|\d+%/i);
+    assert.doesNotMatch(reply.answer, /Based on the title|仅根据题目|no verified figure|已核实的配图/i);
+  }
+
+  const overview = site.buildAgentReply("Summarize your latest papers");
+  assert.ok(overview.answer.includes(title));
+  assert.match(overview.answer, /12 distinct papers and manuscripts, not 12 published papers/);
+});
+
 test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
   for (const question of [
     "What is SILICA?",
@@ -537,12 +590,13 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   const timbreSummary = reply.answer.split(" TIMBRE:")[1]?.split(" Three ICLR")[0] ?? "";
   assert.doesNotMatch(timbreSummary, /paper is not yet public|paper not yet public/i);
   assert.match(reply.answer, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack/);
-  assert.match(reply.answer, /submitted to Frontiers of Computer Science, as reported by the homepage owner/i);
+  assert.match(reply.answer, /was successfully submitted to Frontiers of Computer Science on October 6, 2026/i);
+  assert.match(reply.answer, /does not confirm external peer review, acceptance, or publication/i);
   assert.doesNotMatch(reply.answer, /ChronoMem is in preparation/);
   assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
   for (const [title, forumId] of [
     ["How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit", "x6BEwIFvUc"],
-    ["Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix", "g54eVrFPPI"],
+    ["Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix", "g54eVrFPPI"],
     ["QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG", "pvrvPinZif"],
   ]) {
     assert.ok(reply.answer.includes(title), `missing current publication ${title}`);
@@ -566,21 +620,24 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   );
 });
 
-test("buildAgentReply preserves the owner's corrected survey venue without inventing submission details", () => {
+test("buildAgentReply preserves the confirmed FCS survey submission without inventing live review status", () => {
   const reply = site.buildAgentReply("Which journal did the runtime stack survey go to?");
   const surveySummary = reply.answer.split("The survey “")[1]?.split(" My public papers")[0] ?? "";
-  assert.match(surveySummary, /submitted to Frontiers of Computer Science, as reported by the homepage owner/);
-  assert.match(surveySummary, /owner corrected the venue name on October 8, 2026; this is not the submission date/);
-  assert.match(surveySummary, /homepage label is Submitted; no acceptance or active review is claimed/);
-  assert.match(surveySummary, /author list, exact submission date, and public paper URL are unverified/);
-  assert.doesNotMatch(surveySummary, /Frontiers in Computer Science|Theoretical Computer Science|historical|submission history|currently under review|https?:\/\//i);
+  assert.match(surveySummary, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
+  assert.match(surveySummary, /homepage label is Submitted/);
+  assert.match(surveySummary, /does not confirm external peer review, acceptance, or publication/);
+  assert.match(surveySummary, /current live system status has not been checked/);
+  assert.match(surveySummary, /author list and public paper URL are unverified/);
+  assert.doesNotMatch(surveySummary, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|exact submission date.*unverified|was accepted|was published|FCS-262084|https?:\/\//i);
 
   const research = site.buildAgentReply("What is your research direction?");
   assert.equal(research.topic, "research");
-  assert.match(research.answer, /submitted to Frontiers of Computer Science, as reported by the homepage owner/);
-  assert.match(research.answer, /venue name was corrected on October 8, 2026/);
-  assert.match(research.answer, /exact submission date, public paper URL, and author list remain unverified/);
-  assert.doesNotMatch(research.answer, /Frontiers in Computer Science|historical|past submission/i);
+  assert.match(research.answer, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
+  assert.match(research.answer, /homepage label is Submitted/);
+  assert.match(research.answer, /does not confirm external peer review, acceptance, or publication/);
+  assert.match(research.answer, /current live system status has not been checked/);
+  assert.match(research.answer, /author list and public paper URL are unverified/);
+  assert.doesNotMatch(research.answer, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|FCS-262084/i);
 });
 
 function createAgentFixture(apiUrl) {

@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261008-editorial-12";
+const releaseToken = "20261009-submission-order-1";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -94,16 +94,17 @@ test("Now presents the verified 2026 milestones as a reverse-chronological timel
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 9, "Now must expose nine concise milestone cards");
-  assert.deepEqual(dates, ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  assert.equal(items.length, 10, "Now must expose ten concise milestone cards");
+  assert.deepEqual(dates, ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
   for (const status of ["Accepted", "Preparing", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
   assert.match(
-    items[4],
+    items[5],
     /Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026\./,
   );
-  assert.match(items[4], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[5], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[4], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
   assert.match(items[0], /Preparing[\s\S]*PIVOT[\s\S]*for CVPR/);
   assert.match(items[1], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
   assert.match(items[2], /Three ICLR 2027 submissions/);
@@ -309,6 +310,11 @@ test("every verified paper title remains keyboard-accessible without swallowing 
 
 test("verified publication figures remain scoped to their corresponding cards", () => {
   const figureContracts = [
+    {
+      title: "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning",
+      src: "images/paper-nominate-adjudicate-overview.png",
+      alt: "Nominate-then-Adjudicate Figure 1: fixed-portfolio EPM nomination, compressed instance structure, and LLM adjudication with offline textual skill memory",
+    },
     {
       title: "SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction",
       src: "images/paper-silica-identifiability.png",
@@ -691,8 +697,8 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and eleven independent publication rows", () => {
-  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "PIVOT · CVPR", "Agent Research Survey"];
+test("homepage locks the current research program, career, and twelve independent publication rows", () => {
+  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "PIVOT · Preparing for CVPR", "Agent Research Survey · Submitted"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
   assert.equal(researchCards.length, 3);
@@ -706,7 +712,7 @@ test("homepage locks the current research program, career, and eleven independen
   }
 
   assert.equal(cardsWithClass("experience-item").length, 5);
-  assert.equal(cardsWithClass("publication-card").length, 11);
+  assert.equal(cardsWithClass("publication-card").length, 12);
 });
 
 test("verified career levels stay attached to their corresponding appointments", () => {
@@ -918,7 +924,7 @@ test("PIVOT is preparing for CVPR, not an active ICLR submission or a public pap
   assert.match(card, /Preparing for CVPR · Not yet public/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng/);
   assert.doesNotMatch(card, /<a\b|publication-card-linked|>Submitted<|>Accepted<|>Published<|ICLR|CVPR 20\d\d/);
-  assert.match(contentSection("research"), /PIVOT · CVPR/);
+  assert.match(contentSection("research"), /PIVOT · Preparing for CVPR/);
   assert.doesNotMatch(contentSection("research"), /CVPR Manuscript/);
 });
 
@@ -930,7 +936,7 @@ test("new public ICLR submissions preserve title, author order, and direct links
       "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong>",
     ],
     [
-      "Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix",
+      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix",
       "g54eVrFPPI",
       "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, <strong>Xinyu Guan</strong>, Ruoyun Ma, Hailu Xu",
     ],

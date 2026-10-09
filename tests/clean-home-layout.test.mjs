@@ -63,7 +63,8 @@ test("both pages keep the navigation and contact rail before the main landmark",
     assert.match(sidebar, /<nav\b[^>]*aria-label="Primary navigation"/);
     assert.match(sidebar, /class="profile-links"/);
     assert.match(sidebar, /Ask Xinyu/);
-    assert.ok(page.indexOf(sidebar) < page.indexOf('<main class="workspace-main">'));
+    const main = page.match(/<main\b[^>]*class="workspace-main"[^>]*>/)?.index;
+    assert.ok(main != null && page.indexOf(sidebar) < main);
     assert.doesNotMatch(sidebar, /class="profile-card"|class="news-card"|<img\b/);
   }
   assert.doesNotMatch(life, /class="news-card"/);

@@ -7,10 +7,30 @@
   <meta name="description" content="Personal academic homepage of Xinyu Guan, an AI Agent Researcher at TaoTian Group @ Alibaba working on AutoResearch, post-training, and agentic reinforcement learning." />
   <meta name="xinyu-agent-api" content="https://xinyu-agent-api.798750933strikerg.workers.dev/api/chat" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261008-editorial-12" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261008-editorial-12" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261009-submission-order-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261009-submission-order-1" />
 </head>
 <body class="profile-page editorial-page">
+  <dialog class="site-entry" id="site-entry" aria-labelledby="entry-name" aria-describedby="entry-role entry-company">
+    <div class="entry-center">
+      <div class="entry-header">
+        <div class="entry-identity">
+          <h2 id="entry-name">Xinyu Guan</h2>
+          <p class="entry-chinese" lang="zh-CN">关鑫宇</p>
+        </div>
+        <div class="entry-affiliation">
+          <p class="entry-role" id="entry-role">AI Agent Researcher</p>
+          <p class="entry-company" id="entry-company">Alibaba Group</p>
+        </div>
+      </div>
+      <div class="entry-footer">
+        <p class="entry-research">AutoResearch / Post-Training / Agentic RL</p>
+        <button class="entry-enter" type="button" data-entry-enter autofocus><span>Explore my work</span><span class="entry-arrow" aria-hidden="true"><i class="ri-arrow-right-line"></i></span></button>
+      </div>
+    </div>
+  </dialog>
+  <a class="editorial-skip-link" href="#home">Skip to content</a>
+  <div class="reading-progress" data-reading-progress aria-hidden="true" hidden></div>
   <div class="academic-shell">
     <aside class="editorial-sidebar" aria-label="Site navigation and contact">
       <nav class="workspace-nav" aria-label="Primary navigation">
@@ -36,9 +56,7 @@
       <section class="editorial-hero" id="home" aria-labelledby="profile-name">
         <div class="hero-copy">
           <h1 id="profile-name">Xinyu Guan <span lang="zh-CN">关鑫宇</span></h1>
-          <p class="hero-role">AI Agent Researcher · TaoTian Group @ Alibaba</p>
           <p class="hero-lead">I build AI agents that don’t just answer questions—they pursue discovery and turn research into real-world impact.</p>
-          <p class="hero-focus">AutoResearch / Post-Training / Agentic RL</p>
         </div>
         <figure class="hero-portrait profile-photo">
           <picture>
@@ -180,6 +198,24 @@
               </div>
             </article>
 
+            <article class="publication-card" id="paper-runtime-survey">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="Runtime Stack survey: Frontiers of Computer Science">
+                <picture aria-hidden="true">
+                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                </picture>
+                <span class="publication-figure-pending-label">Frontiers of Computer Science</span>
+              </figure>
+              <div class="publication-body">
+                <h3>Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack</h3>
+                <div class="publication-metadata">
+                  <p class="status-label">Submitted</p>
+                  <p class="publication-meta">Submitted to Frontiers of Computer Science · Oct 2026</p>
+                </div>
+                <p class="publication-summary">Reviews diagnostics, infrastructure, and the runtime stack of foundation-model-based multi-agent systems.</p>
+              </div>
+            </article>
+
             <article class="publication-card publication-card-linked" id="paper-timbre">
               <figure class="publication-card-figure">
                 <picture>
@@ -224,7 +260,7 @@
                 </picture>
               </figure>
               <div class="publication-body">
-                <h3><a href="https://openreview.net/forum?id=g54eVrFPPI" target="_blank" rel="noopener">Static Gradient Attribution Underperforms a Density-Matched Random Mask Within LoRA’s B-Matrix</a></h3>
+                <h3><a href="https://openreview.net/forum?id=g54eVrFPPI" target="_blank" rel="noopener">Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix</a></h3>
                 <p class="publication-authors">Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, <strong>Xinyu Guan</strong>, Ruoyun Ma, Hailu Xu</p>
                 <div class="publication-metadata">
                   <p class="status-label">Submitted</p>
@@ -249,6 +285,24 @@
                   <p class="publication-meta">Submitted to ICLR 2027 · Sep 2026 · OpenReview</p>
                 </div>
                 <p class="publication-summary">Builds static RAG chunk indices from question–evidence supervision, unifying overlapping and non-overlapping chunking as budget-aware utility maximization.</p>
+              </div>
+            </article>
+
+            <article class="publication-card" id="paper-nominate-adjudicate">
+              <figure class="publication-card-figure">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-nominate-adjudicate-overview-320.webp 320w, images/generated/paper-nominate-adjudicate-overview-640.webp 640w, images/generated/paper-nominate-adjudicate-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-nominate-adjudicate-overview.png" width="2048" height="432" alt="Nominate-then-Adjudicate Figure 1: fixed-portfolio EPM nomination, compressed instance structure, and LLM adjudication with offline textual skill memory" loading="lazy" decoding="async" />
+                </picture>
+              </figure>
+              <div class="publication-body">
+                <h3>Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</h3>
+                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, Kai Wei, Yuming Deng</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Submitted</p>
+                  <p class="publication-meta">Submitted to IEEE BigData 2026 · Aug 2026 · Not yet public</p>
+                </div>
+                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference.</p>
               </div>
             </article>
 
@@ -285,24 +339,6 @@
                   <p class="publication-meta">Submitted to AAAI 2027 · Jul 2026 · Not yet public</p>
                 </div>
                 <p class="publication-summary">Diagnoses calibration imbalance under low-variance rewards and introduces bounded recovery for credible small reward gaps.</p>
-              </div>
-            </article>
-
-            <article class="publication-card" id="paper-runtime-survey">
-              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="Runtime Stack survey: Frontiers of Computer Science">
-                <picture aria-hidden="true">
-                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-                </picture>
-                <span class="publication-figure-pending-label">Frontiers of Computer Science</span>
-              </figure>
-              <div class="publication-body">
-                <h3>Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack</h3>
-                <div class="publication-metadata">
-                  <p class="status-label">Submitted</p>
-                  <p class="publication-meta">Frontiers of Computer Science</p>
-                </div>
-                <p class="publication-summary">Reviews diagnostics, infrastructure, and the runtime stack of foundation-model-based multi-agent systems.</p>
               </div>
             </article>
 
@@ -396,9 +432,9 @@
           <div class="research-progress" aria-label="Current manuscripts">
             <span class="research-progress-label">Current manuscripts</span>
             <div class="research-progress-items">
-              <strong>PIVOT · CVPR</strong>
+              <strong>PIVOT · Preparing for CVPR</strong>
               <span class="research-progress-dot" aria-hidden="true">·</span>
-              <strong>Agent Research Survey</strong>
+              <strong>Agent Research Survey · Submitted</strong>
             </div>
           </div>
         </section>
@@ -439,7 +475,7 @@
             <p class="career-date">Jun 2023 — Oct 2023</p>
             <div>
               <h3>Efficient Text Search Algorithm Evaluation</h3>
-              <p>Collaboration with Prof. David Manlove. Evaluated seven algorithms on a <strong>1M+</strong> NLTK corpus and developed an Ukkonen-based suffix-tree approach with approximately <strong>5.2×</strong> speedup. Applied it to human genomic sequences, improving search speed by <strong>40%</strong> and reaching <strong>100%</strong> accuracy in the reported evaluation.</p>
+              <p>Collaboration with Prof. David Manlove. Evaluated seven algorithms on a <strong>1M+</strong> NLTK corpus and developed a Ukkonen-based suffix-tree approach with approximately <strong>5.2×</strong> speedup. Applied it to human genomic sequences, improving search speed by <strong>40%</strong> and reaching <strong>100%</strong> accuracy in the reported evaluation.</p>
             </div>
           </article>
           <article class="research-project">
@@ -498,7 +534,7 @@
           <p>Preparing <a href="#paper-pivot">PIVOT</a>, a multimodal agent self-improvement framework, for CVPR.</p>
         </article>
         <article class="news-item">
-          <div><time datetime="2026-10">Oct 2026</time><span>Updated</span></div>
+          <div><time datetime="2026-10">Oct 2026</time><span>Submitted</span></div>
           <p><a href="#paper-timbre">TIMBRE</a>, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on <a href="https://arxiv.org/abs/2610.04795" target="_blank" rel="noopener">arXiv</a>.</p>
         </article>
         <article class="news-item">
@@ -508,6 +544,10 @@
         <article class="news-item">
           <div><time datetime="2026-09">Sep 2026</time><span>Updated</span></div>
           <p><a href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">Updated the ICONIP 2026 camera-ready version of Decision-Aware Memory Cards on arXiv.</a></p>
+        </article>
+        <article class="news-item">
+          <div><time datetime="2026-08-21">Aug 2026</time><span>Submitted</span></div>
+          <p><a href="#paper-nominate-adjudicate">Nominate-then-Adjudicate</a>, our LLM-assisted MIP solver-tuning manuscript, has been submitted to IEEE BigData 2026.</p>
         </article>
         <article class="news-item">
           <div><time datetime="2026-08">Aug 2026</time><span>Accepted</span></div>
@@ -583,6 +623,8 @@
           </aside>
   </dialog>
 
-  <script type="module" src="phd-main.js?v=20261008-editorial-12"></script>
+  <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
+  <script type="module" src="phd-main.js?v=20261009-submission-order-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261009-submission-order-1"></script>
 </body>
 </html>
