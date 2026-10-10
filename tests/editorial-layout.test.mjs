@@ -165,9 +165,14 @@ test("homepage opens with a real portrait and bilingual identity, then career be
   assert.match(normalizedText(copy), /Xinyu Guan/);
   assert.match(normalizedText(copy), /关鑫宇/);
   const leads = withClass(copy, "hero-lead");
-  assert.equal(leads.length, 1, "hero must retain one owner-approved lead statement");
-  assert.equal(normalizedText(leads[0]),
-    "I build AI agents that don’t just answer questions—they pursue discovery and turn research into real-world impact.");
+  assert.equal(leads.length, 1, "hero must contain one concise first-person introduction");
+  const introduction = normalizedText(leads[0]);
+  assert.match(introduction, /^I am an AI Agent Researcher at TaoTian Group @ Alibaba/);
+  assert.match(introduction, /general-purpose AutoResearch systems and multimodal quality-inspection agents for Xianyu/);
+  assert.match(introduction, /AutoResearch, post-training, and agentic reinforcement learning/);
+  assert.match(introduction, /welcome academic collaboration/);
+  assert.ok(introduction.split(/\s+/).length <= 90, "the introduction must stay compact");
+  assert.equal(all(leads[0], (node) => node.tag === "a")[0]?.attrs.href, "mailto:xinyuguanphd@outlook.com");
   const image = all(portrait, (node) => node.tag === "img")[0];
   assert.ok(image, "hero portrait must be an actual image");
   assert.equal(image.attrs.src, "images/generated/avatar-528.jpg");

@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261009-submission-order-1";
+const releaseToken = "20261010-profile-intro-1";
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>

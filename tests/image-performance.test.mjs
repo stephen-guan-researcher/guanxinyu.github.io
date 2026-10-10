@@ -84,7 +84,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261009-submission-order-1";
+const releaseToken = "20261010-profile-intro-1";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
