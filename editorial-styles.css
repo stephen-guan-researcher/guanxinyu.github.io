@@ -165,7 +165,7 @@
 }
 .editorial-page .hero-portrait picture,
 .editorial-page .hero-portrait img { display: block; width: 100%; height: 100%; }
-.editorial-page .hero-portrait img { object-fit: cover; object-position: 50% 30%; transform: scale(1.4); transform-origin: 50% 36%; }
+.editorial-page .hero-portrait img { object-fit: cover; object-position: center; }
 
 .editorial-page .content-card,
 .editorial-page .news-card {
@@ -362,7 +362,11 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
 .editorial-page .beyond-card { border: 0; }
 .editorial-page .beyond-card .card-heading { padding-top: 0; }
 .editorial-page .beyond-card > p { color: #737b89; font-size: 15px; margin-bottom: 26px; }
-.editorial-page .life-gallery { gap: 6px; padding: 0; border-radius: 0; background: #fff; }
+.editorial-page .life-gallery { display: block; padding: 0; border-radius: 0; background: #fff; }
+.editorial-page .life-gallery-batch { gap: 6px; margin-top: 0; border-radius: 0; background: #fff; }
+.editorial-page .life-gallery-batch + .life-gallery-batch { margin-top: 6px; }
+.life-photo--focal-boardwalk { object-position: 50% 65%; }
+.life-photo--focal-vegas { object-position: 50% 55%; }
 .editorial-page .life-tile { border-radius: 0; }
 
 @media (min-width: 1700px) {
@@ -484,7 +488,8 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
   .editorial-page .site-footer p + p { margin-top: 5px; }
   .agent-dialog { padding: 20px; max-height: calc(100dvh - 24px); }
   .agent-dialog .agent-response { max-height: 40dvh; }
-  .editorial-page .life-gallery { gap: 4px; }
+  .editorial-page .life-gallery-batch { gap: 4px; }
+  .editorial-page .life-gallery-batch + .life-gallery-batch { margin-top: 4px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

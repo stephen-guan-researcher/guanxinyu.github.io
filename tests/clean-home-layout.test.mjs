@@ -46,7 +46,7 @@ const mobileRules = desktop + tablet + mobile;
 
 test("the editorial hero uses the real portrait without overlay copy", () => {
   const portrait = elementWithClass(index, "figure", "hero-portrait");
-  assert.match(portrait, /<img\b[^>]*src="images\/generated\/avatar-528\.jpg"/);
+  assert.match(portrait, /<img\b[^>]*src="images\/generated\/avatar-20261011-528\.jpg"/);
   assert.equal(normalizedText(portrait), "", "the portrait must contain the image only");
   assert.match(cssRule(desktop, ".hero-portrait img"), /object-fit:\s*cover/);
 });

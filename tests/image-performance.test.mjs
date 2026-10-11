@@ -14,6 +14,30 @@ const archivedPublicationCoverStems = [
 ];
 const extractedFigureStems = ["paper-vla-early-exit", "paper-lora-attribution", "paper-qeschunker-overview", "paper-nominate-adjudicate-overview"];
 const pendingBackgroundStem = "paper-figure-pending-background";
+const freshLifeStems = [
+  "sunny-patio", "steaming-pool-boardwalk", "las-vegas-sign", "desert-road", "desert-house",
+  "mirror-portrait", "living-room-reading", "patio-chair", "patio-red-drink", "poolside-closeup",
+  "poolside-lounge", "las-vegas-walkway", "desert-sunset", "stone-arcade", "university-courtyard",
+];
+const originalLifeStems = [
+  "life-road-red-shirt", "life-camera-portrait", "life-jellyfish-aquarium",
+  "glasgow-graduation-group", "glasgow-bute-hall-night", "glasgow-graduation-portrait",
+  "glasgow-arches-portrait", "glasgow-graduation-contact-sheet", "glasgow-graduation-reception",
+  "glasgow-graduation-friends", "ntu-campus", "seaside-cafe", "red-pavilion-portrait",
+  "ninghai-swing-seated", "ninghai-swing-front", "beach-walk", "garden-rabbit", "coastal-temple",
+];
+const avatarStem = "avatar-20261011";
+
+function assertNoMetadata(path) {
+  const bytes = readFileSync(asset(path));
+  for (const signature of [
+    Buffer.from("Exif\0\0", "binary"),
+    Buffer.from("http://ns.adobe.com/xap/1.0/", "ascii"),
+    Buffer.from("Photoshop 3.0", "ascii"),
+  ]) {
+    assert.equal(bytes.includes(signature), false, `${path} must be metadata-free`);
+  }
+}
 
 function assertWebP(path, maxBytes) {
   assert.equal(existsSync(asset(path)), true, `${path} must exist`);
@@ -24,10 +48,13 @@ function assertWebP(path, maxBytes) {
 }
 
 test("responsive avatar variants are real compact WebP assets", () => {
-  assertWebP("images/generated/avatar-208.webp", 12_000);
-  assertWebP("images/generated/avatar-352.webp", 20_000);
-  assertWebP("images/generated/avatar-528.webp", 30_000);
-  assert.equal(existsSync(asset("images/generated/avatar-528.jpg")), true);
+  for (const [width, maxBytes] of [[208, 12_000], [352, 20_000], [528, 30_000]]) {
+    const path = `images/generated/${avatarStem}-${width}.webp`;
+    assertWebP(path, maxBytes);
+    assertNoMetadata(path);
+  }
+  assertNoMetadata(`images/generated/${avatarStem}-528.jpg`);
+  assertNoMetadata(`images/${avatarStem}.jpg`);
 });
 
 test("real figures, the shared pending background, and retained archived covers have responsive WebP variants", () => {
@@ -58,7 +85,7 @@ test("every current Life Photo has compact 320-pixel and 640-pixel WebP variants
   const life = readFileSync(asset("life.html"), "utf8");
   const stems = [...life.matchAll(/src="images\/life\/([^\"]+)\.jpg"/g)]
     .map((match) => match[1]);
-  assert.equal(new Set(stems).size, 18);
+  assert.equal(new Set(stems).size, 33);
   for (const stem of new Set(stems)) {
     assertWebP(`images/life/generated/${stem}-320.webp`, 100_000);
     assertWebP(`images/life/generated/${stem}-640.webp`, 180_000);
@@ -69,40 +96,34 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
   const life = readFileSync(asset("life.html"), "utf8");
   const stems = [...life.matchAll(/src="images\/life\/([^\"]+)\.jpg"/g)]
     .map((match) => match[1]);
-  const signatures = [
-    Buffer.from("Exif\0\0", "binary"),
-    Buffer.from("http://ns.adobe.com/xap/1.0/", "ascii"),
-    Buffer.from("Photoshop 3.0", "ascii"),
-  ];
   for (const stem of new Set(stems)) {
-    const bytes = readFileSync(asset(`images/life/${stem}.jpg`));
-    for (const signature of signatures) {
-      assert.equal(bytes.includes(signature), false, `${stem}.jpg must be metadata-free`);
-    }
+    assertNoMetadata(`images/life/${stem}.jpg`);
   }
 });
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261010-profile-intro-1";
+const releaseToken = "20261011-photos-1";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
-  const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === "images/generated/avatar-528.jpg");
+  const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === `images/generated/${avatarStem}-528.jpg`);
   assert.equal(portraits.length, 1, "homepage must retain one real hero portrait");
   const portrait = portraits[0];
   assert.equal(attribute(portrait, "width"), "528");
-  assert.equal(attribute(portrait, "height"), "453");
+  assert.equal(attribute(portrait, "height"), "528");
   assert.equal(attribute(portrait, "fetchpriority"), "high");
   assert.equal(attribute(portrait, "decoding"), "async");
   assert.notEqual(attribute(portrait, "loading"), "lazy");
 
-  const source = tags(index, "source").find((tag) => attribute(tag, "srcset")?.includes("avatar-208.webp"));
+  const source = tags(index, "source").find((tag) => attribute(tag, "srcset")?.includes(`${avatarStem}-208.webp`));
   assert.ok(source, "homepage portrait must retain its responsive source");
   assert.equal(attribute(source, "type"), "image/webp");
-  assert.deepEqual(srcsetCandidates(source), [208, 352, 528].map((width) => `images/generated/avatar-${width}.webp ${width}w`));
-  assert.equal(normalizeSpace(attribute(source, "sizes")), "(max-width: 600px) 104px, (max-width: 1000px) 180px, 280px");
+  assert.deepEqual(srcsetCandidates(source), [208, 352, 528].map((width) => `images/generated/${avatarStem}-${width}.webp ${width}w`));
+  assert.equal(normalizeSpace(attribute(source, "sizes")), "(max-width: 600px) 104px, (max-width: 1150px) 180px, (min-width: 1700px) 320px, 240px");
+  assert.doesNotMatch(index, /images\/generated\/avatar-(?:208|352|528)\.(?:webp|jpg)/,
+    "the homepage must not fetch the retired portrait variants");
   assert.doesNotMatch(life, /images\/generated\/avatar-/);
-  assert.equal(tags(life, "img").length, 18, "Life must not fetch an additional profile portrait");
+  assert.equal(tags(life, "img").length, 33, "Life must not fetch an additional profile portrait");
 });
 
 test("ten paper figures and two reused decorative backgrounds are responsive and lazy", () => {
@@ -199,24 +220,18 @@ test("ten paper figures and two reused decorative backgrounds are responsive and
   }
 });
 
-test("Life Photos retain all eighteen original fallbacks in their established order", () => {
-  const expected = [
-    "life-road-red-shirt", "life-camera-portrait", "life-jellyfish-aquarium",
-    "glasgow-graduation-group", "glasgow-bute-hall-night", "glasgow-graduation-portrait",
-    "glasgow-arches-portrait", "glasgow-graduation-contact-sheet", "glasgow-graduation-reception",
-    "glasgow-graduation-friends", "ntu-campus", "seaside-cafe", "red-pavilion-portrait",
-    "ninghai-swing-seated", "ninghai-swing-front", "beach-walk", "garden-rabbit", "coastal-temple",
-  ];
+test("Life Photos prepend fifteen fresh fallbacks without changing the original eighteen-image order", () => {
+  const expected = [...freshLifeStems, ...originalLifeStems];
   assert.deepEqual(tags(life, "img").map((image) => attribute(image, "src")), expected.map((stem) => `images/life/${stem}.jpg`));
   for (const stem of expected) assert.equal(existsSync(asset(`images/life/${stem}.jpg`)), true);
 });
 
-test("Life Photos keep one prioritized gallery image and seventeen lazy images", () => {
+test("Life Photos keep one prioritized gallery image and thirty-two lazy images", () => {
   const gallery = life.match(/<section class="life-gallery"[\s\S]*?<\/section>/)?.[0] ?? "";
   assert.equal((gallery.match(/fetchpriority="high"/g) ?? []).length, 1);
-  assert.equal((gallery.match(/loading="lazy"/g) ?? []).length, 17);
+  assert.equal((gallery.match(/loading="lazy"/g) ?? []).length, 32);
   const pictures = gallery.match(/<picture>[\s\S]*?<\/picture>/g) ?? [];
-  assert.equal(pictures.length, 18);
+  assert.equal(pictures.length, 33);
   for (const picture of pictures) {
     const stem = picture.match(/src="images\/life\/([^\"]+)\.jpg"/)?.[1];
     const sourceWidth = Number(picture.match(/\bwidth="(\d+)"/)?.[1]);
@@ -230,7 +245,7 @@ test("Life Photos keep one prioritized gallery image and seventeen lazy images",
 
 test("Life Photo sizes match every final mosaic slot without crossing image tiers", () => {
   const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
-  assert.equal(tiles.length, 18);
+  assert.equal(tiles.length, 33);
 
   for (const [, className, tile] of tiles) {
     const isLead = className.includes("life-tile--lead");

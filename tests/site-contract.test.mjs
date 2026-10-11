@@ -10,7 +10,19 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261010-profile-intro-1";
+const releaseToken = "20261011-photos-1";
+const freshLifeFilenames = [
+  "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
+  "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
+  "poolside-lounge.jpg", "las-vegas-walkway.jpg", "desert-sunset.jpg", "stone-arcade.jpg", "university-courtyard.jpg",
+];
+const originalLifeFilenames = [
+  "life-road-red-shirt.jpg", "life-camera-portrait.jpg", "life-jellyfish-aquarium.jpg",
+  "glasgow-graduation-group.jpg", "glasgow-bute-hall-night.jpg", "glasgow-graduation-portrait.jpg",
+  "glasgow-arches-portrait.jpg", "glasgow-graduation-contact-sheet.jpg", "glasgow-graduation-reception.jpg",
+  "glasgow-graduation-friends.jpg", "ntu-campus.jpg", "seaside-cafe.jpg", "red-pavilion-portrait.jpg",
+  "ninghai-swing-seated.jpg", "ninghai-swing-front.jpg", "beach-walk.jpg", "garden-rabbit.jpg", "coastal-temple.jpg",
+];
 
 function assertReleaseAssets(page) {
   const stylesheet = (page.match(/<link\b[^>]*>/g) ?? []).find((tag) =>
@@ -130,7 +142,7 @@ test("profile page preserves the approved identity and real assets", () => {
   ]) {
     assert.ok(index.includes(text), `index.html must retain ${text}`);
   }
-  assert.match(index, /images\/generated\/avatar-528\.jpg/);
+  assert.match(index, /images\/generated\/avatar-20261011-528\.jpg/);
   for (const image of ["paper1-hypergraph.png", "paper2-suffix-tree.png"]) {
     assert.equal(
       existsSync(new URL(`../images/${image}`, import.meta.url)),
@@ -420,73 +432,40 @@ test("compact utility labels retain full email and WeChat identifiers accessibly
   }
 });
 
-test("life page publishes eighteen accessible photographs with the new opening sequence", () => {
+test("life page publishes thirty-three accessible photographs with the new opening sequence", () => {
   assert.equal(lifeExists, true, "life.html must exist");
-  assert.equal((life.match(/class="life-tile\b/g) || []).length, 18);
-  assert.equal((life.match(/<img\b(?=[^>]*\bclass="[^"]*\blife-photo\b[^"]*")(?=[^>]*\balt="[^"]+")[^>]*>/g) || []).length, 18);
+  assert.equal((life.match(/class="life-tile\b/g) || []).length, 33);
+  assert.equal((life.match(/<img\b(?=[^>]*\bclass="[^"]*\blife-photo\b[^"]*")(?=[^>]*\balt="[^"]+")[^>]*>/g) || []).length, 33);
   assert.doesNotMatch(life, /class="[^"]*\bhero-portrait\b/, "Life Photos should not duplicate the homepage hero");
   assert.doesNotMatch(life, /Oxford, UK|class="year-line/);
   assert.doesNotMatch(life, /frame-empty|Add life photo|role="presentation"/);
 
-  for (const filename of [
-    "life-road-red-shirt.jpg",
-    "life-camera-portrait.jpg",
-    "life-jellyfish-aquarium.jpg",
-    "coastal-temple.jpg",
-    "seaside-cafe.jpg",
-    "red-pavilion-portrait.jpg",
-    "ninghai-swing-seated.jpg",
-    "ninghai-swing-front.jpg",
-    "beach-walk.jpg",
-    "garden-rabbit.jpg",
-    "ntu-campus.jpg",
-    "glasgow-graduation-friends.jpg",
-    "glasgow-graduation-group.jpg",
-    "glasgow-bute-hall-night.jpg",
-    "glasgow-graduation-portrait.jpg",
-    "glasgow-arches-portrait.jpg",
-    "glasgow-graduation-contact-sheet.jpg",
-    "glasgow-graduation-reception.jpg",
-  ]) {
+  for (const filename of [...freshLifeFilenames, ...originalLifeFilenames]) {
     assert.match(life, new RegExp(`src="images/life/${filename}"`));
     assert.equal(existsSync(new URL(`../images/life/${filename}`, import.meta.url)), true, `${filename} must exist`);
   }
 });
 
-test("life gallery opens with the three new photographs and preserves the previous order", () => {
-  assertInOrder(life, [
-    'src="images/life/life-road-red-shirt.jpg"',
-    'src="images/life/life-camera-portrait.jpg"',
-    'src="images/life/life-jellyfish-aquarium.jpg"',
-    'src="images/life/glasgow-graduation-group.jpg"',
-    'src="images/life/glasgow-bute-hall-night.jpg"',
-    'src="images/life/glasgow-graduation-portrait.jpg"',
-    'src="images/life/glasgow-arches-portrait.jpg"',
-    'src="images/life/glasgow-graduation-contact-sheet.jpg"',
-    'src="images/life/glasgow-graduation-reception.jpg"',
-    'src="images/life/glasgow-graduation-friends.jpg"',
-    'src="images/life/ntu-campus.jpg"',
-    'src="images/life/seaside-cafe.jpg"',
-    'src="images/life/red-pavilion-portrait.jpg"',
-    'src="images/life/ninghai-swing-seated.jpg"',
-    'src="images/life/ninghai-swing-front.jpg"',
-    'src="images/life/beach-walk.jpg"',
-    'src="images/life/garden-rabbit.jpg"',
-    'src="images/life/coastal-temple.jpg"',
-  ]);
+test("life gallery opens with all fifteen new photographs and preserves the previous order", () => {
+  assertInOrder(life, [...freshLifeFilenames, ...originalLifeFilenames].map((filename) => `src="images/life/${filename}"`));
+  assert.equal((life.match(/<div\b(?=[^>]*\bclass="[^"]*\blife-gallery-batch\b)[^>]*>/g) ?? []).length, 2);
 
   const figures = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
-  assert.equal(figures.length, 18);
+  assert.equal(figures.length, 33);
   assert.match(figures[0][1], /\blife-tile--lead\b/);
   assert.match(figures[0][1], /\blife-tile--landscape\b/);
-  assert.match(figures[0][2], /src="images\/life\/life-road-red-shirt\.jpg"/);
+  assert.match(figures[0][2], /src="images\/life\/sunny-patio\.jpg"/);
   assert.match(figures[0][2], /fetchpriority="high"/);
   assert.doesNotMatch(figures[0][2], /loading="lazy"/);
   assert.match(figures[1][1], /\blife-tile--portrait\b/);
   assert.match(figures[2][1], /\blife-tile--soft-portrait\b/);
   assert.match(figures[1][1], /\blife-tile--opening-portrait\b/);
   assert.match(figures[2][1], /\blife-tile--opening-portrait\b/);
-  assert.equal(figures.filter(([, className]) => className.includes("life-tile--opening-portrait")).length, 2);
+  assert.equal(figures.filter(([, className]) => className.includes("life-tile--opening-portrait")).length, 4);
+  assert.match(figures[15][1], /\blife-tile--lead\b/);
+  assert.match(figures[15][2], /src="images\/life\/life-road-red-shirt\.jpg"/);
+  assert.match(figures[15][2], /loading="lazy"/);
+  assert.doesNotMatch(figures[15][2], /fetchpriority="high"/);
   assert.doesNotMatch(figures.at(-1)[1], /\blife-tile--lead\b/);
   assert.match(figures.at(-1)[2], /src="images\/life\/coastal-temple\.jpg"/);
   assert.match(figures.at(-1)[2], /loading="lazy"/);
@@ -494,13 +473,13 @@ test("life gallery opens with the three new photographs and preserves the previo
 });
 
 test("life photographs use fixed row tracks and hole-free opening geometry at every breakpoint", () => {
-  assert.equal((life.match(/\bloading="lazy"/g) || []).length, 17);
-  assert.equal((life.match(/\blife-tile--lead\b/g) || []).length, 1);
+  assert.equal((life.match(/\bloading="lazy"/g) || []).length, 32);
+  assert.equal((life.match(/\blife-tile--lead\b/g) || []).length, 2);
   assert.ok((life.match(/\blife-tile--wide\b/g) || []).length >= 2);
   assert.ok((life.match(/\blife-tile--landscape\b/g) || []).length >= 6);
   assert.ok((life.match(/\blife-tile--portrait\b/g) || []).length >= 4);
   assert.ok((life.match(/\blife-tile--soft-portrait\b/g) || []).length >= 2);
-  assert.match(css, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*96px[^}]*grid-auto-flow:\s*dense/s);
+  assert.match(css, /\.life-gallery-batch\s*\{[^}]*grid-template-columns:\s*repeat\(12,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*96px[^}]*grid-auto-flow:\s*dense/s);
   assert.match(css, /\.life-tile\s*\{[^}]*overflow:\s*hidden/s);
   assert.match(css, /\.life-tile--landscape\s*\{[^}]*grid-column:\s*span\s*4[^}]*grid-row:\s*span\s*3/s);
   assert.match(css, /\.life-tile--portrait\s*\{[^}]*grid-column:\s*span\s*3[^}]*grid-row:\s*span\s*4/s);
@@ -511,7 +490,7 @@ test("life photographs use fixed row tracks and hole-free opening geometry at ev
   assert.match(css, /\.life-photo\s*\{[^}]*width:\s*100%[^}]*height:\s*100%[^}]*object-fit:\s*cover/s);
 
   const tablet = maxWidthMedia(1199);
-  assert.match(tablet, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*64px/s);
+  assert.match(tablet, /\.life-gallery-batch\s*\{[^}]*grid-template-columns:\s*repeat\(6,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*64px/s);
   assert.match(tablet, /\.life-tile--landscape\s*\{[^}]*grid-column:\s*span\s*2[^}]*grid-row:\s*span\s*2/s);
   assert.match(tablet, /\.life-tile--portrait[\s\S]*?\.life-tile--soft-portrait\s*\{[^}]*grid-column:\s*span\s*2[^}]*grid-row:\s*span\s*4/s);
   assert.match(tablet, /\.life-tile--wide\s*\{[^}]*grid-column:\s*span\s*3[^}]*grid-row:\s*span\s*2/s);
@@ -519,7 +498,7 @@ test("life photographs use fixed row tracks and hole-free opening geometry at ev
   assert.match(tablet, /\.life-tile--opening-portrait\s*\{[^}]*grid-column:\s*span\s*2[^}]*grid-row:\s*span\s*3/s);
 
   const mobile = maxWidthMedia(600);
-  assert.match(mobile, /\.life-gallery\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*auto/s);
+  assert.match(mobile, /\.life-gallery-batch\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)[^}]*grid-auto-rows:\s*auto/s);
   assert.match(mobile, /\.life-tile\s*\{[^}]*grid-row:\s*auto/s);
   assert.match(mobile, /\.life-tile--lead\s*\{[^}]*grid-column:\s*1\s*\/\s*-1[^}]*aspect-ratio:\s*3\s*\/\s*2/s);
   assert.match(mobile, /\.life-tile--opening-portrait\s*\{[^}]*grid-column:\s*span\s*1[^}]*aspect-ratio:\s*3\s*\/\s*4/s);
@@ -539,7 +518,7 @@ test("the editorial skin selects white paper, dark ink, and restrained rule toke
   ]) {
     assert.ok(editorialBase.toLowerCase().includes(token.toLowerCase()), `missing ${token}`);
   }
-  assert.match(css, /\.life-gallery\s*\{[\s\S]*display:\s*grid/);
+  assert.match(css, /\.life-gallery-batch\s*\{[^}]*display:\s*grid/);
   assert.match(editorialCss, /prefers-reduced-motion/);
 });
 

@@ -1085,7 +1085,8 @@ button:focus-visible {
   color: #465363;
 }
 
-.life-gallery {
+.life-gallery,
+.life-gallery-batch {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-auto-rows: 96px;
@@ -1299,7 +1300,8 @@ button:focus-visible {
     grid-template-columns: 124px minmax(0, 1fr);
   }
 
-  .life-gallery {
+  .life-gallery,
+  .life-gallery-batch {
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-auto-rows: 64px;
   }
@@ -1644,7 +1646,8 @@ button:focus-visible {
     font-size: 12px;
   }
 
-  .life-gallery {
+  .life-gallery,
+  .life-gallery-batch {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: auto;
   }

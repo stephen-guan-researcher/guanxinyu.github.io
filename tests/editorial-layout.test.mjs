@@ -175,7 +175,7 @@ test("homepage opens with a real portrait and bilingual identity, then career be
   assert.equal(all(leads[0], (node) => node.tag === "a")[0]?.attrs.href, "mailto:xinyuguanphd@outlook.com");
   const image = all(portrait, (node) => node.tag === "img")[0];
   assert.ok(image, "hero portrait must be an actual image");
-  assert.equal(image.attrs.src, "images/generated/avatar-528.jpg");
+  assert.equal(image.attrs.src, "images/generated/avatar-20261011-528.jpg");
   assert.ok(image.attrs.alt?.trim());
   assert.ok(existsSync(asset(image.attrs.src)));
   const experience = byId(pages.home, "experience");
@@ -518,8 +518,13 @@ test("the editorial skin declares a white 200px-sidebar layout and small-screen 
   assert.match(css + read("phd-styles.css"), /prefers-reduced-motion/);
 });
 
-test("Life Photos retain all eighteen original images in their original sequence", () => {
-  const filenames = [
+test("Life Photos keep the new fifteen-image batch ahead of the eighteen original images", () => {
+  const freshFilenames = [
+    "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
+    "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
+    "poolside-lounge.jpg", "las-vegas-walkway.jpg", "desert-sunset.jpg", "stone-arcade.jpg", "university-courtyard.jpg",
+  ];
+  const originalFilenames = [
     "life-road-red-shirt.jpg", "life-camera-portrait.jpg", "life-jellyfish-aquarium.jpg",
     "glasgow-graduation-group.jpg", "glasgow-bute-hall-night.jpg", "glasgow-graduation-portrait.jpg",
     "glasgow-arches-portrait.jpg", "glasgow-graduation-contact-sheet.jpg", "glasgow-graduation-reception.jpg",
@@ -528,13 +533,26 @@ test("Life Photos retain all eighteen original images in their original sequence
   ];
   const gallery = withClass(pages.life, "life-gallery")[0];
   assert.ok(gallery, "Life Photos must retain the gallery landmark");
+  assert.equal(withClass(pages.life, "life-gallery").length, 1);
+  const batches = gallery.children.filter((node) => typeof node !== "string" && hasClass(node, "life-gallery-batch"));
+  assert.equal(batches.length, 2, "separate grid batches must prevent dense packing from moving older photos before the new set");
+  [freshFilenames, originalFilenames].forEach((filenames, position) => {
+    const batch = batches[position];
+    assert.equal(batch.tag, "div");
+    const batchImages = all(batch, (node) => node.tag === "img");
+    assert.deepEqual(batchImages.map((node) => node.attrs.src), filenames.map((filename) => `images/life/${filename}`));
+    assert.equal(withClass(batch, "life-tile--lead").length, 1);
+    assert.equal(withClass(batch, "life-tile--opening-portrait").length, 2);
+  });
   const images = all(gallery, (node) => node.tag === "img");
-  assert.deepEqual(images.map((node) => node.attrs.src), filenames.map((filename) => `images/life/${filename}`));
+  assert.deepEqual(images.map((node) => node.attrs.src), [...freshFilenames, ...originalFilenames].map((filename) => `images/life/${filename}`));
   for (const image of images) {
     assert.ok(existsSync(asset(image.attrs.src)));
     assert.ok(image.attrs.alt?.trim());
     assert.ok(Number(image.attrs.width) > 0 && Number(image.attrs.height) > 0);
   }
   assert.equal(images.filter((node) => node.attrs.fetchpriority === "high").length, 1);
-  assert.equal(images.filter((node) => node.attrs.loading === "lazy").length, 17);
+  assert.equal(images.filter((node) => node.attrs.loading === "lazy").length, 32);
+  assert.equal(images[0].attrs.fetchpriority, "high");
+  assert.equal(images[15].attrs.loading, "lazy", "the original batch lead must no longer preload");
 });
