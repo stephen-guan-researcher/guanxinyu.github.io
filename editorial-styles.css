@@ -369,6 +369,22 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
 .life-photo--focal-vegas { object-position: 50% 55%; }
 .editorial-page .life-tile { border-radius: 0; }
 
+/* Keep the new batch rectangular without letting older images fill its gaps. */
+@media (min-width: 1200px) {
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(4) { grid-column: span 3; grid-row: span 4; }
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(5) { grid-column: span 5; grid-row: span 4; }
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(6) { grid-column: span 4; grid-row: span 4; }
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(14),
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(15) { grid-column: span 6; grid-row: span 3; }
+}
+
+@media (min-width: 601px) and (max-width: 1199px) {
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(n + 4) { grid-column: span 2; grid-row: span 4; }
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(7),
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(8),
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(9) { grid-row: span 2; }
+}
+
 @media (min-width: 1700px) {
   .editorial-page .workspace-main { padding-right: 64px; padding-left: 56px; }
   .editorial-hero { grid-template-columns: minmax(0, 1fr) 320px; gap: 65px; }
@@ -490,6 +506,7 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
   .agent-dialog .agent-response { max-height: 40dvh; }
   .editorial-page .life-gallery-batch { gap: 4px; }
   .editorial-page .life-gallery-batch + .life-gallery-batch { margin-top: 4px; }
+  .editorial-page .life-gallery-batch--latest > .life-tile:nth-child(5) { aspect-ratio: 3 / 4; }
 }
 
 @media (prefers-reduced-motion: reduce) {

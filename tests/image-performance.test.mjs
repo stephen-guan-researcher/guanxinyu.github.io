@@ -103,7 +103,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261011-photos-1";
+const releaseToken = "20261011-photos-2";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === `images/generated/${avatarStem}-528.jpg`);
@@ -246,6 +246,11 @@ test("Life Photos keep one prioritized gallery image and thirty-two lazy images"
 test("Life Photo sizes match every final mosaic slot without crossing image tiers", () => {
   const tiles = [...life.matchAll(/<figure class="([^"]*\blife-tile\b[^"]*)">([\s\S]*?)<\/figure>/g)];
   assert.equal(tiles.length, 33);
+  const newestDesktopSizes = new Map([
+    ["desert-house", "(min-width: 1700px) calc(41.666667vw - 136.833333px), calc(41.666667vw - 110.166667px)"],
+    ["stone-arcade", "(min-width: 1700px) calc(50vw - 163px), calc(50vw - 131px)"],
+    ["university-courtyard", "(min-width: 1700px) calc(50vw - 163px), calc(50vw - 131px)"],
+  ]);
 
   for (const [, className, tile] of tiles) {
     const isLead = className.includes("life-tile--lead");
@@ -256,10 +261,11 @@ test("Life Photo sizes match every final mosaic slot without crossing image tier
     const largerMobile = isLead || isWide ? "calc(100vw - 62px)" : "calc(50vw - 32px)";
     const compact = isLead ? "361px" : isWide ? "270px" : "179px";
     const tablet = isLead ? "596px" : isWide ? "448px" : "297px";
-    const desktop = isLead ? "756px" : isWide ? "568px" : isOpeningPortrait || isLandscape ? "378px" : "284px";
+    const stem = tile.match(/src="images\/life\/([^\"]+)\.jpg"/)?.[1];
+    const desktop = newestDesktopSizes.get(stem) ?? (isLead ? "756px" : isWide ? "568px" : isOpeningPortrait || isLandscape ? "378px" : "284px");
     const expected = `(max-width: 420px) ${phone}, (max-width: 600px) ${largerMobile}, (max-width: 840px) ${compact}, (max-width: 1199px) ${tablet}, ${desktop}`;
-    const escapedExpected = expected.replace(/[().]/g, "\\$&");
-    assert.match(tile, new RegExp(`sizes="${escapedExpected}"`), `${className} must describe its complete final slot ladder`);
+    assert.equal(normalizeSpace(attribute(tags(tile, "source")[0], "sizes")), expected,
+      `${stem} must describe its complete final slot ladder`);
   }
 });
 

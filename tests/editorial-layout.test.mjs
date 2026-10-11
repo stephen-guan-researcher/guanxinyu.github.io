@@ -556,3 +556,82 @@ test("Life Photos keep the new fifteen-image batch ahead of the eighteen origina
   assert.equal(images[0].attrs.fetchpriority, "high");
   assert.equal(images[15].attrs.loading, "lazy", "the original batch lead must no longer preload");
 });
+
+test("the newest mosaic fills desktop and tablet rows without changing the earlier batch", () => {
+  function rulesAtWidth(css, width) {
+    const rules = [];
+    const source = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    let cursor = 0;
+    while (cursor < source.length) {
+      const opening = source.indexOf("{", cursor);
+      if (opening < 0) break;
+      const header = source.slice(cursor, opening).trim();
+      let depth = 1;
+      let closing = opening + 1;
+      for (; closing < source.length && depth; closing += 1) {
+        if (source[closing] === "{") depth += 1;
+        if (source[closing] === "}") depth -= 1;
+      }
+      assert.equal(depth, 0, "mosaic CSS blocks must close");
+      const body = source.slice(opening + 1, closing - 1);
+      if (header.startsWith("@media")) {
+        const bounds = [...header.matchAll(/\((min|max)-width:\s*(\d+)px\)/g)];
+        if (bounds.length && bounds.every(([, kind, value]) => kind === "min" ? width >= Number(value) : width <= Number(value))) {
+          rules.push(...rulesAtWidth(body, width));
+        }
+      } else if (!header.startsWith("@")) {
+        for (const selector of header.split(",")) rules.push({ selector: selector.trim(), body });
+      }
+      cursor = closing;
+    }
+    return rules;
+  }
+
+  function tileGeometry(tile, position, latest, width) {
+    const geometry = {};
+    const rules = [read("phd-styles.css"), read("editorial-styles.css")].flatMap((css) => rulesAtWidth(css, width));
+    for (const { selector, body } of rules) {
+      const target = selector.match(/\.life-tile(?:--[\w-]+)?(?:\:nth-child\([^)]*\))*$/)?.[0];
+      if (!target || (selector.includes(".life-gallery-batch--latest") && !latest)) continue;
+      const className = target.match(/^\.([\w-]+)/)[1];
+      if (!hasClass(tile, className)) continue;
+      const nth = target.match(/:nth-child\(([^)]+)\)/)?.[1].replace(/\s+/g, "");
+      if (nth && (nth.startsWith("n+") ? position < Number(nth.slice(2)) : position !== Number(nth))) continue;
+      for (const [, name, value] of body.matchAll(/(?:^|;)\s*(grid-column|grid-row|aspect-ratio)\s*:\s*([^;}]+)/g)) {
+        geometry[name] = value.trim().replace(/\s+/g, " ");
+      }
+    }
+    return geometry;
+  }
+
+  const batches = withClass(pages.life, "life-gallery-batch");
+  assert.ok(hasClass(batches[0], "life-gallery-batch--latest"), "only the first photo batch opts into the newest-row layout");
+  assert.ok(!hasClass(batches[1], "life-gallery-batch--latest"), "the eighteen original photos must retain their existing mosaic");
+  const newest = batches[0].children.filter((node) => typeof node !== "string" && hasClass(node, "life-tile"));
+  const earlier = batches[1].children.filter((node) => typeof node !== "string" && hasClass(node, "life-tile"));
+  const desktopColumns = [8, 4, 4, 3, 5, 4, 4, 4, 4, 3, 3, 3, 3, 6, 6];
+  const desktopRows = [6, 3, 3, 4, 4, 4, 3, 3, 3, 4, 4, 4, 4, 3, 3];
+  newest.forEach((tile, index) => {
+    const desktop = tileGeometry(tile, index + 1, true, 1500);
+    assert.equal(desktop["grid-column"], `span ${desktopColumns[index]}`, `new desktop tile ${index + 1} column span`);
+    assert.equal(desktop["grid-row"], `span ${desktopRows[index]}`, `new desktop tile ${index + 1} row span`);
+    const tablet = tileGeometry(tile, index + 1, true, 1000);
+    assert.equal(tablet["grid-column"], `span ${index === 0 ? 4 : 2}`);
+    assert.equal(tablet["grid-row"], `span ${index === 0 ? 6 : index < 3 ? 3 : index >= 6 && index <= 8 ? 2 : 4}`);
+  });
+  assert.equal(tileGeometry(newest[3], 4, true, 500)["aspect-ratio"], "3 / 4");
+  assert.equal(tileGeometry(newest[4], 5, true, 500)["aspect-ratio"], "3 / 4",
+    "the paired road and house photos must share a phone-row height");
+  earlier.forEach((tile, index) => {
+    const desktop = tileGeometry(tile, index + 1, false, 1500);
+    const tablet = tileGeometry(tile, index + 1, false, 1000);
+    const isLead = index === 0;
+    const isOpening = index === 1 || index === 2;
+    const isWide = index === 3 || index === 4;
+    const isPortrait = index >= 5 && index <= 8;
+    assert.equal(desktop["grid-column"], `span ${isLead ? 8 : isOpening ? 4 : isWide ? 6 : isPortrait ? 3 : 4}`);
+    assert.equal(desktop["grid-row"], `span ${isLead ? 6 : isPortrait ? 4 : 3}`);
+    assert.equal(tablet["grid-column"], `span ${isLead ? 4 : isWide ? 3 : 2}`);
+    assert.equal(tablet["grid-row"], `span ${isLead ? 6 : isOpening ? 3 : isPortrait ? 4 : 2}`);
+  });
+});
