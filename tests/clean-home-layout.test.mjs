@@ -131,14 +131,24 @@ test("Agent supporting copy stays readable and source links remain tappable outs
   assert.match(cssRule(desktop, ".agent-dialog"), /max-height:\s*calc\(100dvh/);
 });
 
-test("News and updates stays a compact collapsed archive with distinguishable links", () => {
-  assert.match(index, /<details\b(?=[^>]*class="news-card")(?=[^>]*id="updates")[^>]*>\s*<summary>/);
-  const opening = index.match(/<details\b(?=[^>]*id="updates")[^>]*>/)?.[0] ?? "";
+test("News previews recent entries as readable rows above a compact native archive", () => {
+  assert.match(index, /<section\b(?=[^>]*class="news-card")(?=[^>]*id="updates")[^>]*>\s*<header\b[^>]*class="news-heading"/);
+  const opening = index.match(/<details\b(?=[^>]*class="news-archive")[^>]*>/)?.[0] ?? "";
+  assert.ok(opening, "older updates must use an accessible native disclosure");
   assert.doesNotMatch(opening, /\bopen\b/);
   assert.match(cssRule(sharedCss, ".news-item a"), /text-decoration:\s*underline/);
-  assert.match(cssRule(desktop, ".news-list"), /grid-template-columns:\s*repeat\(2,\s*minmax\(0,\s*1fr\)\)/);
+  assert.match(property(cssRule(desktop, ".news-list"), "grid-template-columns"), /^(?:minmax\(0,\s*1fr\)|1fr)$/);
+  assert.equal(property(cssRule(desktop, ".news-heading h2"), "font-size"), "27px");
+  assert.match(property(cssRule(desktop, ".news-item"), "grid-template-columns"), /^160px\s+minmax\(0,\s*1fr\)$/);
   assert.equal(property(cssRule(mobile, ".news-list"), "display"), "block");
+  assert.match(property(cssRule(mobile, ".news-item"), "grid-template-columns"), /^(?:minmax\(0,\s*1fr\)|1fr)$/);
+  assert.equal(property(cssRule(mobile, ".news-item"), "gap"), "4px");
   assert.equal(property(cssRule(desktop, ".news-item"), "background"), "none");
+  assert.ok(parseFloat(property(cssRule(desktop, ".news-archive > summary"), "min-height")) >= 44,
+    "the disclosure summary must remain a comfortable mobile touch target");
+  assert.equal(property(cssRule(desktop, ".editorial-page .news-collapse-label"), "display"), "none");
+  assert.equal(property(cssRule(desktop, ".editorial-page .news-archive[open] .news-expand-label"), "display"), "none");
+  assert.equal(property(cssRule(desktop, ".editorial-page .news-archive[open] .news-collapse-label"), "display"), "inline");
 });
 
 test("the single-mode Agent toolbar keeps brand and accessible toggle controls", () => {

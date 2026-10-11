@@ -156,7 +156,7 @@ test("both pages use the shared editorial skin and retain semantic landmarks", (
   assert.ok(existsSync(asset("editorial-styles.css")));
 });
 
-test("homepage opens with a real portrait and bilingual identity, then career before papers", () => {
+test("homepage opens with a real portrait and bilingual identity, then news and career before papers", () => {
   const hero = withClass(pages.home, "editorial-hero")[0];
   assert.ok(hero, "the homepage must have an editorial hero");
   const copy = withClass(hero, "hero-copy")[0];
@@ -180,12 +180,79 @@ test("homepage opens with a real portrait and bilingual identity, then career be
   assert.ok(existsSync(asset(image.attrs.src)));
   const experience = byId(pages.home, "experience");
   const papers = byId(pages.home, "papers");
+  const news = byId(pages.home, "updates");
   assert.ok(experience && papers, "career and publication sections must remain directly linkable");
-  assert.ok(hero.start < experience.start && experience.start < papers.start,
-    "the homepage reading order must be introduction, career, then papers");
+  assert.ok(news && hero.start < news.start && news.start < experience.start && experience.start < papers.start,
+    "the homepage reading order must be introduction, news, career, then papers");
   for (const employer of ["TaoTian Group @ Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences", "Mico World"]) {
     assert.ok(normalizedText(experience).includes(employer), `career must retain ${employer}`);
   }
+});
+
+test("News shows three recent updates and keeps seven unchanged entries in a closed native archive", () => {
+  const news = byId(pages.home, "updates");
+  assert.equal(news.tag, "section");
+  assert.ok(hasClass(news, "news-card"));
+  assert.equal(news.attrs["aria-labelledby"], "news-title");
+  const heading = withClass(news, "news-heading")[0];
+  assert.equal(heading.tag, "header");
+  const title = byId(heading, "news-title");
+  assert.equal(title.tag, "h2");
+  assert.equal(normalizedText(title), "News & updates");
+  const preview = withClass(news, "news-list-preview");
+  const archive = withClass(news, "news-archive");
+  assert.equal(preview.length, 1);
+  assert.equal(archive.length, 1);
+  assert.equal(archive[0].tag, "details", "older updates must use native disclosure semantics");
+  assert.ok(!Object.hasOwn(archive[0].attrs, "open"), "the older seven updates must be collapsed by default");
+  assert.ok(!Object.hasOwn(preview[0].attrs, "hidden"), "recent updates remain visible without interaction");
+  const archiveChildren = archive[0].children.filter((node) => typeof node !== "string");
+  assert.equal(archiveChildren[0].tag, "summary", "the first details child is the native keyboard-accessible toggle");
+  assert.equal(all(archive[0], (node) => node.tag === "summary").length, 1);
+  assert.equal(all(archiveChildren[0], (node) => node.tag === "button" || node.tag === "a").length, 0,
+    "the native summary must not contain competing nested controls");
+  assert.match(normalizedText(archiveChildren[0]), /Show all 10 updates/);
+  assert.match(normalizedText(archiveChildren[0]), /Show fewer/);
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 10 updates");
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-collapse-label")[0]), "Show fewer");
+  assert.equal(withClass(archiveChildren[0], "news-toggle-icon")[0].attrs["aria-hidden"], "true");
+  const archivedList = withClass(archive[0], "news-list-archive");
+  assert.equal(archivedList.length, 1);
+  const previewItems = withClass(preview[0], "news-item");
+  const archivedItems = withClass(archivedList[0], "news-item");
+  assert.equal(previewItems.length, 3);
+  assert.equal(archivedItems.length, 7);
+  assert.ok(preview[0].start < archive[0].start, "the latest three updates appear before the older archive");
+  const items = withClass(news, "news-item");
+  assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
+  const expectedDates = ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
+  const expectedStates = ["Preparing", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
+  const expectedText = [
+    "Preparing PIVOT, a multimodal agent self-improvement framework, for CVPR.",
+    "TIMBRE, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on arXiv.",
+    "Three ICLR 2027 submissions: VLA Early Exit, LoRA Attribution, and QESChunker.",
+    "Updated the ICONIP 2026 camera-ready version of Decision-Aware Memory Cards on arXiv.",
+    "Nominate-then-Adjudicate, our LLM-assisted MIP solver-tuning manuscript, has been submitted to IEEE BigData 2026.",
+    "Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026.",
+    "Submitted SILICA to the August 2026 ACL ARR cycle, with EACL as the preferred venue.",
+    "Submitted Advantage Scale Calibration to AAAI 2027.",
+    "Released CICL, a decision-aware memory framework for tool-using agents.",
+    "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
+  ];
+  const expectedLinks = [
+    ["#paper-pivot"],
+    ["#paper-timbre", "https://arxiv.org/abs/2610.04795"],
+    ["https://openreview.net/forum?id=x6BEwIFvUc", "https://openreview.net/forum?id=g54eVrFPPI", "https://openreview.net/forum?id=pvrvPinZif"],
+    ["https://arxiv.org/abs/2606.08151"], ["#paper-nominate-adjudicate"], ["https://arxiv.org/abs/2606.08151"],
+    [], [], ["https://arxiv.org/abs/2606.08151"], ["#experience"],
+  ];
+  items.forEach((item, position) => {
+    assert.equal(all(item, (node) => node.tag === "time")[0].attrs.datetime, expectedDates[position]);
+    assert.equal(normalizedText(all(item, (node) => node.tag === "span")[0]), expectedStates[position]);
+    assert.equal(normalizedText(all(item, (node) => node.tag === "p")[0]), expectedText[position]);
+    assert.deepEqual(all(item, (node) => node.tag === "a").map((node) => node.attrs.href), expectedLinks[position]);
+  });
+  assert.equal(withClass(pages.life, "news-card").length, 0, "Life Photos must remain gallery-only");
 });
 
 test("four compact career rows preserve all six original scopes and complete expandable details", () => {

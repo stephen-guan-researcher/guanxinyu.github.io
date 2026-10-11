@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261011-photos-2";
+const releaseToken = "20261011-news-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -78,9 +78,9 @@ test("both pages expose the five approved destinations in order", () => {
   assert.match(life, /aria-current="page"[^>]*>Life Photos</);
 });
 
-test("homepage keeps the approved career-first semantic sections in order", () => {
+test("homepage keeps recent news after its introduction and career before publications", () => {
   const sectionIds = [...index.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(sectionIds, ["home", "experience", "papers", "research", "about", "research-experience", "education"]);
+  assert.deepEqual(sectionIds, ["home", "updates", "experience", "papers", "research", "about", "research-experience", "education"]);
   for (const [id, title] of [
     ["experience", "Work experience"], ["papers", "Publications &amp; Manuscripts"],
     ["research", "Current research"], ["research-experience", "Research experience"], ["education", "Education"],
@@ -90,23 +90,25 @@ test("homepage keeps the approved career-first semantic sections in order", () =
   assert.doesNotMatch(index, /class="section-index"/);
 });
 
-test("both pages use the approved editorial skin and retain a compact Updates archive", () => {
+test("both pages use the approved editorial skin and the homepage exposes recent News", () => {
   assert.match(index, /class="[^"]*\beditorial-page\b/);
   assert.match(life, /class="[^"]*\beditorial-page\b/);
-  assert.match(index, /<details\b[^>]*class="news-card"[^>]*id="updates"/);
-  assert.match(index, /<summary[^>]*>[\s\S]*?<span id="news-title">News &amp; updates<\/span>[\s\S]*?<\/summary>/);
+  const news = contentSection("updates");
+  assert.match(news, /^<section\b(?=[^>]*class="news-card")(?=[^>]*aria-labelledby="news-title")[^>]*>/);
+  assert.match(news, /<header\b[^>]*class="news-heading"[^>]*>\s*<h2\b[^>]*id="news-title"[^>]*>News &amp; updates<\/h2>/);
+  assert.doesNotMatch(life, /id="updates"|class="news-card"/);
 
   for (const page of [index, life]) {
     assertReleaseAssets(page);
   }
 });
 
-test("Now presents the verified 2026 milestones as a reverse-chronological timeline", () => {
-  const news = index.match(/<details\b[^>]*class="news-card"[\s\S]*?<\/details>/)?.[0] ?? "";
+test("News presents all ten verified 2026 milestones in their original reverse-chronological order", () => {
+  const news = contentSection("updates");
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 10, "Now must expose ten concise milestone cards");
+  assert.equal(items.length, 10, "News must retain all ten concise milestone cards");
   assert.deepEqual(dates, ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
   for (const status of ["Accepted", "Preparing", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));

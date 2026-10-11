@@ -317,13 +317,22 @@
 .editorial-page .education-item .education-date { color: #737b89; font-size: 13px; }
 .editorial-page .education-item .education-degree { color: #3c4655; margin-bottom: 6px; }
 .editorial-page .news-card { padding: 22px 0; }
-.editorial-page .news-card > summary { width: fit-content; color: #323b49; font-size: 17px; font-weight: 600; cursor: pointer; }
-.editorial-page .news-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 36px; margin: 18px 0 0; }
-.editorial-page .news-item { padding: 14px 0; border: 0; border-top: 1px solid var(--line); background: none; }
-.editorial-page .news-item div { gap: 10px; }
+.editorial-page .news-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.editorial-page .news-heading h2 { margin: 0; color: var(--ink); font-size: 27px; font-weight: 600; letter-spacing: -.6px; }
+.editorial-page .news-count { color: #78818f; font-size: 12px; white-space: nowrap; }
+.editorial-page .news-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 0; }
+.editorial-page .news-item { display: grid; grid-template-columns: 160px minmax(0, 1fr); gap: 24px; padding: 12px 0; border: 0; border-top: 1px solid var(--line); background: none; }
+.editorial-page .news-item div { align-items: baseline; align-content: start; gap: 10px; }
 .editorial-page .news-item time,
 .editorial-page .news-item span { padding: 0; border: 0; background: none; color: #78818f; font-size: 12px; }
-.editorial-page .news-item p { margin: 6px 0 0; font-size: 14px; }
+.editorial-page .news-item p { margin: 0; font-size: 14px; font-weight: 400; line-height: 1.55; }
+.editorial-page .news-archive > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 4px 0; color: #4b5769; font-size: 13px; font-weight: 500; cursor: pointer; list-style: none; }
+.editorial-page .news-archive > summary::-webkit-details-marker { display: none; }
+.editorial-page .news-collapse-label { display: none; }
+.editorial-page .news-archive[open] .news-expand-label { display: none; }
+.editorial-page .news-archive[open] .news-collapse-label { display: inline; }
+.editorial-page .news-toggle-icon { color: #78818f; font-size: 20px; line-height: 1; transition: transform 180ms ease; }
+.editorial-page .news-archive[open] .news-toggle-icon { transform: rotate(45deg); }
 .editorial-page .site-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 22px 0 0; color: #8a909b; font-size: 12px; text-align: left; }
 
 .agent-dialog {
@@ -500,6 +509,8 @@ html:has(.agent-dialog[open]) { overflow: hidden; }
   .editorial-page .research-project .career-date,
   .editorial-page .education-item .education-date { margin-bottom: 6px; }
   .editorial-page .news-list { display: block; }
+  .editorial-page .news-heading h2 { font-size: 24px; letter-spacing: -.5px; }
+  .editorial-page .news-item { grid-template-columns: minmax(0, 1fr); gap: 4px; }
   .editorial-page .site-footer { display: block; }
   .editorial-page .site-footer p + p { margin-top: 5px; }
   .agent-dialog { padding: 20px; max-height: calc(100dvh - 24px); }
