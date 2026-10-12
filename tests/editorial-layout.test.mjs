@@ -290,7 +290,7 @@ test("four compact career rows preserve all six original scopes and complete exp
   const teams = withClass(appointments[2], "experience-team");
   assert.equal(teams.length, 2, "the two Tencent appointments must retain separate scoped detail");
   const teamContracts = [
-    ["Tencent / Hunyuan Text-to-Text Pipeline Team", "Mar 2025 — Sep 2025", ["50B HTML pages/day", "98.33%", "57.14%", "900B", "135"]],
+    ["Tencent / Hunyuan Text-to-Text Pipeline Team", "Mar 2025 — Sep 2025", ["approximately 50B input tokens/day", "98.33%", "57.14%", "900B", "135"]],
     ["Tencent / Hunyuan Strategy Group 4", "Feb 2024 — Mar 2025", ["934", "+11.7", "+10.2", "20,000 video-hours", "116 file types", "10 QPS", "20,000+ transcripts"]],
   ];
   teamContracts.forEach(([title, date, metrics], position) => {
@@ -302,6 +302,7 @@ test("four compact career rows preserve all six original scopes and complete exp
     assert.equal(all(team, (node) => node.tag === "li").length, 4);
     for (const metric of metrics) assert.ok(normalizedText(team).includes(metric), `${title} must retain ${metric} in its own scope`);
   });
+  assert.doesNotMatch(source.home, /50B HTML pages(?:\/day)?/i);
   const alibaba = normalizedText(appointments[0]);
   assert.match(alibaba, /19 business-task optimization runs[^.!?]*without human intervention within the optimization loop/);
   assert.match(alibaba, /offline acceptance snapshot limited to nine categories and 80 inspection checks[^.!?]*97\.54% mean Macro-F1/);

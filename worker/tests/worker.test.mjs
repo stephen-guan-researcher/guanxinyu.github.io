@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import { handleRequest } from "../src/index.mjs";
+
+const workerSource = readFileSync(new URL("../src/index.mjs", import.meta.url), "utf8");
 
 const approvedOrigin = "https://guanxinyu.github.io";
 
@@ -362,6 +365,10 @@ test("returns a Workers AI answer for a valid question", async () => {
   ]) {
     assert.match(invocation.options.messages[0].content, new RegExp(fact.replace(/[()]/g, "\\$&"), "i"));
   }
+  assert.match(systemMessage, /approximately 50B input tokens\/day/i);
+  assert.doesNotMatch(systemMessage, /50B HTML pages(?: per day)?/i);
+  assert.doesNotMatch(systemMessage, /50B LLM output tokens(?: per day)?/i);
+  assert.doesNotMatch(workerSource, /50B HTML pages(?: per day)?/i);
   assert.match(invocation.options.messages[0].content, /xinyuguanphd@outlook\.com/i);
   assert.match(invocation.options.messages[0].content, /do not invent/i);
   assert.match(invocation.options.messages[0].content, /same language/i);

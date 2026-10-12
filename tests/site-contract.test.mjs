@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261011-news-1";
+const releaseToken = "20261012-token-throughput-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -748,7 +748,7 @@ test("each work appointment exposes the required visible content structure", () 
 test("detailed work metrics remain attached to their source appointments", () => {
   const contracts = [
     ["Baidu / ERNIE", ["260 H800", "80+ languages", "86.4%", "92%", "+25.5%"]],
-    ["Tencent / Hunyuan Text-to-Text", ["50B HTML", "98.33%", "57.14%", "900B"]],
+    ["Tencent / Hunyuan Text-to-Text", ["approximately 50B input tokens/day", "98.33%", "57.14%", "900B"]],
     ["Tencent / Hunyuan Strategy Group 4", ["20,000 video-hours", "116 file types", "10 QPS", "20,000+ transcripts"]],
     ["Institute of Information Engineering", ["CERT 4.2", "0.99", "0.3%", "20,000+ RDF triples"]],
     ["Mico World / Yoho", ["about 20% of company revenue", "3.7×", "80% of core APIs", "73%"]],
@@ -759,6 +759,7 @@ test("detailed work metrics remain attached to their source appointments", () =>
     const visibleText = card.replace(/<[^>]+>/g, "");
     for (const value of values) assert.ok(visibleText.includes(value), `${title} must retain ${value}`);
   }
+  assert.doesNotMatch(index, /50B HTML pages(?:\/day)?/i);
 });
 
 test("Alibaba appointment presents the approved two-workstream scope and claim boundaries", () => {
