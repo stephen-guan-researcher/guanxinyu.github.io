@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261012-token-throughput-1";
+const releaseToken = "20261014-preprints-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -304,7 +304,7 @@ test("every verified paper title remains keyboard-accessible without swallowing 
   const cards = cardsWithClass("publication-card");
   const linkedCards = cards.filter((card) => /<h3><a\b[^>]*href=/.test(card));
 
-  assert.equal(linkedCards.length, 7, "the seven publications with verified public paper destinations should be linked");
+  assert.equal(linkedCards.length, 8, "the eight publications with verified public paper destinations should be linked");
   for (const card of linkedCards) {
     assert.match(card, /class="[^\"]*\bpublication-card-linked\b[^\"]*"/);
     assert.match(card, /target="_blank"/);
@@ -918,7 +918,7 @@ test("new public ICLR submissions preserve title, author order, and direct links
       "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong>",
     ],
     [
-      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix",
+      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix",
       "g54eVrFPPI",
       "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, <strong>Xinyu Guan</strong>, Ruoyun Ma, Hailu Xu",
     ],

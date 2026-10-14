@@ -596,7 +596,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
   for (const [title, forumId] of [
     ["How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit", "x6BEwIFvUc"],
-    ["Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix", "g54eVrFPPI"],
+    ["Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix", "g54eVrFPPI"],
     ["QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG", "pvrvPinZif"],
   ]) {
     assert.ok(reply.answer.includes(title), `missing current publication ${title}`);
@@ -627,8 +627,12 @@ test("buildAgentReply preserves the confirmed FCS survey submission without inve
   assert.match(surveySummary, /homepage label is Submitted/);
   assert.match(surveySummary, /does not confirm external peer review, acceptance, or publication/);
   assert.match(surveySummary, /current live system status has not been checked/);
-  assert.match(surveySummary, /author list and public paper URL are unverified/);
-  assert.doesNotMatch(surveySummary, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|exact submission date.*unverified|was accepted|was published|FCS-262084|https?:\/\//i);
+  assert.match(surveySummary, /Its authors are Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order/);
+  assert.match(surveySummary, /preprint was released on October 10, 2026/);
+  assert.ok(surveySummary.includes("https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"));
+  assert.ok(surveySummary.includes("https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1"));
+  assert.match(surveySummary, /Public preprint availability does not establish journal acceptance or journal publication/);
+  assert.doesNotMatch(surveySummary, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|exact submission date.*unverified|author list and public paper URL are unverified|was accepted|was published|FCS-262084/i);
 
   const research = site.buildAgentReply("What is your research direction?");
   assert.equal(research.topic, "research");
@@ -636,8 +640,22 @@ test("buildAgentReply preserves the confirmed FCS survey submission without inve
   assert.match(research.answer, /homepage label is Submitted/);
   assert.match(research.answer, /does not confirm external peer review, acceptance, or publication/);
   assert.match(research.answer, /current live system status has not been checked/);
-  assert.match(research.answer, /author list and public paper URL are unverified/);
+  assert.match(research.answer, /Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order/);
+  assert.ok(research.answer.includes("https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"));
+  assert.match(research.answer, /Public preprint availability does not establish journal acceptance or journal publication/);
   assert.doesNotMatch(research.answer, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|FCS-262084/i);
+});
+
+test("buildAgentReply exposes the LoRA arXiv preprint and canonical public title conservatively", () => {
+  const answer = site.buildAgentReply("Tell me about the LoRA preprint").answer;
+  assert.ok(answer.includes("Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix"));
+  assert.ok(answer.includes("https://arxiv.org/abs/2610.12744"));
+  assert.ok(answer.includes("https://arxiv.org/pdf/2610.12744"));
+  assert.ok(answer.includes("https://openreview.net/forum?id=g54eVrFPPI"));
+  assert.match(answer, /arXiv:2610\.12744 v1 on October 8, 2026/);
+  assert.match(answer, /Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu/);
+  assert.match(answer, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
+  assert.doesNotMatch(answer, /LoRA’s B-Matrix/);
 });
 
 function createAgentFixture(apiUrl) {

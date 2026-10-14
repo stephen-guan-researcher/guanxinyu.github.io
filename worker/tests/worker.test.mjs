@@ -333,7 +333,7 @@ test("returns a Workers AI answer for a valid question", async () => {
       "x6BEwIFvUc",
     ],
     [
-      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix",
+      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix",
       "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu",
       "g54eVrFPPI",
     ],
@@ -401,7 +401,7 @@ test("grounds TIMBRE in its public arXiv record while retaining submission-only 
   assert.doesNotMatch(record, /not yet public|was accepted|was published at ICASSP/i);
 });
 
-test("includes the confirmed FCS survey submission receipt without inventing authors or external review", async () => {
+test("includes verified HEP survey preprint authors while retaining the confirmed FCS submission state", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
@@ -421,9 +421,14 @@ test("includes the confirmed FCS survey submission receipt without inventing aut
   assert.match(record, /homepage label is Submitted/);
   assert.match(record, /does not confirm external peer review, acceptance, or publication/);
   assert.match(record, /current live system status has not been checked/);
-  assert.match(record, /author list and public paper URL are not verified; do not invent them/);
+  assert.match(record, /Its authors are Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order/);
+  assert.match(record, /public HEP preprint was released on October 10, 2026/);
+  assert.ok(record.includes("https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"));
+  assert.ok(record.includes("https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1"));
+  assert.match(record, /DOI 10\.3868\/HEPPreprint20261010\.19328/);
+  assert.match(record, /Public preprint availability does not establish journal acceptance or journal publication/);
   assert.match(record, /not another separate planned survey/);
-  assert.doesNotMatch(record, /(?:Its |The )authors are|was accepted|was published|FCS-262084|https?:\/\//i);
+  assert.doesNotMatch(record, /author list and public paper URL are not verified|was accepted|was published|FCS-262084/i);
   assert.doesNotMatch(context, /Frontiers in Computer Science|homepage label (?:is|remains) Manuscript|received a rejection decision/i);
   const research = context.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
@@ -433,6 +438,32 @@ test("includes the confirmed FCS survey submission receipt without inventing aut
   assert.match(research, /homepage label is Submitted/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
   assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
+});
+
+test("the LoRA arXiv record keeps exact public title, author order, dates, PDFs, and submission boundary", async () => {
+  let context;
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question: "What is the public LoRA preprint link?" }),
+  }), createEnv({
+    onRun(_model, options) {
+      context = options.messages[0].content;
+    },
+  }));
+  assert.equal(response.status, 200);
+  const title = "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix";
+  const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
+  assert.ok(record);
+  assert.match(record, /Its authors are Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu, in that order/);
+  assert.ok(record.includes("https://arxiv.org/abs/2610.12744"));
+  assert.ok(record.includes("https://arxiv.org/pdf/2610.12744"));
+  assert.ok(record.includes("https://openreview.net/forum?id=g54eVrFPPI"));
+  assert.match(record, /v1 was released on October 8, 2026/);
+  assert.match(record, /submitted to ICLR 2027 in September 2026/);
+  assert.match(record, /It is a submission, not an accepted paper/);
+  assert.match(record, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
+  assert.doesNotMatch(record, /LoRA’s B-Matrix|was accepted|was published/i);
 });
 
 test("grounds English and Chinese BigData aliases in the verified submission receipt", async () => {

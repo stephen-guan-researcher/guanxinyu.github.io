@@ -105,7 +105,7 @@ const knownPapers = [
     "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan",
   ],
   [
-    "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA’s B-Matrix",
+    "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix",
     "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, Hailu Xu",
   ],
   [
@@ -371,7 +371,8 @@ test("verified public paper destinations and conservative manuscript states stay
   const publicLinks = [
     [knownPapers[1][0], "https://arxiv.org/abs/2610.04795"],
     [knownPapers[2][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
-    [knownPapers[3][0], "https://openreview.net/forum?id=g54eVrFPPI"],
+    [knownPapers[3][0], "https://arxiv.org/abs/2610.12744"],
+    [surveyTitle, "https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"],
     [knownPapers[4][0], "https://openreview.net/forum?id=pvrvPinZif"],
     [knownPapers[7][0], "https://arxiv.org/abs/2606.08151"],
     [knownPapers[8][0], "https://arxiv.org/abs/2512.16927"],
@@ -527,7 +528,7 @@ test("publication rows retain ten real figures and two accessible venue labels o
   }
 });
 
-test("TIMBRE is publicly linked and the survey uses the confirmed FCS submission receipt without invented authors", () => {
+test("TIMBRE stays public and the HEP survey preserves submission status and verified authors", () => {
   const timbre = publication(knownPapers[1][0]);
   assert.ok(all(timbre, (node) => node.tag === "a" && node.attrs.href === "https://arxiv.org/abs/2610.04795").length > 0);
   assert.doesNotMatch(normalizedText(timbre), /(?:paper )?not yet public/i);
@@ -535,12 +536,37 @@ test("TIMBRE is publicly linked and the survey uses the confirmed FCS submission
   assert.match(normalizedText(survey), /Submitted to Frontiers of Computer Science · Oct 2026/);
   assert.match(normalizedText(survey), /\bSubmitted\b/);
   assert.doesNotMatch(normalizedText(survey), /Frontiers in Computer Science|Previous submission|\b(?:Accepted|Published)\b|currently under review|external peer review|FCS-262084/i);
-  const authors = withClass(survey, "publication-authors");
-  for (const authorLine of authors) {
-    assert.match(normalizedText(authorLine), /(?:author.*(?:pending|unconfirmed|not (?:provided|confirmed|available))|(?:pending|unconfirmed).*author)/i,
-      "an unknown survey author list must be omitted or explicitly marked as unconfirmed");
-    assert.doesNotMatch(normalizedText(authorLine), /Xinyu Guan|关鑫宇/);
+  assert.equal(normalizedText(withClass(survey, "publication-authors")[0]),
+    "Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, Hailu Xu");
+  assert.equal(normalizedText(withClass(survey, "status-label")[0]), "Submitted");
+  assert.match(normalizedText(withClass(survey, "publication-meta")[0]), /HEP Preprint/);
+});
+
+test("new arXiv and HEP preprints expose canonical landing pages and PDFs without status promotion", () => {
+  const contracts = [
+    [knownPapers[3][0], [
+      ["arXiv", "https://arxiv.org/abs/2610.12744"],
+      ["PDF", "https://arxiv.org/pdf/2610.12744"],
+      ["OpenReview", "https://openreview.net/forum?id=g54eVrFPPI"],
+    ]],
+    [surveyTitle, [
+      ["HEP Preprint", "https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"],
+      ["PDF", "https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1"],
+    ]],
+  ];
+  for (const [title, links] of contracts) {
+    const card = publication(title);
+    assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
+    assert.doesNotMatch(normalizedText(card), /\bAccepted\b|\bPublished\b|currently under review/i);
+    for (const [label, href] of links) {
+      const link = withClass(card, "publication-inline-link").find((node) => node.attrs.href === href);
+      assert.ok(link, `missing ${label} link for ${title}`);
+      assert.equal(normalizedText(link), label);
+      assert.equal(link.attrs.target, "_blank");
+      assert.ok((link.attrs.rel ?? "").split(/\s+/).includes("noopener"));
+    }
   }
+  assert.doesNotMatch(normalizedText(publication(knownPapers[3][0])), /LoRA’s B-Matrix/);
 });
 
 test("the live Agent is a closed accessible dialog with matching open and close controls", () => {
