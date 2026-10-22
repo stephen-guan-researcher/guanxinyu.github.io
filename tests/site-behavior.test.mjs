@@ -492,7 +492,7 @@ test("buildAgentReply exposes WeChat without a public phone number", () => {
   }
 });
 
-test("buildAgentReply resolves BigData manuscript aliases and preserves submission-only facts", () => {
+test("buildAgentReply resolves BigData aliases to accepted short-paper and public preprint facts", () => {
   const title = "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning";
   for (const question of [
     "What is the BigData paper?",
@@ -511,38 +511,31 @@ test("buildAgentReply resolves BigData manuscript aliases and preserves submissi
     assert.ok(reply.answer.includes("Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, Yuming Deng")
       || reply.answer.includes("Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, and Yuming Deng"));
     assert.match(reply.answer, /IEEE BigData 2026/);
-    assert.match(reply.answer, /Submitted/);
+    assert.match(reply.answer, /Accepted/);
+    assert.match(reply.answer, /short paper/i);
+    assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2610\.29391/);
+    assert.match(reply.answer, /https:\/\/arxiv\.org\/pdf\/2610\.29391/);
     if (/[\p{Script=Han}]/u.test(question)) {
-      assert.match(reply.answer, /2026 年 8 月 21 日上传成功/);
-      assert.match(reply.answer, /不是 Accepted 或 Published/);
-      assert.match(reply.answer, /已核对私下获取的投稿 PDF/);
+      assert.match(reply.answer, /2026 年 10 月 21 日/);
+      assert.match(reply.answer, /不代表会议论文集已出版/);
       assert.match(reply.answer, /原文 Figure 1/);
-      assert.match(reply.answer, /不代表全文 PDF 已公开/);
-      assert.match(reply.answer, /尚未核实公开 PDF 或论文链接/);
       assert.match(reply.answer, /经验性能模型.*固定求解器配置组合.*提名候选/);
       assert.match(reply.answer, /压缩的约束矩阵和离线文本技能记忆/);
       assert.match(reply.answer, /1 次模型调用、0 次求解器调用，不更新基座模型权重/);
       assert.match(reply.answer, /端到端延迟尚未测量/);
     } else {
-      assert.match(reply.answer, /successful full-paper upload on August 21, 2026/);
-      assert.match(reply.answer, /not Accepted or Published/);
-      assert.match(reply.answer, /privately retrieved submission PDF has been inspected/);
+      assert.match(reply.answer, /October 21, 2026/);
+      assert.match(reply.answer, /do not establish proceedings publication/);
       assert.match(reply.answer, /authentic overview from Figure 1/);
-      assert.match(reply.answer, /does not make the full PDF publicly available/);
-      assert.match(reply.answer, /No public PDF or paper URL is verified/);
       assert.match(reply.answer, /empirical performance model nominates a shortlist from a fixed solver-configuration portfolio/);
       assert.match(reply.answer, /compressed constraint matrix, and offline textual skill memory/);
       assert.match(reply.answer, /one model call, zero solver calls, and no foundation-model weight update/);
       assert.match(reply.answer, /end-to-end latency is unmeasured/);
     }
-    assert.doesNotMatch(reply.answer, /https?:\/\/|was accepted|was published|paper password|reference number|BigD\d+/i);
+    assert.doesNotMatch(reply.answer, /homepage label is Submitted|not Accepted|No public PDF|尚未核实公开|不是 Accepted|was published|paper password|reference number|BigD\d+/i);
     assert.doesNotMatch(reply.answer, /accuracy|benchmark|improv(?:ed|ement)|\d+%/i);
     assert.doesNotMatch(reply.answer, /Based on the title|仅根据题目|no verified figure|已核实的配图/i);
   }
-
-  const overview = site.buildAgentReply("Summarize your latest papers");
-  assert.ok(overview.answer.includes(title));
-  assert.match(overview.answer, /12 distinct papers and manuscripts, not 12 published papers/);
 });
 
 test("buildAgentReply classifies the corrected manuscript venues as publications", () => {
@@ -569,7 +562,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   }
 
   const reply = site.buildAgentReply("Summarize your latest papers");
-  const pivotSummary = reply.answer.split(" TIMBRE:")[0];
+  const pivotSummary = reply.answer.slice(reply.answer.indexOf(" PIVOT:")).split(" TIMBRE:")[0];
   assert.match(pivotSummary, /PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement/);
   assert.match(pivotSummary, /Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng/);
   assert.match(pivotSummary, /is in preparation for CVPR/);

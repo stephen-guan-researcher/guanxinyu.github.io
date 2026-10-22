@@ -189,7 +189,7 @@ test("homepage opens with a real portrait and bilingual identity, then news and 
   }
 });
 
-test("News shows three recent updates and keeps seven unchanged entries in a closed native archive", () => {
+test("News shows three recent updates and keeps eight historical entries in a closed native archive", () => {
   const news = byId(pages.home, "updates");
   assert.equal(news.tag, "section");
   assert.ok(hasClass(news, "news-card"));
@@ -204,16 +204,16 @@ test("News shows three recent updates and keeps seven unchanged entries in a clo
   assert.equal(preview.length, 1);
   assert.equal(archive.length, 1);
   assert.equal(archive[0].tag, "details", "older updates must use native disclosure semantics");
-  assert.ok(!Object.hasOwn(archive[0].attrs, "open"), "the older seven updates must be collapsed by default");
+  assert.ok(!Object.hasOwn(archive[0].attrs, "open"), "the older eight updates must be collapsed by default");
   assert.ok(!Object.hasOwn(preview[0].attrs, "hidden"), "recent updates remain visible without interaction");
   const archiveChildren = archive[0].children.filter((node) => typeof node !== "string");
   assert.equal(archiveChildren[0].tag, "summary", "the first details child is the native keyboard-accessible toggle");
   assert.equal(all(archive[0], (node) => node.tag === "summary").length, 1);
   assert.equal(all(archiveChildren[0], (node) => node.tag === "button" || node.tag === "a").length, 0,
     "the native summary must not contain competing nested controls");
-  assert.match(normalizedText(archiveChildren[0]), /Show all 10 updates/);
+  assert.match(normalizedText(archiveChildren[0]), /Show all 11 updates/);
   assert.match(normalizedText(archiveChildren[0]), /Show fewer/);
-  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 10 updates");
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 11 updates");
   assert.equal(normalizedText(withClass(archiveChildren[0], "news-collapse-label")[0]), "Show fewer");
   assert.equal(withClass(archiveChildren[0], "news-toggle-icon")[0].attrs["aria-hidden"], "true");
   const archivedList = withClass(archive[0], "news-list-archive");
@@ -221,13 +221,14 @@ test("News shows three recent updates and keeps seven unchanged entries in a clo
   const previewItems = withClass(preview[0], "news-item");
   const archivedItems = withClass(archivedList[0], "news-item");
   assert.equal(previewItems.length, 3);
-  assert.equal(archivedItems.length, 7);
+  assert.equal(archivedItems.length, 8);
   assert.ok(preview[0].start < archive[0].start, "the latest three updates appear before the older archive");
   const items = withClass(news, "news-item");
   assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
-  const expectedDates = ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
-  const expectedStates = ["Preparing", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
+  const expectedDates = ["2026-10-22", "2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
+  const expectedStates = ["Accepted", "Preparing", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
   const expectedText = [
+    "Nominate-then-Adjudicate has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on arXiv.",
     "Preparing PIVOT, a multimodal agent self-improvement framework, for CVPR.",
     "TIMBRE, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on arXiv.",
     "Three ICLR 2027 submissions: VLA Early Exit, LoRA Attribution, and QESChunker.",
@@ -240,6 +241,7 @@ test("News shows three recent updates and keeps seven unchanged entries in a clo
     "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
   ];
   const expectedLinks = [
+    ["#paper-nominate-adjudicate", "https://arxiv.org/abs/2610.29391"],
     ["#paper-pivot"],
     ["#paper-timbre", "https://arxiv.org/abs/2610.04795"],
     ["https://openreview.net/forum?id=x6BEwIFvUc", "https://openreview.net/forum?id=g54eVrFPPI", "https://openreview.net/forum?id=pvrvPinZif"],
@@ -369,6 +371,7 @@ test("Agent context counts twelve distinct manuscripts without the unresolved KL
 
 test("verified public paper destinations and conservative manuscript states stay attached to their rows", () => {
   const publicLinks = [
+    [knownPapers[10][0], "https://arxiv.org/abs/2610.29391"],
     [knownPapers[1][0], "https://arxiv.org/abs/2610.04795"],
     [knownPapers[2][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
     [knownPapers[3][0], "https://arxiv.org/abs/2610.12744"],
@@ -398,14 +401,14 @@ test("verified public paper destinations and conservative manuscript states stay
     [knownPapers[7][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
     [knownPapers[8][0], "Preprint", /arXiv:2512\.16927/],
     [knownPapers[9][0], "Published", /ICASSP 2025/],
-    [knownPapers[10][0], "Submitted", /Submitted to IEEE BigData 2026/],
+    [knownPapers[10][0], "Accepted", /IEEE BigData 2026.*Short Paper.*arXiv:2610\.29391/],
   ];
   for (const [title, status, venue] of states) {
     const card = publication(title);
     assert.equal(normalizedText(withClass(card, "status-label")[0]), status);
     assert.match(normalizedText(withClass(card, "publication-meta")[0]), venue);
   }
-  for (const index of [0, 5, 6, 10]) {
+  for (const index of [0, 5, 6]) {
     const card = publication(knownPapers[index][0]);
     assert.match(normalizedText(card), /Not yet public/i);
     assert.equal(all(card, (node) => node.tag === "a").length, 0,

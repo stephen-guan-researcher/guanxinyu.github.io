@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261014-preprints-1";
+const releaseToken = "20261022-bigdata-short-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -103,26 +103,28 @@ test("both pages use the approved editorial skin and the homepage exposes recent
   }
 });
 
-test("News presents all ten verified 2026 milestones in their original reverse-chronological order", () => {
+test("News presents the acceptance announcement and all ten historical milestones in reverse-chronological order", () => {
   const news = contentSection("updates");
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 10, "News must retain all ten concise milestone cards");
-  assert.deepEqual(dates, ["2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  assert.equal(items.length, 11, "News must add the acceptance announcement and retain all ten historical milestones");
+  assert.deepEqual(dates, ["2026-10-22", "2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  assert.match(items[0], /accepted as a short paper at IEEE BigData 2026/);
+  assert.match(items[0], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
   for (const status of ["Accepted", "Preparing", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
   assert.match(
-    items[5],
+    items[6],
     /Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026\./,
   );
-  assert.match(items[5], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
-  assert.match(items[4], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
-  assert.match(items[0], /Preparing[\s\S]*PIVOT[\s\S]*for CVPR/);
-  assert.match(items[1], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
-  assert.match(items[2], /Three ICLR 2027 submissions/);
-  assert.match(items[3], /ICONIP 2026 camera-ready/);
+  assert.match(items[6], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[5], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
+  assert.match(items[1], /Preparing[\s\S]*PIVOT[\s\S]*for CVPR/);
+  assert.match(items[2], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
+  assert.match(items[3], /Three ICLR 2027 submissions/);
+  assert.match(items[4], /ICONIP 2026 camera-ready/);
   assert.ok(news.indexOf("Decision-Aware Memory Cards was accepted") < news.indexOf("Submitted SILICA"));
   assert.match(news, /August 2026 ACL ARR cycle, with EACL as the preferred venue/);
   assert.doesNotMatch(news, /Preparing an ICASSP 2027 manuscript/);
@@ -304,7 +306,7 @@ test("every verified paper title remains keyboard-accessible without swallowing 
   const cards = cardsWithClass("publication-card");
   const linkedCards = cards.filter((card) => /<h3><a\b[^>]*href=/.test(card));
 
-  assert.equal(linkedCards.length, 8, "the eight publications with verified public paper destinations should be linked");
+  assert.equal(linkedCards.length, 9, "the nine publications with verified public paper destinations should be linked");
   for (const card of linkedCards) {
     assert.match(card, /class="[^\"]*\bpublication-card-linked\b[^\"]*"/);
     assert.match(card, /target="_blank"/);

@@ -466,7 +466,7 @@ test("the LoRA arXiv record keeps exact public title, author order, dates, PDFs,
   assert.doesNotMatch(record, /LoRA’s B-Matrix|was accepted|was published/i);
 });
 
-test("grounds English and Chinese BigData aliases in the verified submission receipt", async () => {
+test("grounds English and Chinese BigData aliases in short-paper acceptance and the public arXiv preprint", async () => {
   const title = "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning";
   for (const question of [
     "What is the BigData manuscript status?",
@@ -496,22 +496,22 @@ test("grounds English and Chinese BigData aliases in the verified submission rec
     for (const facts of [record, routedQuestion]) {
       assert.ok(facts.includes(title));
       assert.match(facts, /authors are Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, and Yuming Deng, in that order/);
-      assert.match(facts, /submitted to IEEE BigData 2026/);
-      assert.match(facts, /successful full-paper upload on August 21, 2026/);
-      assert.match(facts, /homepage label is Submitted/);
-      assert.match(facts, /privately retrieved submission PDF has been inspected/);
+      assert.match(facts, /accepted as a short paper at IEEE BigData 2026/);
+      assert.match(facts, /October 21, 2026/);
+      assert.match(facts, /homepage label is Accepted/);
       assert.match(facts, /authentic overview from Figure 1/);
-      assert.match(facts, /does not make the full PDF publicly available/);
-      assert.match(facts, /No public PDF or paper URL is verified/);
+      assert.match(facts, /do not establish proceedings publication/);
+      assert.match(facts, /https:\/\/arxiv\.org\/abs\/2610\.29391/);
+      assert.match(facts, /https:\/\/arxiv\.org\/pdf\/2610\.29391/);
       assert.match(facts, /empirical performance model nominates a shortlist from a fixed solver-configuration portfolio/);
       assert.match(facts, /compressed constraint matrix, and offline textual skill memory/);
       assert.match(facts, /one model call, zero solver calls, and no foundation-model weight update/);
       assert.match(facts, /end-to-end latency is unmeasured/);
-      assert.doesNotMatch(facts, /Based only on the title|no verified figure|publicly available at|latency (?:is|was) measured/i);
-      assert.doesNotMatch(facts, /https?:\/\/|was accepted|was published|BigD\d+|paper password|reference number|\d+%/i);
+      assert.doesNotMatch(facts, /Based only on the title|no verified figure|No public PDF|homepage label is Submitted|latency (?:is|was) measured/i);
+      assert.doesNotMatch(facts, /was published|BigD\d+|paper password|reference number|\d+%/i);
     }
-    assert.match(record, /No acceptance or publication is confirmed/);
-    assert.match(routedQuestion, /not Accepted or Published/);
+    assert.match(record, /short paper at IEEE BigData 2026/);
+    assert.match(routedQuestion, /short paper at IEEE BigData 2026/);
     assert.match(routedQuestion, /Original question: /);
     assert.ok(routedQuestion.includes(question));
     assert.match(routedQuestion, /Answer in the same language as the original question/);

@@ -7,8 +7,8 @@
   <meta name="description" content="Personal academic homepage of Xinyu Guan, an AI Agent Researcher at TaoTian Group @ Alibaba working on AutoResearch, post-training, and agentic reinforcement learning." />
   <meta name="xinyu-agent-api" content="https://xinyu-agent-api.798750933strikerg.workers.dev/api/chat" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261014-preprints-1" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261014-preprints-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261022-bigdata-short-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261022-bigdata-short-1" />
 </head>
 <body class="profile-page editorial-page">
   <dialog class="site-entry" id="site-entry" aria-labelledby="entry-name" aria-describedby="entry-role entry-company">
@@ -69,9 +69,13 @@
       <section class="news-card" id="updates" aria-labelledby="news-title">
         <header class="news-heading">
           <h2 id="news-title">News &amp; updates</h2>
-          <span class="news-count">10 updates</span>
+          <span class="news-count">11 updates</span>
         </header>
         <div class="news-list news-list-preview">
+        <article class="news-item">
+          <div><time datetime="2026-10-22">Oct 2026</time><span>Accepted</span></div>
+          <p><a href="#paper-nominate-adjudicate">Nominate-then-Adjudicate</a> has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on <a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a>.</p>
+        </article>
         <article class="news-item">
           <div><time datetime="2026-10">Oct 2026</time><span>Preparing</span></div>
           <p>Preparing <a href="#paper-pivot">PIVOT</a>, a multimodal agent self-improvement framework, for CVPR.</p>
@@ -80,18 +84,18 @@
           <div><time datetime="2026-10">Oct 2026</time><span>Submitted</span></div>
           <p><a href="#paper-timbre">TIMBRE</a>, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on <a href="https://arxiv.org/abs/2610.04795" target="_blank" rel="noopener">arXiv</a>.</p>
         </article>
-        <article class="news-item">
-          <div><time datetime="2026-09">Sep 2026</time><span>Submitted</span></div>
-          <p>Three ICLR 2027 submissions: <a href="https://openreview.net/forum?id=x6BEwIFvUc" target="_blank" rel="noopener">VLA Early Exit</a>, <a href="https://openreview.net/forum?id=g54eVrFPPI" target="_blank" rel="noopener">LoRA Attribution</a>, and <a href="https://openreview.net/forum?id=pvrvPinZif" target="_blank" rel="noopener">QESChunker</a>.</p>
-        </article>
         </div>
         <details class="news-archive">
           <summary>
-            <span class="news-expand-label">Show all 10 updates</span>
+            <span class="news-expand-label">Show all 11 updates</span>
             <span class="news-collapse-label">Show fewer</span>
             <span class="news-toggle-icon" aria-hidden="true">+</span>
           </summary>
           <div class="news-list news-list-archive">
+        <article class="news-item">
+          <div><time datetime="2026-09">Sep 2026</time><span>Submitted</span></div>
+          <p>Three ICLR 2027 submissions: <a href="https://openreview.net/forum?id=x6BEwIFvUc" target="_blank" rel="noopener">VLA Early Exit</a>, <a href="https://openreview.net/forum?id=g54eVrFPPI" target="_blank" rel="noopener">LoRA Attribution</a>, and <a href="https://openreview.net/forum?id=pvrvPinZif" target="_blank" rel="noopener">QESChunker</a>.</p>
+        </article>
           <article class="news-item">
             <div><time datetime="2026-09">Sep 2026</time><span>Updated</span></div>
             <p><a href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">Updated the ICONIP 2026 camera-ready version of Decision-Aware Memory Cards on arXiv.</a></p>
@@ -347,7 +351,7 @@
               </div>
             </article>
 
-            <article class="publication-card" id="paper-nominate-adjudicate">
+            <article class="publication-card publication-card-linked" id="paper-nominate-adjudicate">
               <figure class="publication-card-figure">
                 <picture>
                   <source type="image/webp" srcset="images/generated/paper-nominate-adjudicate-overview-320.webp 320w, images/generated/paper-nominate-adjudicate-overview-640.webp 640w, images/generated/paper-nominate-adjudicate-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
@@ -355,13 +359,13 @@
                 </picture>
               </figure>
               <div class="publication-body">
-                <h3>Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</h3>
+                <h3><a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</a></h3>
                 <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, Kai Wei, Yuming Deng</p>
                 <div class="publication-metadata">
-                  <p class="status-label">Submitted</p>
-                  <p class="publication-meta">Submitted to IEEE BigData 2026 · Aug 2026 · Not yet public</p>
+                  <p class="status-label">Accepted</p>
+                  <p class="publication-meta">IEEE BigData 2026 · Short Paper · arXiv:2610.29391</p>
                 </div>
-                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference.</p>
+                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.29391" target="_blank" rel="noopener">PDF</a></p>
               </div>
             </article>
 
@@ -637,7 +641,7 @@
   </dialog>
 
   <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
-  <script type="module" src="phd-main.js?v=20261014-preprints-1"></script>
-  <script type="module" src="editorial-interactions.js?v=20261014-preprints-1"></script>
+  <script type="module" src="phd-main.js?v=20261022-bigdata-short-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261022-bigdata-short-1"></script>
 </body>
 </html>
