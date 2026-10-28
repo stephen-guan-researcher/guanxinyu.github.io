@@ -376,7 +376,7 @@ test("verified public paper destinations and conservative manuscript states stay
     [knownPapers[2][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
     [knownPapers[3][0], "https://arxiv.org/abs/2610.12744"],
     [surveyTitle, "https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"],
-    [knownPapers[4][0], "https://openreview.net/forum?id=pvrvPinZif"],
+    [knownPapers[4][0], "https://arxiv.org/abs/2610.36557"],
     [knownPapers[7][0], "https://arxiv.org/abs/2606.08151"],
     [knownPapers[8][0], "https://arxiv.org/abs/2512.16927"],
     [knownPapers[9][0], "https://doi.org/10.1109/ICASSP49660.2025.10887705"],
@@ -547,6 +547,11 @@ test("TIMBRE stays public and the HEP survey preserves submission status and ver
 
 test("new arXiv and HEP preprints expose canonical landing pages and PDFs without status promotion", () => {
   const contracts = [
+    [knownPapers[4][0], [
+      ["arXiv", "https://arxiv.org/abs/2610.36557"],
+      ["PDF", "https://arxiv.org/pdf/2610.36557"],
+      ["OpenReview", "https://openreview.net/forum?id=pvrvPinZif"],
+    ]],
     [knownPapers[3][0], [
       ["arXiv", "https://arxiv.org/abs/2610.12744"],
       ["PDF", "https://arxiv.org/pdf/2610.12744"],
@@ -570,6 +575,20 @@ test("new arXiv and HEP preprints expose canonical landing pages and PDFs withou
     }
   }
   assert.doesNotMatch(normalizedText(publication(knownPapers[3][0])), /LoRA’s B-Matrix/);
+});
+
+test("QESChunker adds its arXiv preprint without changing authors, overview, manuscript count, or BigData acceptance", () => {
+  const card = publication(knownPapers[4][0]);
+  assert.equal(normalizedText(withClass(card, "publication-authors")[0]),
+    "Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, Yuming Deng");
+  assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
+  assert.match(normalizedText(withClass(card, "publication-meta")[0]), /Submitted to ICLR 2027 · Sep 2026 · OpenReview · arXiv:2610\.36557/);
+  assert.match(normalizedText(card), /Builds static RAG chunk indices from question–evidence supervision/);
+  assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === "images/paper-qeschunker-overview.png").length === 1);
+  assert.equal(withClass(pages.home, "publication-card").length, 12);
+  const bigdata = publication(knownPapers[10][0]);
+  assert.equal(normalizedText(withClass(bigdata, "status-label")[0]), "Accepted");
+  assert.match(normalizedText(withClass(bigdata, "publication-meta")[0]), /IEEE BigData 2026 · Short Paper · arXiv:2610\.29391/);
 });
 
 test("the live Agent is a closed accessible dialog with matching open and close controls", () => {

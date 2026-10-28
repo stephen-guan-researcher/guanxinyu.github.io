@@ -639,6 +639,20 @@ test("buildAgentReply preserves the confirmed FCS survey submission without inve
   assert.doesNotMatch(research.answer, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|FCS-262084/i);
 });
 
+test("buildAgentReply exposes the QESChunker arXiv preprint without promoting ICLR status", () => {
+  const answer = site.buildAgentReply("Explain QESChunker").answer;
+  assert.ok(answer.includes("QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG"));
+  assert.ok(answer.includes("https://arxiv.org/abs/2610.36557"));
+  assert.ok(answer.includes("https://arxiv.org/pdf/2610.36557"));
+  assert.ok(answer.includes("https://openreview.net/forum?id=pvrvPinZif"));
+  assert.match(answer, /Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng/);
+  assert.match(answer, /arXiv:2610\.36557 v1 on October 27, 2026 \(03:05:09 UTC\)/);
+  assert.match(answer, /10\.48550\/arXiv\.2610\.36557/);
+  assert.match(answer, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
+  assert.match(answer, /none is confirmed accepted/);
+  assert.match(answer, /accepted as a short paper at IEEE BigData 2026/);
+});
+
 test("buildAgentReply exposes the LoRA arXiv preprint and canonical public title conservatively", () => {
   const answer = site.buildAgentReply("Tell me about the LoRA preprint").answer;
   assert.ok(answer.includes("Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix"));

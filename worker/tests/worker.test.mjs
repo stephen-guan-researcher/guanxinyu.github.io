@@ -440,6 +440,34 @@ test("includes verified HEP survey preprint authors while retaining the confirme
   assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
 });
 
+test("the QESChunker arXiv record preserves exact authors, v1 date, links, and ICLR submission status", async () => {
+  let context;
+  const response = await handleRequest(request("/api/chat", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ question: "What is the QESChunker public preprint link?" }),
+  }), createEnv({
+    onRun(_model, options) {
+      context = options.messages[0].content;
+    },
+  }));
+  assert.equal(response.status, 200);
+  const title = "QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG";
+  const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
+  assert.ok(record);
+  assert.match(record, /Its authors are Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng, in that order/);
+  assert.ok(record.includes("https://arxiv.org/abs/2610.36557"));
+  assert.ok(record.includes("https://arxiv.org/pdf/2610.36557"));
+  assert.ok(record.includes("https://openreview.net/forum?id=pvrvPinZif"));
+  assert.match(record, /arXiv:2610\.36557 v1/);
+  assert.match(record, /first submitted on October 27, 2026 \(03:05:09 UTC\)/);
+  assert.match(record, /10\.48550\/arXiv\.2610\.36557/);
+  assert.match(record, /submitted to ICLR 2027 in September 2026/);
+  assert.match(record, /It is a submission, not an accepted paper/);
+  assert.match(record, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
+  assert.doesNotMatch(record, /was accepted|was published/i);
+});
+
 test("the LoRA arXiv record keeps exact public title, author order, dates, PDFs, and submission boundary", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
