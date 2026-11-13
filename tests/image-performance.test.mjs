@@ -103,7 +103,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261028-qeschunker-preprint-1";
+const releaseToken = "20261113-publications-1";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === `images/generated/${avatarStem}-528.jpg`);
@@ -128,7 +128,7 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
 
 test("ten paper figures and two reused decorative backgrounds are responsive and lazy", () => {
   const pendingLabelByAria = new Map([
-    ["PIVOT: target venue CVPR", "CVPR"],
+    ["PIVOT: archived manuscript", "Archived"],
     ["Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
   ]);
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>

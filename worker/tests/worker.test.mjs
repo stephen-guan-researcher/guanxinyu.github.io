@@ -220,8 +220,8 @@ test("returns a Workers AI answer for a valid question", async () => {
   );
   assert.match(systemMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(systemMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
-  assert.match(systemMessage, /camera-ready availability does not mean the proceedings have been published/);
-  assert.match(systemMessage, /not yet published/i);
+  assert.match(systemMessage, /camera-ready availability does not establish proceedings publication/i);
+  assert.match(systemMessage, /proceedings publication has not been verified/i);
   assert.doesNotMatch(systemMessage, /Decision-Aware Memory Cards[^.]*was published/i);
   const researchParagraph = systemMessage.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.match(
@@ -297,19 +297,17 @@ test("returns a Workers AI answer for a valid question", async () => {
   for (const appointment of appointmentSentences) {
     assert.ok(systemMessage.includes(appointment), `missing complete appointment sentence: ${appointment}`);
   }
-  assert.match(systemMessage, /CVPR manuscript/i);
+  assert.doesNotMatch(systemMessage, /CVPR manuscript in progress|submitted to CVPR/i);
   assert.match(systemMessage, /Agent Research Survey/i);
-  assert.match(researchParagraph, /CVPR manuscript in progress is PIVOT/);
+  assert.doesNotMatch(researchParagraph, /PIVOT/);
   const pivotParagraph = systemMessage.split("\n\n").find((entry) => entry.startsWith(
     '"PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement"',
   ));
   assert.ok(pivotParagraph, "Agent context must include the owner-confirmed PIVOT manuscript");
-  assert.match(pivotParagraph, /is in preparation for CVPR, as confirmed by the homepage owner/);
+  assert.match(pivotParagraph, /is an archived manuscript/);
   assert.match(pivotParagraph, /authors are Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng, in that order/);
-  assert.match(pivotParagraph, /paper is not yet public and has no public paper URL/);
-  assert.match(pivotParagraph, /earlier ICLR 2027 submission was withdrawn/);
-  assert.match(pivotParagraph, /current homepage status is In Preparation \/ Preparing for CVPR/);
-  assert.match(pivotParagraph, /Do not infer a CVPR conference year or describe the manuscript as submitted to or accepted at CVPR/);
+  assert.match(pivotParagraph, /No public paper URL has been verified/);
+  assert.match(pivotParagraph, /ICLR 2027 submission was withdrawn/);
   assert.doesNotMatch(pivotParagraph, /https?:\/\/|CVPR 20\d{2}|was submitted to CVPR|was accepted at CVPR/);
   assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
     "unresolved KL authorship must not be included in the Agent's verified facts");
@@ -322,9 +320,9 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /November 2023 to February 2024/);
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
   assert.doesNotMatch(systemMessage, /lists seven publication and manuscript records/i);
-  assert.match(systemMessage, /SILICA[^\n]*submitted to ACL ARR in the August 2026 cycle, with EACL listed as the preferred venue/);
-  assert.match(systemMessage, /Do not describe preferred venue EACL as a confirmed EACL acceptance/);
-  assert.match(invocation.options.messages[0].content, /authors of SILICA are Pengcheng Xu and Xinyu Guan, in that order/i);
+  assert.match(systemMessage, /SILICA[^\n]*accepted to Findings of EACL 2027 on November 13, 2026/);
+  assert.match(systemMessage, /SILICA[^\n]*No public paper, PDF, or proceedings link has been verified/);
+  assert.match(systemMessage, /SILICA[^\n]*Its authors are Pengcheng Xu and Xinyu Guan, in that order/i);
   assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*submitted to AAAI 2027 in July 2026/i);
   for (const [title, authors, forumId] of [
     [
@@ -526,6 +524,8 @@ test("grounds English and Chinese BigData aliases in short-paper acceptance and 
       assert.match(facts, /authors are Yifan Zhao, Qianyang Zhao, Xinyu Guan, Kai Wei, and Yuming Deng, in that order/);
       assert.match(facts, /accepted as a short paper at IEEE BigData 2026/);
       assert.match(facts, /October 21, 2026/);
+      assert.match(facts, /arXiv:2610\.29391 v3, revised on November 10, 2026/);
+      assert.match(facts, /https:\/\/github\.com\/cyberaz\/nominate-then-adjudicate/);
       assert.match(facts, /homepage label is Accepted/);
       assert.match(facts, /authentic overview from Figure 1/);
       assert.match(facts, /do not establish proceedings publication/);
@@ -544,7 +544,7 @@ test("grounds English and Chinese BigData aliases in short-paper acceptance and 
     assert.ok(routedQuestion.includes(question));
     assert.match(routedQuestion, /Answer in the same language as the original question/);
     assert.match(routedQuestion, /中文问题请务必使用中文回答/);
-    assert.match(routedQuestion, /Do not invent experimental results, additional mechanisms, or a paper URL/);
+    assert.match(routedQuestion, /Use the verified paper and code URLs\. Do not invent experimental results or proceedings metadata/);
     assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
     assert.doesNotMatch(context, /11 distinct papers and manuscripts|11 published papers/);
   }
@@ -572,10 +572,10 @@ test("expands CICL shorthand into the verified ICONIP publication record", async
   );
   assert.match(userMessage, /accepted at ICONIP 2026/i);
   assert.match(userMessage, /Springer Communications in Computer and Information Science \(CCIS\) proceedings/i);
-  assert.match(userMessage, /not yet published/i);
+  assert.match(userMessage, /proceedings publication has not been verified/i);
   assert.match(userMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(userMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
-  assert.match(userMessage, /does not establish proceedings publication/);
+  assert.match(userMessage, /does not establish proceedings publication/i);
   assert.match(userMessage, /Answer in the same language as the original question/i);
   assert.match(userMessage, /中文问题请务必使用中文回答/);
   assert.match(userMessage, new RegExp(`Original question: ${question}`));

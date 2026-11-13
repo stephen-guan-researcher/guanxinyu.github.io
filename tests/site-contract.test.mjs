@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261028-qeschunker-preprint-1";
+const releaseToken = "20261113-publications-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -103,16 +103,17 @@ test("both pages use the approved editorial skin and the homepage exposes recent
   }
 });
 
-test("News presents the acceptance announcement and all ten historical milestones in reverse-chronological order", () => {
+test("News presents the Findings announcement and the retained milestones in reverse-chronological order", () => {
   const news = contentSection("updates");
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 11, "News must add the acceptance announcement and retain all ten historical milestones");
-  assert.deepEqual(dates, ["2026-10-22", "2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
-  assert.match(items[0], /accepted as a short paper at IEEE BigData 2026/);
-  assert.match(items[0], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
-  for (const status of ["Accepted", "Preparing", "Updated", "Submitted", "Preprint", "Career"]) {
+  assert.equal(items.length, 11, "News must include the Findings acceptance and retained milestones");
+  assert.deepEqual(dates, ["2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  assert.match(items[0], /href="#paper-silica"[^>]*>SILICA<\/a> was accepted to Findings of EACL 2027/);
+  assert.match(items[1], /accepted as a short paper at IEEE BigData 2026/);
+  assert.match(items[1], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
+  for (const status of ["Accepted", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
   assert.match(
@@ -121,7 +122,7 @@ test("News presents the acceptance announcement and all ten historical milestone
   );
   assert.match(items[6], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
   assert.match(items[5], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
-  assert.match(items[1], /Preparing[\s\S]*PIVOT[\s\S]*for CVPR/);
+  assert.doesNotMatch(news, /Preparing[^<]*<a[^>]*>PIVOT|CVPR/);
   assert.match(items[2], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
   assert.match(items[3], /Three ICLR 2027 submissions/);
   assert.match(items[4], /ICONIP 2026 camera-ready/);
@@ -681,7 +682,7 @@ function assertMultiColumnGrid(source, selector) {
 }
 
 test("homepage locks the current research program, career, and twelve independent publication rows", () => {
-  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "PIVOT · Preparing for CVPR", "Agent Research Survey · Submitted"];
+  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "Agent Research Survey · Submitted"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
   assert.equal(researchCards.length, 3);
@@ -870,7 +871,7 @@ test("unpublished papers retain distinct venues and conservative public states",
   const timbreTitle = "TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile";
 
   const contracts = [
-    [silicaTitle, /Submitted/, /ACL ARR · Aug 2026 cycle · Preferred venue: EACL/],
+    [silicaTitle, /class="status-label">Accepted/, /EACL 2027 · Findings · Accepted Nov 2026/],
     [advantageTitle, /Submitted/, /Submitted to AAAI 2027 · Jul 2026/],
   ];
   for (const [title, status, venue] of contracts) {
@@ -878,7 +879,8 @@ test("unpublished papers retain distinct venues and conservative public states",
     assert.ok(card, `publication card must include ${title}`);
     assert.match(card, status);
     assert.match(card, venue);
-    assert.match(card, /Not yet public/);
+    if (title === advantageTitle) assert.match(card, /Not yet public/);
+    assert.doesNotMatch(card, /class="status-label">Published/);
     assert.doesNotMatch(card, /<a\b[^>]*href=/);
   }
   assert.equal(cardWithText("publication-card", klTitle), "",
@@ -900,16 +902,15 @@ test("unpublished papers retain distinct venues and conservative public states",
   assert.doesNotMatch(contentSection("papers"), /ChronoMem: Interpretable Event Memory/);
 });
 
-test("PIVOT is preparing for CVPR, not an active ICLR submission or a public paper", () => {
+test("PIVOT is archived after withdrawal and is no longer listed as active research", () => {
   const title = "PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement";
   const card = cardWithText("publication-card", title);
   assert.ok(card, "PIVOT must have an independent manuscript card");
-  assert.match(card, /class="status-label">In Preparation/);
-  assert.match(card, /Preparing for CVPR · Not yet public/);
+  assert.match(card, /class="status-label">Archived/);
+  assert.match(card, /ICLR 2027 submission withdrawn · Not yet public/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng/);
-  assert.doesNotMatch(card, /<a\b|publication-card-linked|>Submitted<|>Accepted<|>Published<|ICLR|CVPR 20\d\d/);
-  assert.match(contentSection("research"), /PIVOT · Preparing for CVPR/);
-  assert.doesNotMatch(contentSection("research"), /CVPR Manuscript/);
+  assert.doesNotMatch(card, /<a\b|publication-card-linked|>Submitted<|>Accepted<|>Published<|\bCVPR\b/);
+  assert.doesNotMatch(contentSection("research"), /PIVOT|CVPR Manuscript/);
 });
 
 test("new public ICLR submissions preserve title, author order, and direct links", () => {

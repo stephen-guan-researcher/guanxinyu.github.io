@@ -225,11 +225,11 @@ test("News shows three recent updates and keeps eight historical entries in a cl
   assert.ok(preview[0].start < archive[0].start, "the latest three updates appear before the older archive");
   const items = withClass(news, "news-item");
   assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
-  const expectedDates = ["2026-10-22", "2026-10", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
-  const expectedStates = ["Accepted", "Preparing", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
+  const expectedDates = ["2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
+  const expectedStates = ["Accepted", "Accepted", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
   const expectedText = [
+    "SILICA was accepted to Findings of EACL 2027.",
     "Nominate-then-Adjudicate has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on arXiv.",
-    "Preparing PIVOT, a multimodal agent self-improvement framework, for CVPR.",
     "TIMBRE, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on arXiv.",
     "Three ICLR 2027 submissions: VLA Early Exit, LoRA Attribution, and QESChunker.",
     "Updated the ICONIP 2026 camera-ready version of Decision-Aware Memory Cards on arXiv.",
@@ -241,8 +241,8 @@ test("News shows three recent updates and keeps eight historical entries in a cl
     "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
   ];
   const expectedLinks = [
+    ["#paper-silica"],
     ["#paper-nominate-adjudicate", "https://arxiv.org/abs/2610.29391"],
-    ["#paper-pivot"],
     ["#paper-timbre", "https://arxiv.org/abs/2610.04795"],
     ["https://openreview.net/forum?id=x6BEwIFvUc", "https://openreview.net/forum?id=g54eVrFPPI", "https://openreview.net/forum?id=pvrvPinZif"],
     ["https://arxiv.org/abs/2606.08151"], ["#paper-nominate-adjudicate"], ["https://arxiv.org/abs/2606.08151"],
@@ -340,27 +340,27 @@ test("publication rows retain twelve visible manuscripts including the exact run
   }
 });
 
-test("PIVOT stays pinned above submission-ordered manuscripts and undated archival rows", () => {
+test("the three recent acceptances lead and the withdrawn manuscript is archived at the end", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
-  // Month-only records keep their relative order; acceptance and revision dates
-  // are not substituted for unverified initial submission dates.
   assert.deepEqual(titles, [
-    knownPapers[0][0],
+    knownPapers[5][0],
+    knownPapers[10][0],
+    knownPapers[7][0],
     surveyTitle,
     knownPapers[1][0],
     knownPapers[2][0],
     knownPapers[3][0],
     knownPapers[4][0],
-    knownPapers[10][0],
-    knownPapers[5][0],
     knownPapers[6][0],
-    knownPapers[7][0],
     knownPapers[8][0],
     knownPapers[9][0],
+    knownPapers[0][0],
   ]);
-  assert.equal(cards[0].attrs.id, "paper-pivot");
-  assert.match(normalizedText(withClass(cards[0], "publication-meta")[0]), /Preparing for CVPR/);
+  assert.deepEqual(cards.slice(0, 3).map((card) => normalizedText(withClass(card, "status-label")[0])),
+    ["Accepted", "Accepted", "Accepted"]);
+  assert.equal(cards.at(-1).attrs.id, "paper-pivot");
+  assert.match(normalizedText(withClass(cards.at(-1), "publication-meta")[0]), /ICLR 2027 submission withdrawn/);
 });
 
 test("Agent context counts twelve distinct manuscripts without the unresolved KL record", () => {
@@ -391,24 +391,24 @@ test("verified public paper destinations and conservative manuscript states stay
     assert.ok(hasClass(card, "publication-card-linked"));
   }
   const states = [
-    [knownPapers[0][0], "In Preparation", /Preparing for CVPR/],
+    [knownPapers[0][0], "Archived", /ICLR 2027 submission withdrawn/],
     [knownPapers[1][0], "Submitted", /Submitted to ICASSP 2027/],
     [knownPapers[2][0], "Submitted", /Submitted to ICLR 2027/],
     [knownPapers[3][0], "Submitted", /Submitted to ICLR 2027/],
     [knownPapers[4][0], "Submitted", /Submitted to ICLR 2027/],
-    [knownPapers[5][0], "Submitted", /ACL ARR.*Preferred venue: EACL/],
+    [knownPapers[5][0], "Accepted", /EACL 2027.*Findings.*Accepted Nov 2026/],
     [knownPapers[6][0], "Submitted", /Submitted to AAAI 2027/],
     [knownPapers[7][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
     [knownPapers[8][0], "Preprint", /arXiv:2512\.16927/],
     [knownPapers[9][0], "Published", /ICASSP 2025/],
-    [knownPapers[10][0], "Accepted", /IEEE BigData 2026.*Short Paper.*arXiv:2610\.29391/],
+    [knownPapers[10][0], "Accepted", /IEEE BigData 2026.*Short Paper.*arXiv:2610\.29391v3/],
   ];
   for (const [title, status, venue] of states) {
     const card = publication(title);
     assert.equal(normalizedText(withClass(card, "status-label")[0]), status);
     assert.match(normalizedText(withClass(card, "publication-meta")[0]), venue);
   }
-  for (const index of [0, 5, 6]) {
+  for (const index of [0, 6]) {
     const card = publication(knownPapers[index][0]);
     assert.match(normalizedText(card), /Not yet public/i);
     assert.equal(all(card, (node) => node.tag === "a").length, 0,
@@ -441,7 +441,7 @@ test("publication rows retain ten real figures and two accessible venue labels o
       `${title} must retain its original caption-free figure`);
   }
   const pendingFigures = [
-    [knownPapers[0][0], "PIVOT: target venue CVPR", "CVPR"],
+    [knownPapers[0][0], "PIVOT: archived manuscript", "Archived"],
     [surveyTitle, "Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
   ];
   for (const [title, accessibleLabel, visibleLabel] of pendingFigures) {
@@ -588,7 +588,7 @@ test("QESChunker adds its arXiv preprint without changing authors, overview, man
   assert.equal(withClass(pages.home, "publication-card").length, 12);
   const bigdata = publication(knownPapers[10][0]);
   assert.equal(normalizedText(withClass(bigdata, "status-label")[0]), "Accepted");
-  assert.match(normalizedText(withClass(bigdata, "publication-meta")[0]), /IEEE BigData 2026 · Short Paper · arXiv:2610\.29391/);
+  assert.match(normalizedText(withClass(bigdata, "publication-meta")[0]), /IEEE BigData 2026 · Short Paper · arXiv:2610\.29391v3/);
 });
 
 test("the live Agent is a closed accessible dialog with matching open and close controls", () => {

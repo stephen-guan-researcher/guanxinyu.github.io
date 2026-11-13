@@ -452,7 +452,7 @@ test("buildAgentReply grounds research questions in the resume sections", () => 
   assert.match(reply.answer, /AutoResearch/);
   assert.match(reply.answer, /Post-Training/);
   assert.match(reply.answer, /Agentic RL/);
-  assert.match(reply.answer, /CVPR manuscript in progress is PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement/);
+  assert.doesNotMatch(reply.answer, /PIVOT/);
   assert.match(reply.answer, /Agent Research Survey/);
   assert.doesNotMatch(reply.answer, /CVPR 20\d{2}|submitted to CVPR|accepted at CVPR/);
 });
@@ -513,6 +513,8 @@ test("buildAgentReply resolves BigData aliases to accepted short-paper and publi
     assert.match(reply.answer, /IEEE BigData 2026/);
     assert.match(reply.answer, /Accepted/);
     assert.match(reply.answer, /short paper/i);
+    assert.match(reply.answer, /(?:v3 于 11 月 10 日更新|v3, revised on November 10, 2026)/);
+    assert.match(reply.answer, /https:\/\/github\.com\/cyberaz\/nominate-then-adjudicate/);
     assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2610\.29391/);
     assert.match(reply.answer, /https:\/\/arxiv\.org\/pdf\/2610\.29391/);
     if (/[\p{Script=Han}]/u.test(question)) {
@@ -565,11 +567,11 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   const pivotSummary = reply.answer.slice(reply.answer.indexOf(" PIVOT:")).split(" TIMBRE:")[0];
   assert.match(pivotSummary, /PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement/);
   assert.match(pivotSummary, /Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng/);
-  assert.match(pivotSummary, /is in preparation for CVPR/);
-  assert.match(pivotSummary, /not yet public and has no public paper URL/);
-  assert.match(pivotSummary, /no CVPR conference year, submission, or acceptance is confirmed/);
+  assert.match(pivotSummary, /is an archived manuscript/);
+  assert.match(pivotSummary, /No public paper URL has been verified/);
+  assert.match(pivotSummary, /ICLR 2027 submission was withdrawn/);
   assert.doesNotMatch(pivotSummary, /https?:\/\/|CVPR 20\d{2}|submitted to CVPR|accepted at CVPR/);
-  assert.match(reply.answer, /submitted to ACL ARR in the August 2026 cycle, with EACL as its preferred venue/);
+  assert.match(reply.answer, /was accepted to Findings of EACL 2027 on November 13, 2026/);
   assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
   assert.doesNotMatch(reply.answer, /KL regularization|ZCPO|1RCulySJU5/i,
     "browser publication facts must not attribute the unresolved KL manuscript to the owner");
@@ -606,7 +608,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /publicly available on arXiv/);
   assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(reply.answer, /camera-ready v4 was revised on September 21, 2026/);
-  assert.match(reply.answer, /It is not yet published\./);
+  assert.match(reply.answer, /Proceedings publication has not been verified\./);
   assert.doesNotMatch(
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents[^.]*\b(?:is|was) published\b/i,

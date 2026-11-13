@@ -7,8 +7,8 @@
   <meta name="description" content="Personal academic homepage of Xinyu Guan, an AI Agent Researcher at TaoTian Group @ Alibaba working on AutoResearch, post-training, and agentic reinforcement learning." />
   <meta name="xinyu-agent-api" content="https://xinyu-agent-api.798750933strikerg.workers.dev/api/chat" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261028-qeschunker-preprint-1" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261028-qeschunker-preprint-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261113-publications-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261113-publications-1" />
 </head>
 <body class="profile-page editorial-page">
   <dialog class="site-entry" id="site-entry" aria-labelledby="entry-name" aria-describedby="entry-role entry-company">
@@ -73,12 +73,12 @@
         </header>
         <div class="news-list news-list-preview">
         <article class="news-item">
-          <div><time datetime="2026-10-22">Oct 2026</time><span>Accepted</span></div>
-          <p><a href="#paper-nominate-adjudicate">Nominate-then-Adjudicate</a> has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on <a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a>.</p>
+          <div><time datetime="2026-11-13">Nov 2026</time><span>Accepted</span></div>
+          <p><a href="#paper-silica">SILICA</a> was accepted to Findings of EACL 2027.</p>
         </article>
         <article class="news-item">
-          <div><time datetime="2026-10">Oct 2026</time><span>Preparing</span></div>
-          <p>Preparing <a href="#paper-pivot">PIVOT</a>, a multimodal agent self-improvement framework, for CVPR.</p>
+          <div><time datetime="2026-10-22">Oct 2026</time><span>Accepted</span></div>
+          <p><a href="#paper-nominate-adjudicate">Nominate-then-Adjudicate</a> has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on <a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a>.</p>
         </article>
         <article class="news-item">
           <div><time datetime="2026-10">Oct 2026</time><span>Submitted</span></div>
@@ -241,22 +241,57 @@
             <h2 id="papers-title">Publications &amp; Manuscripts</h2>
           </header>
           <div class="publication-list">
-            <article class="publication-card" id="paper-pivot">
-              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="PIVOT: target venue CVPR">
-                <picture aria-hidden="true">
-                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+            <article class="publication-card" id="paper-silica">
+              <figure class="publication-card-figure">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-silica-identifiability-320.webp 320w, images/generated/paper-silica-identifiability-640.webp 640w, images/generated/paper-silica-identifiability-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-silica-identifiability.png" width="1200" height="525" alt="SILICA shared-state counterfactual identifiability evaluation" loading="lazy" decoding="async" />
                 </picture>
-                <span class="publication-figure-pending-label">CVPR</span>
               </figure>
               <div class="publication-body">
-                <h3>PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement</h3>
-                <p class="publication-authors"><strong>Xinyu Guan</strong>, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng</p>
+                <h3>SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</h3>
+                <p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan</strong></p>
                 <div class="publication-metadata">
-                  <p class="status-label">In Preparation</p>
-                  <p class="publication-meta">Preparing for CVPR · Not yet public</p>
+                  <p class="status-label">Accepted</p>
+                  <p class="publication-meta">EACL 2027 · Findings · Accepted Nov 2026</p>
                 </div>
-                <p class="publication-summary">Studies when multimodal agents should refine prompts or acquire additional visual evidence, with feedback-driven intervention selection and independent verification.</p>
+                <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions.</p>
+              </div>
+            </article>
+
+            <article class="publication-card publication-card-linked" id="paper-nominate-adjudicate">
+              <figure class="publication-card-figure">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-nominate-adjudicate-overview-320.webp 320w, images/generated/paper-nominate-adjudicate-overview-640.webp 640w, images/generated/paper-nominate-adjudicate-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-nominate-adjudicate-overview.png" width="2048" height="432" alt="Nominate-then-Adjudicate Figure 1: fixed-portfolio EPM nomination, compressed instance structure, and LLM adjudication with offline textual skill memory" loading="lazy" decoding="async" />
+                </picture>
+              </figure>
+              <div class="publication-body">
+                <h3><a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</a></h3>
+                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, Kai Wei, Yuming Deng</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Accepted</p>
+                  <p class="publication-meta">IEEE BigData 2026 · Short Paper · arXiv:2610.29391v3</p>
+                </div>
+                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.29391" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/cyberaz/nominate-then-adjudicate" target="_blank" rel="noopener">Code</a></p>
+              </div>
+            </article>
+
+            <article class="publication-card publication-card-linked" id="paper-cicl">
+              <figure class="publication-card-figure">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper3-cicl-pipeline-320.webp 320w, images/generated/paper3-cicl-pipeline-640.webp 640w, images/generated/paper3-cicl-pipeline-850.webp 850w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper3-cicl-pipeline.png" width="850" height="320" alt="CICL decision-aware context and memory-card pipeline" loading="lazy" decoding="async" />
+                </picture>
+              </figure>
+              <div class="publication-body">
+                <h3><a href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents</a></h3>
+                <p class="publication-authors"><strong>Xinyu Guan</strong>, Qianyang Zhao, Yuming Deng</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Accepted</p>
+                  <p class="publication-meta">ICONIP 2026 · Springer CCIS · Accepted Aug 2026 · Camera-ready updated Sep 2026</p>
+                </div>
+                <p class="publication-summary">Introduces CICL, a decision-aware context layer that selects evidence by its expected effect on an agent's next action. <a class="publication-inline-link" href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2606.08151" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/stephen-guan-researcher/CICL" target="_blank" rel="noopener">Code</a></p>
               </div>
             </article>
 
@@ -351,42 +386,6 @@
               </div>
             </article>
 
-            <article class="publication-card publication-card-linked" id="paper-nominate-adjudicate">
-              <figure class="publication-card-figure">
-                <picture>
-                  <source type="image/webp" srcset="images/generated/paper-nominate-adjudicate-overview-320.webp 320w, images/generated/paper-nominate-adjudicate-overview-640.webp 640w, images/generated/paper-nominate-adjudicate-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-nominate-adjudicate-overview.png" width="2048" height="432" alt="Nominate-then-Adjudicate Figure 1: fixed-portfolio EPM nomination, compressed instance structure, and LLM adjudication with offline textual skill memory" loading="lazy" decoding="async" />
-                </picture>
-              </figure>
-              <div class="publication-body">
-                <h3><a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</a></h3>
-                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, Kai Wei, Yuming Deng</p>
-                <div class="publication-metadata">
-                  <p class="status-label">Accepted</p>
-                  <p class="publication-meta">IEEE BigData 2026 · Short Paper · arXiv:2610.29391</p>
-                </div>
-                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.29391" target="_blank" rel="noopener">PDF</a></p>
-              </div>
-            </article>
-
-            <article class="publication-card">
-              <figure class="publication-card-figure">
-                <picture>
-                  <source type="image/webp" srcset="images/generated/paper-silica-identifiability-320.webp 320w, images/generated/paper-silica-identifiability-640.webp 640w, images/generated/paper-silica-identifiability-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-silica-identifiability.png" width="1200" height="525" alt="SILICA shared-state counterfactual identifiability evaluation" loading="lazy" decoding="async" />
-                </picture>
-              </figure>
-              <div class="publication-body">
-                <h3>SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</h3>
-                <p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan</strong></p>
-                <div class="publication-metadata">
-                  <p class="status-label">Submitted</p>
-                  <p class="publication-meta">ACL ARR · Aug 2026 cycle · Preferred venue: EACL · Not yet public</p>
-                </div>
-                <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions.</p>
-              </div>
-            </article>
-
             <article class="publication-card">
               <figure class="publication-card-figure">
                 <picture>
@@ -402,24 +401,6 @@
                   <p class="publication-meta">Submitted to AAAI 2027 · Jul 2026 · Not yet public</p>
                 </div>
                 <p class="publication-summary">Diagnoses calibration imbalance under low-variance rewards and introduces bounded recovery for credible small reward gaps.</p>
-              </div>
-            </article>
-
-            <article class="publication-card publication-card-linked">
-              <figure class="publication-card-figure">
-                <picture>
-                  <source type="image/webp" srcset="images/generated/paper3-cicl-pipeline-320.webp 320w, images/generated/paper3-cicl-pipeline-640.webp 640w, images/generated/paper3-cicl-pipeline-850.webp 850w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper3-cicl-pipeline.png" width="850" height="320" alt="CICL decision-aware context and memory-card pipeline" loading="lazy" decoding="async" />
-                </picture>
-              </figure>
-              <div class="publication-body">
-                <h3><a href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents</a></h3>
-                <p class="publication-authors"><strong>Xinyu Guan</strong>, Qianyang Zhao, Yuming Deng</p>
-                <div class="publication-metadata">
-                  <p class="status-label">Accepted</p>
-                  <p class="publication-meta">ICONIP 2026 · Springer CCIS · Accepted Aug 2026 · Camera-ready updated Sep 2026</p>
-                </div>
-                <p class="publication-summary">Introduces CICL, a decision-aware context layer that selects evidence by its expected effect on an agent's next action.</p>
               </div>
             </article>
 
@@ -456,6 +437,25 @@
                   <p class="publication-meta">ICASSP 2025 · Apr 2025</p>
                 </div>
                 <p class="publication-summary">Introduces a basket-enhanced heterogeneous hypergraph for price-sensitive next-basket recommendation. <a class="publication-inline-link" href="https://arxiv.org/abs/2409.11695" target="_blank" rel="noopener">arXiv</a></p>
+              </div>
+            </article>
+
+            <article class="publication-card" id="paper-pivot">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="PIVOT: archived manuscript">
+                <picture aria-hidden="true">
+                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                </picture>
+                <span class="publication-figure-pending-label">Archived</span>
+              </figure>
+              <div class="publication-body">
+                <h3>PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement</h3>
+                <p class="publication-authors"><strong>Xinyu Guan</strong>, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Archived</p>
+                  <p class="publication-meta">ICLR 2027 submission withdrawn · Not yet public</p>
+                </div>
+                <p class="publication-summary">Studies when multimodal agents should refine prompts or acquire additional visual evidence, with feedback-driven intervention selection and independent verification.</p>
               </div>
             </article>
           </div>
@@ -495,8 +495,6 @@
           <div class="research-progress" aria-label="Current manuscripts">
             <span class="research-progress-label">Current manuscripts</span>
             <div class="research-progress-items">
-              <strong>PIVOT · Preparing for CVPR</strong>
-              <span class="research-progress-dot" aria-hidden="true">·</span>
               <strong>Agent Research Survey · Submitted</strong>
             </div>
           </div>
@@ -641,7 +639,7 @@
   </dialog>
 
   <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
-  <script type="module" src="phd-main.js?v=20261028-qeschunker-preprint-1"></script>
-  <script type="module" src="editorial-interactions.js?v=20261028-qeschunker-preprint-1"></script>
+  <script type="module" src="phd-main.js?v=20261113-publications-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261113-publications-1"></script>
 </body>
 </html>
