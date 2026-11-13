@@ -7,8 +7,8 @@
   <meta name="description" content="Personal academic homepage of Xinyu Guan, an AI Agent Researcher at TaoTian Group @ Alibaba working on AutoResearch, post-training, and agentic reinforcement learning." />
   <meta name="xinyu-agent-api" content="https://xinyu-agent-api.798750933strikerg.workers.dev/api/chat" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261113-manuscripts-1" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261113-manuscripts-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261113-publication-counts-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261113-publication-counts-1" />
 </head>
 <body class="profile-page editorial-page">
   <dialog class="site-entry" id="site-entry" aria-labelledby="entry-name" aria-describedby="entry-role entry-company">
@@ -239,6 +239,14 @@
         <section class="content-card publications-card" id="papers" aria-labelledby="papers-title">
           <header class="card-heading">
             <h2 id="papers-title">Publications &amp; Manuscripts</h2>
+            <p class="publication-count">
+              <strong>15 works</strong>
+              <span>1 published</span>
+              <span>3 accepted</span>
+              <span>1 preprint only</span>
+              <span>7 full manuscripts submitted</span>
+              <span>3 abstracts submitted</span>
+            </p>
           </header>
           <div class="publication-list">
             <article class="publication-card" id="paper-silica">
@@ -296,7 +304,10 @@
             </article>
 
             <div class="recent-manuscripts" id="recent-manuscripts" role="region" aria-labelledby="recent-manuscripts-title">
-              <h3 id="recent-manuscripts-title">Recent Manuscripts</h3>
+              <header class="recent-manuscripts-heading">
+                <h3 id="recent-manuscripts-title">Recent Manuscripts</h3>
+                <span class="manuscript-count">4 manuscripts</span>
+              </header>
               <ul role="list">
                 <li>
                   <span class="manuscript-title">LieTwist-GS: State-Consistent Twist Dynamics for Long-Horizon 4D Gaussian Forecasting</span>
@@ -459,25 +470,6 @@
                   <p class="publication-meta">ICASSP 2025 · Apr 2025</p>
                 </div>
                 <p class="publication-summary">Introduces a basket-enhanced heterogeneous hypergraph for price-sensitive next-basket recommendation. <a class="publication-inline-link" href="https://arxiv.org/abs/2409.11695" target="_blank" rel="noopener">arXiv</a></p>
-              </div>
-            </article>
-
-            <article class="publication-card" id="paper-pivot">
-              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="PIVOT: archived manuscript">
-                <picture aria-hidden="true">
-                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
-                </picture>
-                <span class="publication-figure-pending-label">Archived</span>
-              </figure>
-              <div class="publication-body">
-                <h3>PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement</h3>
-                <p class="publication-authors"><strong>Xinyu Guan</strong>, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng</p>
-                <div class="publication-metadata">
-                  <p class="status-label">Archived</p>
-                  <p class="publication-meta">ICLR 2027 submission withdrawn · Not yet public</p>
-                </div>
-                <p class="publication-summary">Studies when multimodal agents should refine prompts or acquire additional visual evidence, with feedback-driven intervention selection and independent verification.</p>
               </div>
             </article>
           </div>
@@ -661,7 +653,7 @@
   </dialog>
 
   <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
-  <script type="module" src="phd-main.js?v=20261113-manuscripts-1"></script>
-  <script type="module" src="editorial-interactions.js?v=20261113-manuscripts-1"></script>
+  <script type="module" src="phd-main.js?v=20261113-publication-counts-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261113-publication-counts-1"></script>
 </body>
 </html>

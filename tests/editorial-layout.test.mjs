@@ -93,10 +93,6 @@ function publication(title) {
 const surveyTitle = "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack";
 const knownPapers = [
   [
-    "PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement",
-    "Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, Yuming Deng",
-  ],
-  [
     "TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile",
     "Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, Qianyang Zhao",
   ],
@@ -313,7 +309,7 @@ test("four compact career rows preserve all six original scopes and complete exp
   assert.equal(withClass(byId(pages.home, "education"), "education-item").length, 2);
 });
 
-test("publication rows retain twelve visible manuscripts including the exact runtime-stack survey title", () => {
+test("publication rows retain eleven full cards including the exact runtime-stack survey title", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => {
     const headings = all(card, (node) => node.tag === "h3");
@@ -321,7 +317,7 @@ test("publication rows retain twelve visible manuscripts including the exact run
     return normalizedText(headings[0]);
   });
   assert.deepEqual(titles.toSorted(), [...knownPapers.map(([title]) => title), surveyTitle].toSorted());
-  assert.equal(cards.length, 12);
+  assert.equal(cards.length, 11);
   assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const card of cards) {
@@ -340,46 +336,62 @@ test("publication rows retain twelve visible manuscripts including the exact run
   }
 });
 
-test("the three recent acceptances lead and the withdrawn manuscript is archived at the end", () => {
+test("the three recent acceptances lead the publication cards", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
   assert.deepEqual(titles, [
-    knownPapers[5][0],
-    knownPapers[10][0],
-    knownPapers[7][0],
+    knownPapers[4][0],
+    knownPapers[9][0],
+    knownPapers[6][0],
     surveyTitle,
+    knownPapers[0][0],
     knownPapers[1][0],
     knownPapers[2][0],
     knownPapers[3][0],
-    knownPapers[4][0],
-    knownPapers[6][0],
+    knownPapers[5][0],
+    knownPapers[7][0],
     knownPapers[8][0],
-    knownPapers[9][0],
-    knownPapers[0][0],
   ]);
   assert.deepEqual(cards.slice(0, 3).map((card) => normalizedText(withClass(card, "status-label")[0])),
     ["Accepted", "Accepted", "Accepted"]);
-  assert.equal(cards.at(-1).attrs.id, "paper-pivot");
-  assert.match(normalizedText(withClass(cards.at(-1), "publication-meta")[0]), /ICLR 2027 submission withdrawn/);
 });
 
-test("Agent context counts twelve distinct manuscripts without the unresolved KL record", () => {
-  const context = read("worker/src/index.mjs");
-  assert.match(context, /lists 12 distinct papers and manuscripts, not 12 published papers/);
-  assert.doesNotMatch(context, /When KL Regularization Fails|ZCPO/i);
+test("the homepage counts each listed work once at its current stage", () => {
+  const papers = byId(pages.home, "papers");
+  const recent = byId(papers, "recent-manuscripts");
+  const cards = withClass(papers, "publication-card");
+  const manuscripts = withClass(recent, "manuscript-status");
+  const displayed = withClass(papers, "publication-count")[0];
+  const statuses = [...cards.map((card) => withClass(card, "status-label")[0]), ...manuscripts].map(normalizedText);
+  const tally = (status) => statuses.filter((entry) => entry === status).length;
+
+  assert.equal(new Set([
+    ...cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0])),
+    ...withClass(recent, "manuscript-title").map(normalizedText),
+  ]).size, statuses.length);
+  assert.equal(normalizedText(all(displayed, (node) => node.tag === "strong")[0]), `${statuses.length} works`);
+  assert.deepEqual(all(displayed, (node) => node.tag === "span").map(normalizedText), [
+    `${tally("Published")} published`,
+    `${tally("Accepted")} accepted`,
+    `${tally("Preprint")} preprint only`,
+    `${tally("Submitted")} full manuscripts submitted`,
+    `${tally("Abstract submitted")} abstracts submitted`,
+  ]);
+  assert.equal(normalizedText(withClass(recent, "manuscript-count")[0]), `${manuscripts.length} manuscripts`);
+  assert.doesNotMatch(read("worker/src/index.mjs"), /When KL Regularization Fails|ZCPO/i);
 });
 
 test("verified public paper destinations and conservative manuscript states stay attached to their rows", () => {
   const publicLinks = [
-    [knownPapers[10][0], "https://arxiv.org/abs/2610.29391"],
-    [knownPapers[1][0], "https://arxiv.org/abs/2610.04795"],
-    [knownPapers[2][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
-    [knownPapers[3][0], "https://arxiv.org/abs/2610.12744"],
+    [knownPapers[9][0], "https://arxiv.org/abs/2610.29391"],
+    [knownPapers[0][0], "https://arxiv.org/abs/2610.04795"],
+    [knownPapers[1][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
+    [knownPapers[2][0], "https://arxiv.org/abs/2610.12744"],
     [surveyTitle, "https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"],
-    [knownPapers[4][0], "https://arxiv.org/abs/2610.36557"],
-    [knownPapers[7][0], "https://arxiv.org/abs/2606.08151"],
-    [knownPapers[8][0], "https://arxiv.org/abs/2512.16927"],
-    [knownPapers[9][0], "https://doi.org/10.1109/ICASSP49660.2025.10887705"],
+    [knownPapers[3][0], "https://arxiv.org/abs/2610.36557"],
+    [knownPapers[6][0], "https://arxiv.org/abs/2606.08151"],
+    [knownPapers[7][0], "https://arxiv.org/abs/2512.16927"],
+    [knownPapers[8][0], "https://doi.org/10.1109/ICASSP49660.2025.10887705"],
   ];
   for (const [title, href] of publicLinks) {
     const card = publication(title);
@@ -391,43 +403,40 @@ test("verified public paper destinations and conservative manuscript states stay
     assert.ok(hasClass(card, "publication-card-linked"));
   }
   const states = [
-    [knownPapers[0][0], "Archived", /ICLR 2027 submission withdrawn/],
-    [knownPapers[1][0], "Submitted", /Submitted to ICASSP 2027/],
+    [knownPapers[0][0], "Submitted", /Submitted to ICASSP 2027/],
+    [knownPapers[1][0], "Submitted", /Submitted to ICLR 2027/],
     [knownPapers[2][0], "Submitted", /Submitted to ICLR 2027/],
     [knownPapers[3][0], "Submitted", /Submitted to ICLR 2027/],
-    [knownPapers[4][0], "Submitted", /Submitted to ICLR 2027/],
-    [knownPapers[5][0], "Accepted", /EACL 2027.*Findings.*Accepted Nov 2026/],
-    [knownPapers[6][0], "Submitted", /Submitted to AAAI 2027/],
-    [knownPapers[7][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
-    [knownPapers[8][0], "Preprint", /arXiv:2512\.16927/],
-    [knownPapers[9][0], "Published", /ICASSP 2025/],
-    [knownPapers[10][0], "Accepted", /IEEE BigData 2026.*Short Paper.*arXiv:2610\.29391v3/],
+    [knownPapers[4][0], "Accepted", /EACL 2027.*Findings.*Accepted Nov 2026/],
+    [knownPapers[5][0], "Submitted", /Submitted to AAAI 2027/],
+    [knownPapers[6][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
+    [knownPapers[7][0], "Preprint", /arXiv:2512\.16927/],
+    [knownPapers[8][0], "Published", /ICASSP 2025/],
+    [knownPapers[9][0], "Accepted", /IEEE BigData 2026.*Short Paper.*arXiv:2610\.29391v3/],
   ];
   for (const [title, status, venue] of states) {
     const card = publication(title);
     assert.equal(normalizedText(withClass(card, "status-label")[0]), status);
     assert.match(normalizedText(withClass(card, "publication-meta")[0]), venue);
   }
-  for (const index of [0, 6]) {
-    const card = publication(knownPapers[index][0]);
-    assert.match(normalizedText(card), /Not yet public/i);
-    assert.equal(all(card, (node) => node.tag === "a").length, 0,
-      "unpublished work must not acquire fabricated public destinations");
-  }
+  const unpublished = publication(knownPapers[5][0]);
+  assert.match(normalizedText(unpublished), /Not yet public/i);
+  assert.equal(all(unpublished, (node) => node.tag === "a").length, 0,
+    "unpublished work must not acquire fabricated public destinations");
 });
 
-test("publication rows retain ten real figures and two accessible venue labels on a shared decorative background", () => {
+test("publication rows retain ten real figures and an accessible venue label on the decorative background", () => {
   const figures = [
-    [knownPapers[1][0], "images/paper-timbre-overview.png"],
-    [knownPapers[2][0], "images/paper-vla-early-exit.png"],
-    [knownPapers[3][0], "images/paper-lora-attribution.png"],
-    [knownPapers[4][0], "images/paper-qeschunker-overview.png"],
-    [knownPapers[5][0], "images/paper-silica-identifiability.png"],
-    [knownPapers[6][0], "images/paper-advantage-maxnorm-ac.png"],
-    [knownPapers[7][0], "images/paper3-cicl-pipeline.png"],
-    [knownPapers[8][0], "images/paper2-suffix-tree.png"],
-    [knownPapers[9][0], "images/paper1-hypergraph.png"],
-    [knownPapers[10][0], "images/paper-nominate-adjudicate-overview.png"],
+    [knownPapers[0][0], "images/paper-timbre-overview.png"],
+    [knownPapers[1][0], "images/paper-vla-early-exit.png"],
+    [knownPapers[2][0], "images/paper-lora-attribution.png"],
+    [knownPapers[3][0], "images/paper-qeschunker-overview.png"],
+    [knownPapers[4][0], "images/paper-silica-identifiability.png"],
+    [knownPapers[5][0], "images/paper-advantage-maxnorm-ac.png"],
+    [knownPapers[6][0], "images/paper3-cicl-pipeline.png"],
+    [knownPapers[7][0], "images/paper2-suffix-tree.png"],
+    [knownPapers[8][0], "images/paper1-hypergraph.png"],
+    [knownPapers[9][0], "images/paper-nominate-adjudicate-overview.png"],
   ];
   for (const [title, src] of figures) {
     const card = publication(title);
@@ -441,7 +450,6 @@ test("publication rows retain ten real figures and two accessible venue labels o
       `${title} must retain its original caption-free figure`);
   }
   const pendingFigures = [
-    [knownPapers[0][0], "PIVOT: archived manuscript", "Archived"],
     [surveyTitle, "Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
   ];
   for (const [title, accessibleLabel, visibleLabel] of pendingFigures) {
@@ -483,11 +491,11 @@ test("publication rows retain ten real figures and two accessible venue labels o
     assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0);
   }
   const cards = withClass(pages.home, "publication-card");
-  assert.equal(cards.length, 12);
+  assert.equal(cards.length, 11);
   const allFigures = withClass(pages.home, "publication-card-figure");
-  assert.equal(allFigures.length, 12);
+  assert.equal(allFigures.length, 11);
   assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
-  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 2);
+  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 1);
   assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 10);
   assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|Concept illustration|待补充|示意配图|Figure coming soon/,
     "concept cover assets must not be requested by the active homepage");
@@ -532,7 +540,7 @@ test("publication rows retain ten real figures and two accessible venue labels o
 });
 
 test("TIMBRE stays public and the HEP survey preserves submission status and verified authors", () => {
-  const timbre = publication(knownPapers[1][0]);
+  const timbre = publication(knownPapers[0][0]);
   assert.ok(all(timbre, (node) => node.tag === "a" && node.attrs.href === "https://arxiv.org/abs/2610.04795").length > 0);
   assert.doesNotMatch(normalizedText(timbre), /(?:paper )?not yet public/i);
   const survey = publication(surveyTitle);
@@ -547,12 +555,12 @@ test("TIMBRE stays public and the HEP survey preserves submission status and ver
 
 test("new arXiv and HEP preprints expose canonical landing pages and PDFs without status promotion", () => {
   const contracts = [
-    [knownPapers[4][0], [
+    [knownPapers[3][0], [
       ["arXiv", "https://arxiv.org/abs/2610.36557"],
       ["PDF", "https://arxiv.org/pdf/2610.36557"],
       ["OpenReview", "https://openreview.net/forum?id=pvrvPinZif"],
     ]],
-    [knownPapers[3][0], [
+    [knownPapers[2][0], [
       ["arXiv", "https://arxiv.org/abs/2610.12744"],
       ["PDF", "https://arxiv.org/pdf/2610.12744"],
       ["OpenReview", "https://openreview.net/forum?id=g54eVrFPPI"],
@@ -574,19 +582,19 @@ test("new arXiv and HEP preprints expose canonical landing pages and PDFs withou
       assert.ok((link.attrs.rel ?? "").split(/\s+/).includes("noopener"));
     }
   }
-  assert.doesNotMatch(normalizedText(publication(knownPapers[3][0])), /LoRA’s B-Matrix/);
+  assert.doesNotMatch(normalizedText(publication(knownPapers[2][0])), /LoRA’s B-Matrix/);
 });
 
 test("QESChunker adds its arXiv preprint without changing authors, overview, manuscript count, or BigData acceptance", () => {
-  const card = publication(knownPapers[4][0]);
+  const card = publication(knownPapers[3][0]);
   assert.equal(normalizedText(withClass(card, "publication-authors")[0]),
     "Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, Yuming Deng");
   assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
   assert.match(normalizedText(withClass(card, "publication-meta")[0]), /Submitted to ICLR 2027 · Sep 2026 · OpenReview · arXiv:2610\.36557/);
   assert.match(normalizedText(card), /Builds static RAG chunk indices from question–evidence supervision/);
   assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === "images/paper-qeschunker-overview.png").length === 1);
-  assert.equal(withClass(pages.home, "publication-card").length, 12);
-  const bigdata = publication(knownPapers[10][0]);
+  assert.equal(withClass(pages.home, "publication-card").length, 11);
+  const bigdata = publication(knownPapers[9][0]);
   assert.equal(normalizedText(withClass(bigdata, "status-label")[0]), "Accepted");
   assert.match(normalizedText(withClass(bigdata, "publication-meta")[0]), /IEEE BigData 2026 · Short Paper · arXiv:2610\.29391v3/);
 });

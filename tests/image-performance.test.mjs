@@ -103,7 +103,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261113-manuscripts-1";
+const releaseToken = "20261113-publication-counts-1";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === `images/generated/${avatarStem}-528.jpg`);
@@ -126,15 +126,14 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
   assert.equal(tags(life, "img").length, 33, "Life must not fetch an additional profile portrait");
 });
 
-test("ten paper figures and two reused decorative backgrounds are responsive and lazy", () => {
+test("ten paper figures and the decorative venue background are responsive and lazy", () => {
   const pendingLabelByAria = new Map([
-    ["PIVOT: archived manuscript", "Archived"],
     ["Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
   ]);
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 12, "all twelve visible publication articles need a real figure or pending artwork slot");
+  assert.equal(figures.length, 11, "all eleven visible publication articles need a real figure or pending artwork slot");
   assert.doesNotMatch(index, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const figure of figures) {
@@ -191,13 +190,13 @@ test("ten paper figures and two reused decorative backgrounds are responsive and
   const pendingFigures = figures.filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-pending"),
   );
-  assert.equal(pendingFigures.length, 2, "only the two papers without verified artwork use pending labels");
+  assert.equal(pendingFigures.length, 1, "only the survey uses the decorative venue label");
   assert.deepEqual(pendingFigures.map((figure) => attribute(tags(figure, "figure")[0], "aria-label")).toSorted(),
     [...pendingLabelByAria.keys()].toSorted());
   assert.equal(figures.length - pendingFigures.length, 10);
-  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 12);
+  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 11);
   assert.deepEqual([...new Set(pendingFigures.map((figure) => attribute(tags(figure, "img")[0], "src")))],
-    [`images/${pendingBackgroundStem}.png`], "both pending slots reuse the same cacheable decorative asset");
+    [`images/${pendingBackgroundStem}.png`], "the pending slot uses the cacheable decorative asset");
   assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|publication-card-figure-illustration|Concept illustration|待补充|示意配图|Figure coming soon/,
     "the active homepage must not load archived concept covers");
 

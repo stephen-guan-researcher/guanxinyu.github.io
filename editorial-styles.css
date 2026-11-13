@@ -222,6 +222,8 @@
 .earlier-career > summary { width: fit-content; color: #777f8d; font-size: 12px; cursor: pointer; }
 .earlier-career[open] > summary { margin-bottom: 20px; }
 
+.editorial-page .publication-count { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; color: #4c5665; font-size: 13px; }
+.editorial-page .publication-count strong { color: #23272e; font-weight: 600; }
 .editorial-page .publication-list { display: block; }
 .editorial-page .publication-card {
   display: grid;
@@ -287,7 +289,9 @@
 .editorial-page .publication-inline-link { position: relative; z-index: 1; }
 .editorial-page .publication-card-linked:focus-within { outline: none; }
 .editorial-page .recent-manuscripts { padding: 22px 0; border-top: 1px solid var(--line); scroll-margin-top: 16px; }
-.editorial-page .recent-manuscripts h3 { margin: 0 0 12px; color: #23272e; font-size: 18px; }
+.editorial-page .recent-manuscripts-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 4px 16px; margin-bottom: 12px; }
+.editorial-page .recent-manuscripts h3 { margin: 0; color: #23272e; font-size: 18px; }
+.editorial-page .manuscript-count { color: #4c5665; font-size: 12px; }
 .editorial-page .recent-manuscripts ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .editorial-page .recent-manuscripts li { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 18px; line-height: 1.55; }
 .editorial-page .manuscript-title { flex: 1 1 34ch; min-width: 0; color: #333b47; font-size: 14px; }

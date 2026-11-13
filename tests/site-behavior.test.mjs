@@ -552,7 +552,6 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     "What is the LoRA paper?",
     "Static Gradient Attribution",
     "ACL ARR",
-    "What is PIVOT?",
     "Tell me about CVPR",
     "Which survey was submitted to Frontiers of Computer Science?",
     "What is the runtime stack survey?",
@@ -564,13 +563,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   }
 
   const reply = site.buildAgentReply("Summarize your latest papers");
-  const pivotSummary = reply.answer.slice(reply.answer.indexOf(" PIVOT:")).split(" TIMBRE:")[0];
-  assert.match(pivotSummary, /PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement/);
-  assert.match(pivotSummary, /Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng/);
-  assert.match(pivotSummary, /is an archived manuscript/);
-  assert.match(pivotSummary, /No public paper URL has been verified/);
-  assert.match(pivotSummary, /ICLR 2027 submission was withdrawn/);
-  assert.doesNotMatch(pivotSummary, /https?:\/\/|CVPR 20\d{2}|submitted to CVPR|accepted at CVPR/);
+  assert.doesNotMatch(reply.answer, /PIVOT|Choosing When to Refine Prompts/);
   assert.match(reply.answer, /was accepted to Findings of EACL 2027 on November 13, 2026/);
   assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
   assert.doesNotMatch(reply.answer, /KL regularization|ZCPO|1RCulySJU5/i,

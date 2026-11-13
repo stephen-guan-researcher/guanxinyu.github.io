@@ -299,19 +299,10 @@ test("returns a Workers AI answer for a valid question", async () => {
   }
   assert.doesNotMatch(systemMessage, /CVPR manuscript in progress|submitted to CVPR/i);
   assert.match(systemMessage, /Agent Research Survey/i);
-  assert.doesNotMatch(researchParagraph, /PIVOT/);
-  const pivotParagraph = systemMessage.split("\n\n").find((entry) => entry.startsWith(
-    '"PIVOT: Choosing When to Refine Prompts or Acquire Evidence for Multimodal Agent Self-Improvement"',
-  ));
-  assert.ok(pivotParagraph, "Agent context must include the owner-confirmed PIVOT manuscript");
-  assert.match(pivotParagraph, /is an archived manuscript/);
-  assert.match(pivotParagraph, /authors are Xinyu Guan, Kunjin Chen, Qianyang Zhao, Yu Sun, Pengcheng Xu, and Yuming Deng, in that order/);
-  assert.match(pivotParagraph, /No public paper URL has been verified/);
-  assert.match(pivotParagraph, /ICLR 2027 submission was withdrawn/);
-  assert.doesNotMatch(pivotParagraph, /https?:\/\/|CVPR 20\d{2}|was submitted to CVPR|was accepted at CVPR/);
+  assert.doesNotMatch(systemMessage, /PIVOT|Choosing When to Refine Prompts/);
   assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
     "unresolved KL authorship must not be included in the Agent's verified facts");
-  assert.match(systemMessage, /12 distinct papers and manuscripts, not 12 published papers/);
+  assert.match(systemMessage, /lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted/);
   assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
   assert.match(
     systemMessage,
@@ -435,7 +426,7 @@ test("includes verified HEP survey preprint authors while retaining the confirme
   assert.match(research, /current live system status has not been checked/);
   assert.match(research, /homepage label is Submitted/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
-  assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
+  assert.match(context, /lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted/);
 });
 
 test("the QESChunker arXiv record preserves exact authors, v1 date, links, and ICLR submission status", async () => {
@@ -545,8 +536,7 @@ test("grounds English and Chinese BigData aliases in short-paper acceptance and 
     assert.match(routedQuestion, /Answer in the same language as the original question/);
     assert.match(routedQuestion, /中文问题请务必使用中文回答/);
     assert.match(routedQuestion, /Use the verified paper and code URLs\. Do not invent experimental results or proceedings metadata/);
-    assert.match(context, /12 distinct papers and manuscripts, not 12 published papers/);
-    assert.doesNotMatch(context, /11 distinct papers and manuscripts|11 published papers/);
+    assert.match(context, /lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted/);
   }
 });
 
