@@ -302,7 +302,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.doesNotMatch(systemMessage, /PIVOT|Choosing When to Refine Prompts/);
   assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
     "unresolved KL authorship must not be included in the Agent's verified facts");
-  assert.match(systemMessage, /lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted/);
+  assert.match(systemMessage, /The homepage lists 15 works\b/);
   assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
   assert.match(
     systemMessage,
@@ -426,7 +426,7 @@ test("includes verified HEP survey preprint authors while retaining the confirme
   assert.match(research, /current live system status has not been checked/);
   assert.match(research, /homepage label is Submitted/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
-  assert.match(context, /lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted/);
+  assert.match(context, /The homepage lists 15 works\b/);
 });
 
 test("the QESChunker arXiv record preserves exact authors, v1 date, links, and ICLR submission status", async () => {
@@ -536,7 +536,7 @@ test("grounds English and Chinese BigData aliases in short-paper acceptance and 
     assert.match(routedQuestion, /Answer in the same language as the original question/);
     assert.match(routedQuestion, /中文问题请务必使用中文回答/);
     assert.match(routedQuestion, /Use the verified paper and code URLs\. Do not invent experimental results or proceedings metadata/);
-    assert.match(context, /lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted/);
+    assert.match(context, /The homepage lists 15 works\b/);
   }
 });
 

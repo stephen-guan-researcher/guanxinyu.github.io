@@ -156,12 +156,12 @@ export function buildAgentReply(question) {
     ["Effect-Calibrated Learning from Human Videos for Robot Manipulation", "Abstract submitted", /effect[- ]calibrated learning/],
   ];
   const inChinese = /[\p{Script=Han}]/u.test(question);
-  const publicationCount = "The homepage lists 15 works: 1 published, 3 accepted, 1 preprint only, 7 full manuscripts submitted, and 3 abstracts submitted. The 15 include the 4 Recent Manuscripts.";
+  const publicationCount = "The homepage lists 15 works.";
   if (/(?:多少|几篇|数量).*(?:论文|稿件|文章)|(?:论文|稿件|文章).*(?:多少|几篇|数量)|how many (?:papers|publications|manuscripts|works)|(?:paper|publication|manuscript) count/.test(normalized)
       && !/recent manuscripts|recent submissions|近期稿件|近期投稿|最近投稿/.test(normalized)) {
     return {
       topic: "papers",
-      answer: inChinese ? "主页共列 15 条：1 篇已发表、3 篇已录用、1 篇仅有预印本、7 篇已投全文、3 篇已交摘要。其中 4 条在「Recent Manuscripts」。" : publicationCount,
+      answer: inChinese ? "主页共列 15 条。" : publicationCount,
       sources: ["papers"],
     };
   }
@@ -172,7 +172,7 @@ export function buildAgentReply(question) {
       topic: "papers",
       answer: selectedManuscripts.length
         ? formatManuscripts(selectedManuscripts)
-        : `${inChinese ? "近期稿件 4 条：1 篇已投全文，3 篇已交摘要。" : "Recent Manuscripts lists 4 works: 1 full manuscript submitted and 3 abstracts submitted."} ${formatManuscripts(recentManuscripts)}`,
+        : `${inChinese ? "近期稿件共 4 条。" : "Recent Manuscripts lists 4 works."} ${formatManuscripts(recentManuscripts)}`,
       sources: ["papers"],
     };
   }

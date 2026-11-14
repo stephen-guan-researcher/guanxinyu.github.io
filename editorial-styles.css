@@ -222,8 +222,7 @@
 .earlier-career > summary { width: fit-content; color: #777f8d; font-size: 12px; cursor: pointer; }
 .earlier-career[open] > summary { margin-bottom: 20px; }
 
-.editorial-page .publication-count { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; color: #4c5665; font-size: 13px; }
-.editorial-page .publication-count strong { color: #23272e; font-weight: 600; }
+.editorial-page .publication-count { margin: 8px 0 0; color: #23272e; font-size: 13px; font-weight: 600; }
 .editorial-page .publication-list { display: block; }
 .editorial-page .publication-card {
   display: grid;

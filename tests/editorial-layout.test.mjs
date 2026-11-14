@@ -356,27 +356,19 @@ test("the three recent acceptances lead the publication cards", () => {
     ["Accepted", "Accepted", "Accepted"]);
 });
 
-test("the homepage counts each listed work once at its current stage", () => {
+test("the homepage displays only the total count of distinct listed works", () => {
   const papers = byId(pages.home, "papers");
   const recent = byId(papers, "recent-manuscripts");
   const cards = withClass(papers, "publication-card");
   const manuscripts = withClass(recent, "manuscript-status");
   const displayed = withClass(papers, "publication-count")[0];
-  const statuses = [...cards.map((card) => withClass(card, "status-label")[0]), ...manuscripts].map(normalizedText);
-  const tally = (status) => statuses.filter((entry) => entry === status).length;
+  const total = cards.length + manuscripts.length;
 
   assert.equal(new Set([
     ...cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0])),
     ...withClass(recent, "manuscript-title").map(normalizedText),
-  ]).size, statuses.length);
-  assert.equal(normalizedText(all(displayed, (node) => node.tag === "strong")[0]), `${statuses.length} works`);
-  assert.deepEqual(all(displayed, (node) => node.tag === "span").map(normalizedText), [
-    `${tally("Published")} published`,
-    `${tally("Accepted")} accepted`,
-    `${tally("Preprint")} preprint only`,
-    `${tally("Submitted")} full manuscripts submitted`,
-    `${tally("Abstract submitted")} abstracts submitted`,
-  ]);
+  ]).size, total);
+  assert.equal(normalizedText(displayed), `${total} works`);
   assert.equal(normalizedText(withClass(recent, "manuscript-count")[0]), `${manuscripts.length} manuscripts`);
   assert.doesNotMatch(read("worker/src/index.mjs"), /When KL Regularization Fails|ZCPO/i);
 });
