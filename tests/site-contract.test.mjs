@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261115-work-total-1";
+const releaseToken = "20261115-manuscript-cards-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -681,7 +681,7 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and eleven independent publication cards", () => {
+test("homepage locks the current research program, career, and fifteen independent publication cards", () => {
   const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "Agent Research Survey · Submitted"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
@@ -696,7 +696,7 @@ test("homepage locks the current research program, career, and eleven independen
   }
 
   assert.equal(cardsWithClass("experience-item").length, 5);
-  assert.equal(cardsWithClass("publication-card").length, 11);
+  assert.equal(cardsWithClass("publication-card").length, 15);
 });
 
 test("verified career levels stay attached to their corresponding appointments", () => {
