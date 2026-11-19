@@ -137,8 +137,6 @@ const knownPapers = [
 const newManuscripts = [
   ["PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch", "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng", "2026-11-11", "Submitted", "PraxisLab: Visual AutoResearch", "Visual AutoResearch"],
   ["RateGS: Learning Motion Rates for 4D Gaussian Forecasting", "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao", "2026-11-10", "Submitted", "RateGS: Dynamic scene forecasting", "Dynamic scene forecasting"],
-  ["Effect-Calibrated Learning from Human Videos for Robot Manipulation", "Dingding, Xinyu Guan", "2026-11-09", "Abstract submitted", "Robot manipulation", "Robot manipulation"],
-  ["Reference-Aligned Distillation for Continual Robot Reinforcement Learning", "Dingding, Xinyu Guan", "2026-11-07", "Abstract submitted", "Continual robot learning", "Continual robot learning"],
 ];
 
 test("both pages use the shared editorial skin and retain semantic landmarks", () => {
@@ -318,7 +316,7 @@ test("four compact career rows preserve all six original scopes and complete exp
   assert.equal(withClass(byId(pages.home, "education"), "education-item").length, 2);
 });
 
-test("the main list uses full cards for all fifteen works", () => {
+test("the main list uses full cards for all thirteen papers and manuscripts", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => {
     const headings = all(card, (node) => node.tag === "h3");
@@ -326,7 +324,7 @@ test("the main list uses full cards for all fifteen works", () => {
     return normalizedText(headings[0]);
   });
   assert.deepEqual(titles.toSorted(), [...[...knownPapers, ...newManuscripts].map(([title]) => title), surveyTitle].toSorted());
-  assert.equal(cards.length, 15);
+  assert.equal(cards.length, 13);
   assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const card of cards) {
@@ -505,9 +503,9 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
     assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0);
   }
   const cards = withClass(pages.home, "publication-card");
-  assert.equal(cards.length, 15);
+  assert.equal(cards.length, 13);
   const allFigures = withClass(pages.home, "publication-card-figure");
-  assert.equal(allFigures.length, 15);
+  assert.equal(allFigures.length, 13);
   assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
   assert.equal(withClass(pages.home, "publication-card-figure-pending").length, pendingFigures.length);
   assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 10);
@@ -607,7 +605,7 @@ test("QESChunker adds its arXiv preprint without changing authors, overview, man
   assert.match(normalizedText(withClass(card, "publication-meta")[0]), /Submitted to ICLR 2027 · Sep 14, 2026 · OpenReview · arXiv:2610\.36557/);
   assert.match(normalizedText(card), /Builds static RAG chunk indices from question–evidence supervision/);
   assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === "images/paper-qeschunker-overview.png").length === 1);
-  assert.equal(withClass(pages.home, "publication-card").length, 15);
+  assert.equal(withClass(pages.home, "publication-card").length, 13);
   const bigdata = publication(knownPapers[9][0]);
   assert.equal(normalizedText(withClass(bigdata, "status-label")[0]), "Accepted");
   assert.match(normalizedText(withClass(bigdata, "publication-meta")[0]), /IEEE BigData 2026 · Short Paper · arXiv:2610\.29391v3/);

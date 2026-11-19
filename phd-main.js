@@ -152,11 +152,9 @@ export function buildAgentReply(question) {
   const recentManuscripts = [
     ["PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch", "Submitted", /praxislab/, "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng", 11, "Uses measured outcomes from past image restoration experiments to adapt code edits and select candidates for further testing."],
     ["RateGS: Learning Motion Rates for 4D Gaussian Forecasting", "Submitted", /rategs|lietwist/, "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao", 10, "Forecasts future 4D Gaussian poses by predicting instantaneous motion rates and integrating them over time."],
-    ["Effect-Calibrated Learning from Human Videos for Robot Manipulation", "Abstract submitted", /effect[- ]calibrated learning/, "Dingding, Xinyu Guan", 9, "Proposes using a small set of robot trials to estimate how reliably actions inferred from human videos reproduce the intended object changes."],
-    ["Reference-Aligned Distillation for Continual Robot Reinforcement Learning", "Abstract submitted", /reference[- ]aligned distillation/, "Dingding, Xinyu Guan", 7, "Proposes distilling earlier robot skills against reference actions recomputed by the current policy, so those skills can be retained as the policy changes."],
   ];
   const inChinese = /[\p{Script=Han}]/u.test(question);
-  const workCount = "The homepage lists 20 works.";
+  const workCount = "The homepage lists 18 works.";
   const asksForCount = /多少|几[篇项条份]|数量|总数|\b(?:how many|count|total)\b/.test(normalized);
   const asksAboutRecent = /recent manuscripts|recent submissions|近期稿件|近期投稿|最近投稿/.test(normalized);
   if (asksForCount && !asksAboutRecent) {
@@ -164,7 +162,7 @@ export function buildAgentReply(question) {
     const patents = /\bpatents?\b|专利/.test(normalized);
     let answer;
     if (papers && !patents) {
-      answer = inChinese ? "主页列有 15 篇论文和稿件。" : "The homepage lists 15 papers and manuscripts.";
+      answer = inChinese ? "主页列有 13 篇论文和稿件。" : "The homepage lists 13 papers and manuscripts.";
     } else if (patents && !papers) {
       if (/已授权|获授权|\bgranted\b/.test(normalized)) {
         answer = inChinese ? "主页列有 2 项已授权专利。" : "The homepage lists 2 granted patents.";
@@ -176,7 +174,7 @@ export function buildAgentReply(question) {
           : "The homepage lists 5 patent records, including 2 applications in preparation.";
       }
     } else if (papers || /\bworks?\b|成果|主页.*总数|网站.*总数/.test(normalized)) {
-      answer = inChinese ? "主页共列 20 项成果。" : workCount;
+      answer = inChinese ? "主页共列 18 项成果。" : workCount;
     }
     if (answer) return { topic: "papers", answer, sources: ["papers"] };
   }
@@ -190,7 +188,7 @@ export function buildAgentReply(question) {
       topic: "papers",
       answer: selectedManuscripts.length
         ? selectedManuscripts.map(formatManuscript).join(" ")
-        : `${inChinese ? "近期稿件共 4 条。" : "Four recent manuscripts are listed on the homepage."} ${formatManuscripts(recentManuscripts)}`,
+        : `${inChinese ? "近期稿件共 2 条。" : "Two recent manuscripts are listed on the homepage."} ${formatManuscripts(recentManuscripts)}`,
       sources: ["papers"],
     };
   }
