@@ -590,7 +590,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     assert.ok(reply.answer.includes(title), `missing current publication ${title}`);
     assert.ok(reply.answer.includes(`https://openreview.net/forum?id=${forumId}`));
   }
-  assert.match(reply.answer, /none is confirmed accepted/);
+  assert.match(reply.answer, /All three have received reviews and are awaiting decisions/);
   assert.match(
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents/,
@@ -601,7 +601,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /publicly available on arXiv/);
   assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(reply.answer, /camera-ready v4 was revised on September 21, 2026/);
-  assert.match(reply.answer, /Proceedings publication has not been verified\./);
+  assert.match(reply.answer, /The ICONIP 2026 chapter is in production for Springer CCIS 3202\./);
   assert.doesNotMatch(
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents[^.]*\b(?:is|was) published\b/i,
@@ -644,7 +644,7 @@ test("buildAgentReply exposes the QESChunker arXiv preprint without promoting IC
   assert.match(answer, /arXiv:2610\.36557 v1 on October 27, 2026 \(03:05:09 UTC\)/);
   assert.match(answer, /10\.48550\/arXiv\.2610\.36557/);
   assert.match(answer, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
-  assert.match(answer, /none is confirmed accepted/);
+  assert.match(answer, /All three have received reviews and are awaiting decisions/);
   assert.match(answer, /accepted as a short paper at IEEE BigData 2026/);
 });
 

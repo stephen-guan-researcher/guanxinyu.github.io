@@ -7,8 +7,8 @@
   <meta name="description" content="Personal academic homepage of Xinyu Guan, an AI Agent Researcher at TaoTian Group @ Alibaba working on AutoResearch, post-training, and agentic reinforcement learning." />
   <meta name="xinyu-agent-api" content="https://xinyu-agent-api.798750933strikerg.workers.dev/api/chat" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261115-manuscript-cards-1" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261115-manuscript-cards-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261119-publications-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261119-publications-1" />
 </head>
 <body class="profile-page editorial-page">
   <dialog class="site-entry" id="site-entry" aria-labelledby="entry-name" aria-describedby="entry-role entry-company">
@@ -254,15 +254,15 @@
                 <h3>PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch</h3>
                 <p class="publication-authors"><strong>Xinyu Guan</strong>, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng</p>
                 <div class="publication-metadata">
-                  <p class="status-label">Abstract submitted</p>
+                  <p class="status-label">Submitted</p>
                   <p class="publication-meta"><time datetime="2026-11-11">Nov 11, 2026</time> · Not yet public</p>
                 </div>
-                <p class="publication-summary">Proposes learning when past experiments transfer across visual tasks and how to turn that experience into code edits.</p>
+                <p class="publication-summary">Uses measured outcomes from past image restoration experiments to adapt code edits and select candidates for further testing.</p>
               </div>
             </article>
 
             <article class="publication-card" id="paper-lietwist-gs">
-              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="LieTwist-GS: Dynamic scene forecasting">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="RateGS: Dynamic scene forecasting">
                 <picture aria-hidden="true">
                   <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
                   <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
@@ -270,13 +270,13 @@
                 <span class="publication-figure-pending-label">Dynamic scene forecasting</span>
               </figure>
               <div class="publication-body">
-                <h3>LieTwist-GS: State-Consistent Twist Dynamics for Long-Horizon 4D Gaussian Forecasting</h3>
+                <h3>RateGS: Learning Motion Rates for 4D Gaussian Forecasting</h3>
                 <p class="publication-authors">Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong>, Kexin Cao</p>
                 <div class="publication-metadata">
                   <p class="status-label">Submitted</p>
                   <p class="publication-meta"><time datetime="2026-11-10">Nov 10, 2026</time> · Not yet public</p>
                 </div>
-                <p class="publication-summary">Forecasts 4D Gaussian motion by predicting and integrating translational and rotational velocities.</p>
+                <p class="publication-summary">Forecasts future 4D Gaussian poses by predicting instantaneous motion rates and integrating them over time.</p>
               </div>
             </article>
 
@@ -318,7 +318,7 @@
               </div>
             </article>
 
-            <article class="publication-card" id="paper-silica">
+            <article class="publication-card publication-card-linked" id="paper-silica">
               <figure class="publication-card-figure">
                 <picture>
                   <source type="image/webp" srcset="images/generated/paper-silica-identifiability-320.webp 320w, images/generated/paper-silica-identifiability-640.webp 640w, images/generated/paper-silica-identifiability-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
@@ -326,13 +326,13 @@
                 </picture>
               </figure>
               <div class="publication-body">
-                <h3>SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</h3>
+                <h3><a href="https://explcre.github.io/silica/" target="_blank" rel="noopener">SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</a></h3>
                 <p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan</strong></p>
                 <div class="publication-metadata">
                   <p class="status-label">Accepted</p>
                   <p class="publication-meta">EACL 2027 · Findings · Accepted Nov 2026</p>
                 </div>
-                <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions.</p>
+                <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions. <a class="publication-inline-link" href="https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/explcre/silica" target="_blank" rel="noopener">Code</a> · <a class="publication-inline-link" href="https://huggingface.co/datasets/ryan1025-x/silica" target="_blank" rel="noopener">Dataset</a></p>
               </div>
             </article>
 
@@ -373,24 +373,6 @@
               </div>
             </article>
 
-            <article class="publication-card publication-card-linked" id="paper-qeschunker">
-              <figure class="publication-card-figure">
-                <picture>
-                  <source type="image/webp" srcset="images/generated/paper-qeschunker-overview-320.webp 320w, images/generated/paper-qeschunker-overview-640.webp 640w, images/generated/paper-qeschunker-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-qeschunker-overview.png" width="1938" height="828" alt="QESChunker overview: a unified question-evidence objective for non-overlapping dynamic programming and overlapping greedy chunk selection" loading="lazy" decoding="async" />
-                </picture>
-              </figure>
-              <div class="publication-body">
-                <h3><a href="https://arxiv.org/abs/2610.36557" target="_blank" rel="noopener">QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG</a></h3>
-                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, kai wei, Yuming Deng</p>
-                <div class="publication-metadata">
-                  <p class="status-label">Submitted</p>
-                  <p class="publication-meta">Submitted to ICLR 2027 · Sep 2026 · OpenReview · arXiv:2610.36557</p>
-                </div>
-                <p class="publication-summary">Builds static RAG chunk indices from question–evidence supervision, unifying overlapping and non-overlapping chunking as budget-aware utility maximization. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.36557" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.36557" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://openreview.net/forum?id=pvrvPinZif" target="_blank" rel="noopener">OpenReview</a></p>
-              </div>
-            </article>
-
             <article class="publication-card publication-card-linked" id="paper-vla-early-exit">
               <figure class="publication-card-figure">
                 <picture>
@@ -402,8 +384,8 @@
                 <h3><a href="https://openreview.net/forum?id=x6BEwIFvUc" target="_blank" rel="noopener">How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit</a></h3>
                 <p class="publication-authors">Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong></p>
                 <div class="publication-metadata">
-                  <p class="status-label">Submitted</p>
-                  <p class="publication-meta">Submitted to ICLR 2027 · Sep 2026 · OpenReview</p>
+                  <p class="status-label">Under review</p>
+                  <p class="publication-meta">Submitted to ICLR 2027 · <time datetime="2026-09-17">Sep 17, 2026</time> · OpenReview</p>
                 </div>
                 <p class="publication-summary">Learns when a frozen vision-language-action model should exit early or keep computing, using budget-constrained RL while the simulated environment continues to evolve.</p>
               </div>
@@ -420,10 +402,28 @@
                 <h3><a href="https://arxiv.org/abs/2610.12744" target="_blank" rel="noopener">Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix</a></h3>
                 <p class="publication-authors">Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, <strong>Xinyu Guan</strong>, Ruoyun Ma, Hailu Xu</p>
                 <div class="publication-metadata">
-                  <p class="status-label">Submitted</p>
-                  <p class="publication-meta">Submitted to ICLR 2027 · Sep 2026 · OpenReview · arXiv:2610.12744</p>
+                  <p class="status-label">Under review</p>
+                  <p class="publication-meta">Submitted to ICLR 2027 · <time datetime="2026-09-15">Sep 15, 2026</time> · OpenReview · arXiv:2610.12744</p>
                 </div>
                 <p class="publication-summary">Isolates a parameter-pool confound in LoRA masking: density-matched random B-matrix masks reduce loss-based forgetting across seven seeds, while accuracy evidence remains inconclusive. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.12744" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.12744" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://openreview.net/forum?id=g54eVrFPPI" target="_blank" rel="noopener">OpenReview</a></p>
+              </div>
+            </article>
+
+            <article class="publication-card publication-card-linked" id="paper-qeschunker">
+              <figure class="publication-card-figure">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-qeschunker-overview-320.webp 320w, images/generated/paper-qeschunker-overview-640.webp 640w, images/generated/paper-qeschunker-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-qeschunker-overview.png" width="1938" height="828" alt="QESChunker overview: a unified question-evidence objective for non-overlapping dynamic programming and overlapping greedy chunk selection" loading="lazy" decoding="async" />
+                </picture>
+              </figure>
+              <div class="publication-body">
+                <h3><a href="https://arxiv.org/abs/2610.36557" target="_blank" rel="noopener">QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG</a></h3>
+                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, kai wei, Yuming Deng</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Under review</p>
+                  <p class="publication-meta">Submitted to ICLR 2027 · <time datetime="2026-09-14">Sep 14, 2026</time> · OpenReview · arXiv:2610.36557</p>
+                </div>
+                <p class="publication-summary">Builds static RAG chunk indices from question–evidence supervision, unifying overlapping and non-overlapping chunking as budget-aware utility maximization. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.36557" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.36557" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://openreview.net/forum?id=pvrvPinZif" target="_blank" rel="noopener">OpenReview</a></p>
               </div>
             </article>
 
@@ -475,9 +475,9 @@
                 <p class="publication-authors"><strong>Xinyu Guan</strong>, Qianyang Zhao, Yuming Deng</p>
                 <div class="publication-metadata">
                   <p class="status-label">Accepted</p>
-                  <p class="publication-meta">ICONIP 2026 · Springer CCIS · Accepted Aug 2026 · Camera-ready updated Sep 2026</p>
+                  <p class="publication-meta">ICONIP 2026 · Springer CCIS 3202 · In production</p>
                 </div>
-                <p class="publication-summary">Introduces CICL, a decision-aware context layer that selects evidence by its expected effect on an agent's next action. <a class="publication-inline-link" href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2606.08151" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/stephen-guan-researcher/CICL" target="_blank" rel="noopener">Code</a></p>
+                <p class="publication-summary">Introduces CICL, a decision-aware context layer that selects evidence by its expected effect on an agent's next action. <a class="publication-inline-link" href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2606.08151" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/stephen-guan-researcher/CICL" target="_blank" rel="noopener">Code</a> <a class="publication-inline-link" href="https://link.springer.com/book/9789819281398" target="_blank" rel="noopener">Proceedings volume</a></p>
               </div>
             </article>
 
@@ -697,7 +697,7 @@
   </dialog>
 
   <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
-  <script type="module" src="phd-main.js?v=20261115-manuscript-cards-1"></script>
-  <script type="module" src="editorial-interactions.js?v=20261115-manuscript-cards-1"></script>
+  <script type="module" src="phd-main.js?v=20261119-publications-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261119-publications-1"></script>
 </body>
 </html>

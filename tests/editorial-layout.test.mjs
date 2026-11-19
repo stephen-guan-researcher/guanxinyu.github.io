@@ -135,8 +135,8 @@ const knownPapers = [
 ];
 
 const newManuscripts = [
-  ["PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch", "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng", "2026-11-11", "Abstract submitted", "PraxisLab: Visual AutoResearch", "Visual AutoResearch"],
-  ["LieTwist-GS: State-Consistent Twist Dynamics for Long-Horizon 4D Gaussian Forecasting", "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao", "2026-11-10", "Submitted", "LieTwist-GS: Dynamic scene forecasting", "Dynamic scene forecasting"],
+  ["PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch", "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng", "2026-11-11", "Submitted", "PraxisLab: Visual AutoResearch", "Visual AutoResearch"],
+  ["RateGS: Learning Motion Rates for 4D Gaussian Forecasting", "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao", "2026-11-10", "Submitted", "RateGS: Dynamic scene forecasting", "Dynamic scene forecasting"],
   ["Effect-Calibrated Learning from Human Videos for Robot Manipulation", "Dingding, Xinyu Guan", "2026-11-09", "Abstract submitted", "Robot manipulation", "Robot manipulation"],
   ["Reference-Aligned Distillation for Continual Robot Reinforcement Learning", "Dingding, Xinyu Guan", "2026-11-07", "Abstract submitted", "Continual robot learning", "Continual robot learning"],
 ];
@@ -351,16 +351,16 @@ test("the work list follows submission time with November manuscripts first", ()
     knownPapers[4][0],
     surveyTitle,
     knownPapers[0][0],
-    knownPapers[3][0],
     knownPapers[1][0],
     knownPapers[2][0],
+    knownPapers[3][0],
     knownPapers[9][0],
     knownPapers[5][0],
     knownPapers[6][0],
     knownPapers[7][0],
     knownPapers[8][0],
   ]);
-  const dates = cards.slice(0, 4).map((card) => all(card, (node) => node.tag === "time")[0].attrs.datetime);
+  const dates = cards.flatMap((card) => all(card, (node) => node.tag === "time").map((node) => node.attrs.datetime));
   assert.deepEqual(dates, dates.toSorted().reverse());
 });
 
@@ -378,6 +378,7 @@ test("the homepage displays only the total count of distinct listed works", () =
 
 test("verified public paper destinations and conservative manuscript states stay attached to their rows", () => {
   const publicLinks = [
+    [knownPapers[4][0], "https://explcre.github.io/silica/"],
     [knownPapers[9][0], "https://arxiv.org/abs/2610.29391"],
     [knownPapers[0][0], "https://arxiv.org/abs/2610.04795"],
     [knownPapers[1][0], "https://openreview.net/forum?id=x6BEwIFvUc"],
@@ -399,9 +400,9 @@ test("verified public paper destinations and conservative manuscript states stay
   }
   const states = [
     [knownPapers[0][0], "Submitted", /Submitted to ICASSP 2027/],
-    [knownPapers[1][0], "Submitted", /Submitted to ICLR 2027/],
-    [knownPapers[2][0], "Submitted", /Submitted to ICLR 2027/],
-    [knownPapers[3][0], "Submitted", /Submitted to ICLR 2027/],
+    [knownPapers[1][0], "Under review", /Submitted to ICLR 2027/],
+    [knownPapers[2][0], "Under review", /Submitted to ICLR 2027/],
+    [knownPapers[3][0], "Under review", /Submitted to ICLR 2027/],
     [knownPapers[4][0], "Accepted", /EACL 2027.*Findings.*Accepted Nov 2026/],
     [knownPapers[5][0], "Submitted", /Submitted to AAAI 2027/],
     [knownPapers[6][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
@@ -575,7 +576,7 @@ test("new arXiv and HEP preprints expose canonical landing pages and PDFs withou
   ];
   for (const [title, links] of contracts) {
     const card = publication(title);
-    assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
+    assert.equal(normalizedText(withClass(card, "status-label")[0]), title === surveyTitle ? "Submitted" : "Under review");
     assert.doesNotMatch(normalizedText(card), /\bAccepted\b|\bPublished\b|currently under review/i);
     for (const [label, href] of links) {
       const link = withClass(card, "publication-inline-link").find((node) => node.attrs.href === href);
@@ -592,8 +593,8 @@ test("QESChunker adds its arXiv preprint without changing authors, overview, man
   const card = publication(knownPapers[3][0]);
   assert.equal(normalizedText(withClass(card, "publication-authors")[0]),
     "Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, Yuming Deng");
-  assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
-  assert.match(normalizedText(withClass(card, "publication-meta")[0]), /Submitted to ICLR 2027 · Sep 2026 · OpenReview · arXiv:2610\.36557/);
+  assert.equal(normalizedText(withClass(card, "status-label")[0]), "Under review");
+  assert.match(normalizedText(withClass(card, "publication-meta")[0]), /Submitted to ICLR 2027 · Sep 14, 2026 · OpenReview · arXiv:2610\.36557/);
   assert.match(normalizedText(card), /Builds static RAG chunk indices from question–evidence supervision/);
   assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === "images/paper-qeschunker-overview.png").length === 1);
   assert.equal(withClass(pages.home, "publication-card").length, 15);

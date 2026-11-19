@@ -221,7 +221,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(systemMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
   assert.match(systemMessage, /camera-ready availability does not establish proceedings publication/i);
-  assert.match(systemMessage, /proceedings publication has not been verified/i);
+  assert.match(systemMessage, /The chapter is in production for Springer CCIS 3202/i);
   assert.doesNotMatch(systemMessage, /Decision-Aware Memory Cards[^.]*was published/i);
   const researchParagraph = systemMessage.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.match(
@@ -312,7 +312,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
   assert.doesNotMatch(systemMessage, /lists seven publication and manuscript records/i);
   assert.match(systemMessage, /SILICA[^\n]*accepted to Findings of EACL 2027 on November 13, 2026/);
-  assert.match(systemMessage, /SILICA[^\n]*No public paper, PDF, or proceedings link has been verified/);
+  assert.match(systemMessage, /SILICA[^\n]*https:\/\/pengcheng-xu\.com\/files\/SILICA_EACL2027_Findings\.pdf/);
   assert.match(systemMessage, /SILICA[^\n]*Its authors are Pengcheng Xu and Xinyu Guan, in that order/i);
   assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*submitted to AAAI 2027 in July 2026/i);
   for (const [title, authors, forumId] of [
@@ -335,9 +335,9 @@ test("returns a Workers AI answer for a valid question", async () => {
     const paragraph = systemMessage.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
     assert.ok(paragraph, `missing current ICLR publication: ${title}`);
     assert.ok(paragraph.includes(`Its authors are ${authors}, in that order`));
-    assert.ok(paragraph.includes("submitted to ICLR 2027 in September 2026"));
+    assert.match(paragraph, /first submitted to ICLR 2027 on September \d{2}, 2026/);
     assert.ok(paragraph.includes(`https://openreview.net/forum?id=${forumId}`));
-    assert.ok(paragraph.includes("It is a submission, not an accepted paper."));
+    assert.ok(paragraph.includes("It has received reviews and is awaiting a decision."));
   }
   assert.match(systemMessage, /preserve the spelling and capitalization "kai wei"/);
   for (const organization of ["Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences"]) {
@@ -451,8 +451,8 @@ test("the QESChunker arXiv record preserves exact authors, v1 date, links, and I
   assert.match(record, /arXiv:2610\.36557 v1/);
   assert.match(record, /first submitted on October 27, 2026 \(03:05:09 UTC\)/);
   assert.match(record, /10\.48550\/arXiv\.2610\.36557/);
-  assert.match(record, /submitted to ICLR 2027 in September 2026/);
-  assert.match(record, /It is a submission, not an accepted paper/);
+  assert.match(record, /first submitted to ICLR 2027 on September 14, 2026/);
+  assert.match(record, /It has received reviews and is awaiting a decision/);
   assert.match(record, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
   assert.doesNotMatch(record, /was accepted|was published/i);
 });
@@ -477,8 +477,8 @@ test("the LoRA arXiv record keeps exact public title, author order, dates, PDFs,
   assert.ok(record.includes("https://arxiv.org/pdf/2610.12744"));
   assert.ok(record.includes("https://openreview.net/forum?id=g54eVrFPPI"));
   assert.match(record, /v1 was released on October 8, 2026/);
-  assert.match(record, /submitted to ICLR 2027 in September 2026/);
-  assert.match(record, /It is a submission, not an accepted paper/);
+  assert.match(record, /first submitted to ICLR 2027 on September 15, 2026/);
+  assert.match(record, /It has received reviews and is awaiting a decision/);
   assert.match(record, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
   assert.doesNotMatch(record, /LoRA’s B-Matrix|was accepted|was published/i);
 });
@@ -562,7 +562,7 @@ test("expands CICL shorthand into the verified ICONIP publication record", async
   );
   assert.match(userMessage, /accepted at ICONIP 2026/i);
   assert.match(userMessage, /Springer Communications in Computer and Information Science \(CCIS\) proceedings/i);
-  assert.match(userMessage, /proceedings publication has not been verified/i);
+  assert.match(userMessage, /The chapter is in production for Springer CCIS 3202/i);
   assert.match(userMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(userMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
   assert.match(userMessage, /does not establish proceedings publication/i);

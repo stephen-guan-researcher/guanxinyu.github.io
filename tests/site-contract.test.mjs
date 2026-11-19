@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261115-manuscript-cards-1";
+const releaseToken = "20261119-publications-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -278,7 +278,8 @@ test("CICL is a linked ICONIP 2026 acceptance with conservative publication word
   assert.ok(card, "CICL must retain its own publication card");
   assert.match(card, /class="publication-card publication-card-linked"/);
   assert.match(card, /class="status-label">Accepted/);
-  assert.match(card, /ICONIP 2026 · Springer CCIS · Accepted Aug 2026/);
+  assert.match(card, /ICONIP 2026 · Springer CCIS 3202 · In production/);
+  assert.match(card, /href="https:\/\/link\.springer\.com\/book\/9789819281398"[^>]*>Proceedings volume</);
   assert.match(card, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Qianyang Zhao, Yuming Deng/);
   assert.doesNotMatch(card, /class="status-label">(?:Preprint|Published)/);
@@ -307,7 +308,7 @@ test("every verified paper title remains keyboard-accessible without swallowing 
   const cards = cardsWithClass("publication-card");
   const linkedCards = cards.filter((card) => /<h3><a\b[^>]*href=/.test(card));
 
-  assert.equal(linkedCards.length, 9, "the nine publications with verified public paper destinations should be linked");
+  assert.equal(linkedCards.length, 10, "the ten publications with verified public paper destinations should be linked");
   for (const card of linkedCards) {
     assert.match(card, /class="[^\"]*\bpublication-card-linked\b[^\"]*"/);
     assert.match(card, /target="_blank"/);
@@ -879,9 +880,20 @@ test("unpublished papers retain distinct venues and conservative public states",
     assert.ok(card, `publication card must include ${title}`);
     assert.match(card, status);
     assert.match(card, venue);
-    if (title === advantageTitle) assert.match(card, /Not yet public/);
     assert.doesNotMatch(card, /class="status-label">Published/);
-    assert.doesNotMatch(card, /<a\b[^>]*href=/);
+    if (title === advantageTitle) {
+      assert.match(card, /Not yet public/);
+      assert.doesNotMatch(card, /<a\b[^>]*href=/);
+    } else {
+      const links = [
+        ["PDF", "https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf"],
+        ["Code", "https://github.com/explcre/silica"],
+        ["Dataset", "https://huggingface.co/datasets/ryan1025-x/silica"],
+      ];
+      for (const [label, url] of links) {
+        assert.ok(card.includes('href="' + url + '" target="_blank" rel="noopener">' + label + '</a>'));
+      }
+    }
   }
   assert.equal(cardWithText("publication-card", klTitle), "",
     "the unresolved KL manuscript must remain off the public homepage");
@@ -930,7 +942,8 @@ test("new public ICLR submissions preserve title, author order, and direct links
     assert.match(card, /class="[^\"]*\bpublication-card-linked\b[^\"]*"/);
     assert.ok(card.includes(`href="https://openreview.net/forum?id=${id}"`));
     assert.ok(card.includes(`<p class="publication-authors">${authors}</p>`));
-    assert.match(card, /Submitted to ICLR 2027 · Sep 2026 · OpenReview/);
+    assert.match(card, /class="status-label">Under review/);
+    assert.match(card, /Submitted to ICLR 2027 · <time datetime="2026-09-\d{2}">Sep \d{2}, 2026<\/time> · OpenReview/);
     assert.doesNotMatch(card, />Accepted<|>Published</);
   }
 });
