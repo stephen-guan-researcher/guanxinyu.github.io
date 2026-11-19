@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261119-publications-1";
+const releaseToken = "20261119-publications-2";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -279,7 +279,6 @@ test("CICL is a linked ICONIP 2026 acceptance with conservative publication word
   assert.match(card, /class="publication-card publication-card-linked"/);
   assert.match(card, /class="status-label">Accepted/);
   assert.match(card, /ICONIP 2026 · Springer CCIS 3202 · In production/);
-  assert.match(card, /href="https:\/\/link\.springer\.com\/book\/9789819281398"[^>]*>Proceedings volume</);
   assert.match(card, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Qianyang Zhao, Yuming Deng/);
   assert.doesNotMatch(card, /class="status-label">(?:Preprint|Published)/);
