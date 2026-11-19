@@ -548,11 +548,9 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     "What happened with CICL?",
     "What is TIMBRE?",
     "Explain QESChunker",
-    "How does the VLA early exit work?",
     "What is the LoRA paper?",
     "Static Gradient Attribution",
     "ACL ARR",
-    "Tell me about CVPR",
     "Which survey is available as a HEP preprint?",
     "What is the runtime stack survey?",
     "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems",
@@ -565,7 +563,6 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   const reply = site.buildAgentReply("Summarize your latest papers");
   assert.doesNotMatch(reply.answer, /PIVOT|Choosing When to Refine Prompts/);
   assert.match(reply.answer, /was accepted to Findings of EACL 2027 on November 13, 2026/);
-  assert.match(reply.answer, /Advantage Scale Calibration is under review at AAAI 2027 following its July 2026 submission/);
   assert.doesNotMatch(reply.answer, /KL regularization|ZCPO|1RCulySJU5/i,
     "browser publication facts must not attribute the unresolved KL manuscript to the owner");
   assert.match(reply.answer, /TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile/);
@@ -575,22 +572,15 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /replaces the former ChronoMem record/);
   assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2610\.04795/);
   assert.match(reply.answer, /https:\/\/github\.com\/stephen-guan-researcher\/TIMBRE/);
-  const timbreSummary = reply.answer.split(" TIMBRE:")[1]?.split(" Three ICLR")[0] ?? "";
+  const timbreSummary = reply.answer.split(" TIMBRE:")[1]?.split(" The preprint “QESChunker:")[0] ?? "";
   assert.doesNotMatch(timbreSummary, /paper is not yet public|paper not yet public/i);
   assert.match(reply.answer, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack/);
   assert.match(reply.answer, /A Review of the Runtime Stack” is listed as a preprint/);
   assert.doesNotMatch(reply.answer, /submitted to Frontiers of Computer Science/);
   assert.doesNotMatch(reply.answer, /ChronoMem is in preparation/);
-  assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
-  for (const [title, forumId] of [
-    ["How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit", "x6BEwIFvUc"],
-    ["Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix", "g54eVrFPPI"],
-    ["QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG", "pvrvPinZif"],
-  ]) {
-    assert.ok(reply.answer.includes(title), `missing current publication ${title}`);
-    assert.ok(reply.answer.includes(`https://openreview.net/forum?id=${forumId}`));
-  }
-  assert.match(reply.answer, /All three have received reviews and are awaiting decisions/);
+  assert.match(reply.answer, /QESChunker/);
+  assert.match(reply.answer, /Static Gradient Attribution/);
+  assert.doesNotMatch(reply.answer, /(?:ICLR|CVPR|AAAI) 2027|openreview\.net\/(?:forum|pdf)/i);
   assert.match(
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents/,
@@ -626,17 +616,14 @@ test("buildAgentReply reports the current public preprint status of the Runtime 
   assert.doesNotMatch(research.answer, /Frontiers (?:in|of) Computer Science|received a rejection decision|FCS-262084/i);
 });
 
-test("buildAgentReply exposes the QESChunker arXiv preprint without promoting ICLR status", () => {
+test("buildAgentReply exposes the public QESChunker preprint", () => {
   const answer = site.buildAgentReply("Explain QESChunker").answer;
   assert.ok(answer.includes("QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG"));
   assert.ok(answer.includes("https://arxiv.org/abs/2610.36557"));
   assert.ok(answer.includes("https://arxiv.org/pdf/2610.36557"));
-  assert.ok(answer.includes("https://openreview.net/forum?id=pvrvPinZif"));
   assert.match(answer, /Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng/);
   assert.match(answer, /arXiv:2610\.36557 v1 on October 27, 2026 \(03:05:09 UTC\)/);
   assert.match(answer, /10\.48550\/arXiv\.2610\.36557/);
-  assert.match(answer, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
-  assert.match(answer, /All three have received reviews and are awaiting decisions/);
   assert.match(answer, /accepted as a short paper at IEEE BigData 2026/);
 });
 
@@ -645,10 +632,8 @@ test("buildAgentReply exposes the LoRA arXiv preprint and canonical public title
   assert.ok(answer.includes("Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix"));
   assert.ok(answer.includes("https://arxiv.org/abs/2610.12744"));
   assert.ok(answer.includes("https://arxiv.org/pdf/2610.12744"));
-  assert.ok(answer.includes("https://openreview.net/forum?id=g54eVrFPPI"));
   assert.match(answer, /arXiv:2610\.12744 v1 on October 8, 2026/);
   assert.match(answer, /Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu/);
-  assert.match(answer, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
   assert.doesNotMatch(answer, /LoRA’s B-Matrix/);
 });
 

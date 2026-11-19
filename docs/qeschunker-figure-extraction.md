@@ -8,7 +8,6 @@ This asset is a direct raster extraction of the authentic Figure 1 from the supp
 - PDF SHA256: `7a9df4b23cf5d6b0bf5a9583255de21433a9650c78f78eae52e1d00f25c34e7a`
 - Verified title on PDF page 1: QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG.
 - PDF page count: 16.
-- Source status visible in the PDF: under review as a conference paper at ICLR 2027; anonymous authors. Extraction does not imply acceptance or publication status beyond the supplied PDF.
 
 ## Figure identification
 

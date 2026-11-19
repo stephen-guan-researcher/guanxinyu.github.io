@@ -302,43 +302,15 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.doesNotMatch(systemMessage, /PIVOT|Choosing When to Refine Prompts/);
   assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
     "unresolved KL authorship must not be included in the Agent's verified facts");
-  assert.match(systemMessage, /The homepage lists 18 works\b/);
+  assert.match(systemMessage, /The homepage lists 14 works\b/);
   assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
-  assert.match(
-    systemMessage,
-    /Advantage Scale Calibration[^\n]*Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, Xinyu Guan, and Huiming Yang/,
-  );
   assert.match(systemMessage, /November 2023 to February 2024/);
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
   assert.doesNotMatch(systemMessage, /lists seven publication and manuscript records/i);
   assert.match(systemMessage, /SILICA[^\n]*accepted to Findings of EACL 2027 on November 13, 2026/);
   assert.match(systemMessage, /SILICA[^\n]*https:\/\/pengcheng-xu\.com\/files\/SILICA_EACL2027_Findings\.pdf/);
   assert.match(systemMessage, /SILICA[^\n]*Its authors are Pengcheng Xu and Xinyu Guan, in that order/i);
-  assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[^\n]*under review at AAAI 2027 following its July 2026 submission/i);
-  for (const [title, authors, forumId] of [
-    [
-      "How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit",
-      "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, and Xinyu Guan",
-      "x6BEwIFvUc",
-    ],
-    [
-      "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix",
-      "Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu",
-      "g54eVrFPPI",
-    ],
-    [
-      "QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG",
-      "Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng",
-      "pvrvPinZif",
-    ],
-  ]) {
-    const paragraph = systemMessage.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
-    assert.ok(paragraph, `missing current ICLR publication: ${title}`);
-    assert.ok(paragraph.includes(`Its authors are ${authors}, in that order`));
-    assert.match(paragraph, /first submitted to ICLR 2027 on September \d{2}, 2026/);
-    assert.ok(paragraph.includes(`https://openreview.net/forum?id=${forumId}`));
-    assert.ok(paragraph.includes("It has received reviews and is awaiting a decision."));
-  }
+  assert.doesNotMatch(systemMessage, /(?:ICLR|CVPR|AAAI) 2027|openreview\.net\/(?:forum|pdf)/i);
   assert.match(systemMessage, /preserve the spelling and capitalization "kai wei"/);
   for (const organization of ["Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences"]) {
     assert.match(invocation.options.messages[0].content, new RegExp(organization, "i"));
@@ -420,10 +392,10 @@ test("includes verified authors and the current public status of the HEP survey 
   assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
   assert.match(research, /available as an October 2026 HEP preprint/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
-  assert.match(context, /The homepage lists 18 works\b/);
+  assert.match(context, /The homepage lists 14 works\b/);
 });
 
-test("the QESChunker arXiv record preserves exact authors, v1 date, links, and ICLR submission status", async () => {
+test("the QESChunker arXiv record keeps its public authors, v1 date, and links", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
@@ -438,20 +410,17 @@ test("the QESChunker arXiv record preserves exact authors, v1 date, links, and I
   const title = "QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG";
   const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
   assert.ok(record);
+  assert.match(record, /is listed as Preprint/);
   assert.match(record, /Its authors are Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng, in that order/);
   assert.ok(record.includes("https://arxiv.org/abs/2610.36557"));
   assert.ok(record.includes("https://arxiv.org/pdf/2610.36557"));
-  assert.ok(record.includes("https://openreview.net/forum?id=pvrvPinZif"));
   assert.match(record, /arXiv:2610\.36557 v1/);
   assert.match(record, /first submitted on October 27, 2026 \(03:05:09 UTC\)/);
   assert.match(record, /10\.48550\/arXiv\.2610\.36557/);
-  assert.match(record, /first submitted to ICLR 2027 on September 14, 2026/);
-  assert.match(record, /It has received reviews and is awaiting a decision/);
-  assert.match(record, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
   assert.doesNotMatch(record, /was accepted|was published/i);
 });
 
-test("the LoRA arXiv record keeps exact public title, author order, dates, PDFs, and submission boundary", async () => {
+test("the LoRA arXiv record keeps its public title, authors, dates, and links", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
@@ -466,14 +435,11 @@ test("the LoRA arXiv record keeps exact public title, author order, dates, PDFs,
   const title = "Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix";
   const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
   assert.ok(record);
+  assert.match(record, /is listed as Preprint/);
   assert.match(record, /Its authors are Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu, in that order/);
   assert.ok(record.includes("https://arxiv.org/abs/2610.12744"));
   assert.ok(record.includes("https://arxiv.org/pdf/2610.12744"));
-  assert.ok(record.includes("https://openreview.net/forum?id=g54eVrFPPI"));
   assert.match(record, /v1 was released on October 8, 2026/);
-  assert.match(record, /first submitted to ICLR 2027 on September 15, 2026/);
-  assert.match(record, /It has received reviews and is awaiting a decision/);
-  assert.match(record, /Public preprint availability does not establish ICLR acceptance or proceedings publication/);
   assert.doesNotMatch(record, /LoRA’s B-Matrix|was accepted|was published/i);
 });
 
@@ -530,7 +496,7 @@ test("grounds English and Chinese BigData aliases in short-paper acceptance and 
     assert.match(routedQuestion, /Answer in the same language as the original question/);
     assert.match(routedQuestion, /中文问题请务必使用中文回答/);
     assert.match(routedQuestion, /Use the verified paper and code URLs\. Do not invent experimental results or proceedings metadata/);
-    assert.match(context, /The homepage lists 18 works\b/);
+    assert.match(context, /The homepage lists 14 works\b/);
   }
 });
 

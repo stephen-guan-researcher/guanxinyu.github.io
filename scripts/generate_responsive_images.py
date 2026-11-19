@@ -10,11 +10,9 @@ LIFE_GENERATED = ROOT / "images" / "life" / "generated"
 PAPERS = [
     "paper-figure-pending-background.png",
     "paper-nominate-adjudicate-overview.png",
-    "paper-vla-early-exit.png",
     "paper-lora-attribution.png",
     "paper-qeschunker-overview.png",
     "paper-silica-identifiability.png",
-    "paper-advantage-maxnorm-ac.png",
     "paper-timbre-overview.png",
     "paper3-cicl-pipeline.png",
     "paper2-suffix-tree.png",

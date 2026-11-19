@@ -21,37 +21,21 @@ Generated separately with the built-in ImageGen tool. Both have 1200 × 800 PNG 
 | --- | --- |
 | TIMBRE | `images/paper-timbre-overview.png` |
 | SILICA | `images/paper-silica-identifiability.png` |
-| Advantage Scale Calibration | `images/paper-advantage-maxnorm-ac.png` |
 | Decision-Aware Memory Cards | `images/paper3-cicl-pipeline.png` |
 | Optimizing Text Search | `images/paper2-suffix-tree.png` |
 | Basket-Enhanced Heterogenous Hypergraph | `images/paper1-hypergraph.png` |
 
-These six assets were already part of the verified homepage; this update does not imply that their original PDFs were fetched again.
+These assets were already part of the verified homepage; this update does not imply that their original PDFs were fetched again.
 
 ## Original figures supplied by the owner — editorial-5
 
 | Manuscript | Supplied PDF | Selected source figure | Site asset | Extraction record |
 | --- | --- | --- | --- | --- |
-| VLA Early Exit | `/Users/stephen/Downloads/1.pdf` | Page 2, Figure 1: Method, all three panels | `images/paper-vla-early-exit.png` | [Provenance](vla-figure-extraction.md) |
 | LoRA Attribution | `/Users/stephen/Downloads/2.pdf` | Page 2, Figure 1(a): Method and comparison | `images/paper-lora-attribution.png` | [Provenance](lora-figure-extraction.md) |
 | QESChunker | `/Users/stephen/Downloads/3.pdf` | Page 2, Figure 1: method overview | `images/paper-qeschunker-overview.png` | [Provenance](qeschunker-figure-extraction.md) |
 
 The first-page titles were checked before matching these PDFs to homepage rows. These images are faithful RGB raster extractions of source figures, preserving their natural aspect ratios and original labels/colors; no AI generation, redrawing, or reconstructed results are used. Captions, body text, running headers, review line numbers, and page numbers are excluded. Each has responsive 320px/640px/960px WebP tiers and lazy loading. The original PDFs are unchanged and are not copied into the public website.
 
-Only these three figure sources and the related tests/cache token change in this revision. Existing authors, summaries, venues, statuses, links, and the other nine images remain unchanged. The supplied LoRA PDF has a longer title including “on Loss-Based Forgetting”; title synchronization is awaiting the owner's preference and does not block image replacement.
-
-## Earlier OpenReview source checks — editorial-3 history
-
-| Manuscript | Source check | Result |
-| --- | --- | --- |
-| PIVOT | Scoped local manuscript search | No matching manuscript figure available; local idea-scoping note is not a paper figure. |
-| How Deep Should a VLA Think When Thinking Costs Time? | `https://openreview.net/pdf?id=x6BEwIFvUc` | OpenReview requires browser verification; no PDF retrieved. |
-| Static Gradient Attribution Within LoRA's B-Matrix | `https://openreview.net/pdf?id=g54eVrFPPI` | OpenReview requires browser verification; no PDF retrieved. |
-| QESChunker | `https://openreview.net/pdf?id=pvrvPinZif` | OpenReview requires browser verification; no PDF retrieved. |
-| When KL Regularization Fails | Scoped local manuscript search | No matching source figure available. |
-| Diagnostics and Infrastructure / Runtime Stack survey | Scoped local manuscript search | No matching manuscript PDF available. |
-
-The first OpenReview forum was also opened in the in-app browser and displayed its verification screen. The check was not bypassed or completed. These describe the earlier online access attempts; the owner subsequently downloaded and supplied three PDFs, which now resolve the VLA, LoRA, and QESChunker source-artwork gaps. The other three source gaps remain unresolved.
 
 ## Retired concept covers — editorial-6 history
 

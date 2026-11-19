@@ -149,20 +149,15 @@ export function formatAgentModelName(model) {
 
 export function buildAgentReply(question) {
   const normalized = question.trim().toLowerCase();
-  const recentManuscripts = [
-    ["PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch", "Submitted", /praxislab/, "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng", 11, "Uses measured outcomes from past image restoration experiments to adapt code edits and select candidates for further testing."],
-    ["RateGS: Learning Motion Rates for 4D Gaussian Forecasting", "Submitted", /rategs|lietwist/, "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao", 10, "Forecasts future 4D Gaussian poses by predicting instantaneous motion rates and integrating them over time."],
-  ];
   const inChinese = /[\p{Script=Han}]/u.test(question);
-  const workCount = "The homepage lists 18 works.";
+  const workCount = "The homepage lists 14 works.";
   const asksForCount = /多少|几[篇项条份]|数量|总数|\b(?:how many|count|total)\b/.test(normalized);
-  const asksAboutRecent = /recent manuscripts|recent submissions|近期稿件|近期投稿|最近投稿/.test(normalized);
-  if (asksForCount && !asksAboutRecent) {
+  if (asksForCount) {
     const papers = /\b(?:papers?|publications?|manuscripts?)\b|论文|稿件|文章/.test(normalized);
     const patents = /\bpatents?\b|专利/.test(normalized);
     let answer;
     if (papers && !patents) {
-      answer = inChinese ? "主页列有 13 篇论文和稿件。" : "The homepage lists 13 papers and manuscripts.";
+      answer = inChinese ? "主页列有 9 篇论文和稿件。" : "The homepage lists 9 papers and manuscripts.";
     } else if (patents && !papers) {
       if (/已授权|获授权|\bgranted\b/.test(normalized)) {
         answer = inChinese ? "主页列有 2 项已授权专利。" : "The homepage lists 2 granted patents.";
@@ -174,23 +169,9 @@ export function buildAgentReply(question) {
           : "The homepage lists 5 patent records, including 2 applications in preparation.";
       }
     } else if (papers || /\bworks?\b|成果|主页.*总数|网站.*总数/.test(normalized)) {
-      answer = inChinese ? "主页共列 18 项成果。" : workCount;
+      answer = inChinese ? "主页共列 14 项成果。" : workCount;
     }
     if (answer) return { topic: "papers", answer, sources: ["papers"] };
-  }
-  const selectedManuscripts = recentManuscripts.filter(([, , alias]) => alias.test(normalized));
-  const formatManuscripts = (entries) => entries.map(([title, status]) => title + ": " + status + ".").join(" ");
-  const formatManuscript = ([title, status, , authors, day, summary]) => inChinese
-    ? `${title} · 作者：${authors}。首次提交：2026 年 11 月 ${day} 日（${status}）。${summary} 暂无公开全文。`
-    : `${title}, by ${authors}. ${status}; first submitted November ${day}, 2026. ${summary} No public full text is listed.`;
-  if (selectedManuscripts.length || asksAboutRecent) {
-    return {
-      topic: "papers",
-      answer: selectedManuscripts.length
-        ? selectedManuscripts.map(formatManuscript).join(" ")
-        : `${inChinese ? "近期稿件共 2 条。" : "Two recent manuscripts are listed on the homepage."} ${formatManuscripts(recentManuscripts)}`,
-      sources: ["papers"],
-    };
   }
   const runtimeSurvey = "The Agent Research Survey “Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack” is listed as a preprint. Its authors are Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order. Its public HEP preprint was released on October 10, 2026, at https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1, with PDF at https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1 and DOI 10.3868/HEPPreprint20261010.19328.";
   const bigDataTitle = "Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning";
@@ -206,10 +187,10 @@ export function buildAgentReply(question) {
     };
   }
 
-  if (/paper|publication|aaai|iclr|eacl|acl arr|icassp|cvpr|cicl|silica|timbre|qeschunker|vla|lora|static gradient attribution|advantage scale|frontiers|diagnostics and infrastructure|runtime stack|survey|论文|文章|综述/.test(normalized)) {
+  if (/paper|publication|manuscript|recent submissions|eacl|acl arr|icassp|cicl|silica|timbre|qeschunker|lora|static gradient attribution|frontiers|diagnostics and infrastructure|runtime stack|survey|论文|文章|稿件|投稿|综述/.test(normalized)) {
     return {
       topic: "papers",
-      answer: workCount + " " + bigDataSummary + " TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile, by Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao, was submitted to ICASSP 2027 (submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed). It replaces the former ChronoMem record; the paper is publicly available at https://arxiv.org/abs/2610.04795, and its code is available at https://github.com/stephen-guan-researcher/TIMBRE. Three ICLR 2027 submissions from September 2026 are publicly available on OpenReview: “How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit” (https://openreview.net/forum?id=x6BEwIFvUc), “Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix” (https://openreview.net/forum?id=g54eVrFPPI), and “QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG” (https://openreview.net/forum?id=pvrvPinZif). All three have received reviews and are awaiting decisions. The QESChunker preprint, by Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng, was first submitted as arXiv:2610.36557 v1 on October 27, 2026 (03:05:09 UTC), at https://arxiv.org/abs/2610.36557; PDF: https://arxiv.org/pdf/2610.36557; DOI: 10.48550/arXiv.2610.36557. Public preprint availability does not establish ICLR acceptance or proceedings publication. The LoRA preprint, by Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu, was released as arXiv:2610.12744 v1 on October 8, 2026 (https://arxiv.org/abs/2610.12744; PDF: https://arxiv.org/pdf/2610.12744). Public preprint availability does not establish ICLR acceptance or proceedings publication. SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction, by Pengcheng Xu and Xinyu Guan, was accepted to Findings of EACL 2027 on November 13, 2026. The coauthor’s public PDF is https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf. Project: https://explcre.github.io/silica/ Code: https://github.com/explcre/silica Dataset: https://huggingface.co/datasets/ryan1025-x/silica Advantage Scale Calibration is under review at AAAI 2027 following its July 2026 submission. “Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents” by Xinyu Guan, Qianyang Zhao, and Yuming Deng was accepted at ICONIP 2026 for publication in the Springer CCIS proceedings and remains publicly available on arXiv at https://arxiv.org/abs/2606.08151; its camera-ready v4 was revised on September 21, 2026, with PDF at https://arxiv.org/pdf/2606.08151 and code at https://github.com/stephen-guan-researcher/CICL. The ICONIP 2026 chapter is at the proof stage for Springer CCIS 3202. Springer lists the forthcoming volume at https://link.springer.com/book/9789819281398. " + runtimeSurvey + " My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.” Recent submissions: " + formatManuscripts(recentManuscripts),
+      answer: workCount + " " + bigDataSummary + " TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile, by Xinyu Guan, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, and Qianyang Zhao, was submitted to ICASSP 2027 (submission confirmed by the homepage owner on October 3, 2026; exact submission date not listed). It replaces the former ChronoMem record; the paper is publicly available at https://arxiv.org/abs/2610.04795, and its code is available at https://github.com/stephen-guan-researcher/TIMBRE. The preprint “QESChunker: A Single Objective Unifies Overlapping and Non-Overlapping Chunking for RAG,” by Yifan Zhao, Qianyang Zhao, Xinyu Guan, kai wei, and Yuming Deng, was first submitted as arXiv:2610.36557 v1 on October 27, 2026 (03:05:09 UTC), at https://arxiv.org/abs/2610.36557; PDF: https://arxiv.org/pdf/2610.36557; DOI: 10.48550/arXiv.2610.36557. The preprint “Static Gradient Attribution Underperforms a Density-Matched Random Mask on Loss-Based Forgetting Within LoRA B-Matrix,” by Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, Xinyu Guan, Ruoyun Ma, and Hailu Xu, was released as arXiv:2610.12744 v1 on October 8, 2026 (https://arxiv.org/abs/2610.12744; PDF: https://arxiv.org/pdf/2610.12744). SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction, by Pengcheng Xu and Xinyu Guan, was accepted to Findings of EACL 2027 on November 13, 2026. The coauthor’s public PDF is https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf. Project: https://explcre.github.io/silica/ Code: https://github.com/explcre/silica Dataset: https://huggingface.co/datasets/ryan1025-x/silica “Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents” by Xinyu Guan, Qianyang Zhao, and Yuming Deng was accepted at ICONIP 2026 for publication in the Springer CCIS proceedings and remains publicly available on arXiv at https://arxiv.org/abs/2606.08151; its camera-ready v4 was revised on September 21, 2026, with PDF at https://arxiv.org/pdf/2606.08151 and code at https://github.com/stephen-guan-researcher/CICL. The ICONIP 2026 chapter is at the proof stage for Springer CCIS 3202. Springer lists the forthcoming volume at https://link.springer.com/book/9789819281398. " + runtimeSurvey + " My public papers also include the Text Search preprint “Optimizing Text Search: A Novel Pattern Matching Algorithm Based on Ukkonen's Approach” and the ICASSP 2025 paper “Basket-Enhanced Heterogenous Hypergraph for Price-Sensitive Next Basket Recommendation.”",
       sources: ["papers", "research"],
     };
   }

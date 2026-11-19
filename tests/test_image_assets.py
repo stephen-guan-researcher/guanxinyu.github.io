@@ -8,11 +8,9 @@ ROOT = Path(__file__).resolve().parents[1]
 PAPERS = {
     "paper-figure-pending-background": [320, 640, 960],
     "paper-nominate-adjudicate-overview": [320, 640, 960],
-    "paper-vla-early-exit": [320, 640, 960],
     "paper-lora-attribution": [320, 640, 960],
     "paper-qeschunker-overview": [320, 640, 960],
     "paper-silica-identifiability": [320, 640, 960],
-    "paper-advantage-maxnorm-ac": [320, 640, 960],
     "paper-timbre-overview": [320, 640, 960],
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],

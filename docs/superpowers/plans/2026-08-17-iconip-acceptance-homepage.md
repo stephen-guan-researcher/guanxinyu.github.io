@@ -55,7 +55,6 @@ test("Now presents the verified 2026 milestones as a reverse-chronological timel
   assert.match(items[0], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
   assert.ok(news.indexOf("Decision-Aware Memory Cards was accepted") < news.indexOf("Submitted SILICA"));
   assert.match(news, /Preparing the KL regularization manuscript for ICLR/);
-  assert.match(news, /Submitted Advantage Scale Calibration to AAAI 2027/);
   assert.match(news, /href="#experience"/);
 });
 
