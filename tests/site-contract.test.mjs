@@ -108,24 +108,24 @@ test("News presents the Findings announcement and the retained milestones in rev
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 10, "News includes the proof update and retains earlier milestones");
-  assert.deepEqual(dates, ["2026-11-14", "2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"]);
-  assert.match(items[0], /href="#paper-cicl"[^>]*>CICL<\/a> was accepted at ICONIP 2026.*at the proof stage for Springer CCIS 3202/);
+  assert.equal(items.length, 13, "News includes the proof update and retains earlier milestones");
+  assert.deepEqual(dates, ["2026-11-14", "2026-11-13", "2026-11-10", "2026-10-27", "2026-10-10", "2026-10-08", "2026-10-03", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"]);
+  assert.match(items[0], /href="#paper-cicl"[^>]*>CICL<\/a> was accepted at ICONIP 2026.*at the proof stage for <a href="https:\/\/link\.springer\.com\/book\/9789819281398"/);
   assert.match(items[1], /href="#paper-silica"[^>]*>SILICA<\/a> was accepted to Findings of EACL 2027/);
   assert.match(items[2], /accepted as a short paper at IEEE BigData 2026/);
-  assert.match(items[2], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
+  assert.match(items[2], /https:\/\/arxiv\.org\/abs\/2610\.29391v3/);
   for (const status of ["Accepted", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
   assert.match(
-    items[6],
+    items[9],
     /Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026\./,
   );
-  assert.match(items[6], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
-  assert.match(items[5], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
+  assert.match(items[9], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[8], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
   assert.doesNotMatch(news, /Preparing[^<]*<a[^>]*>PIVOT|CVPR/);
-  assert.match(items[3], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
-  assert.match(items[4], /ICONIP 2026 camera-ready/);
+  assert.match(items[6], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
+  assert.match(items[7], /ICONIP 2026 camera-ready/);
   assert.ok(news.indexOf("Decision-Aware Memory Cards was accepted") < news.indexOf("Submitted SILICA"));
   assert.match(news, /August 2026 ACL ARR cycle, with EACL as the preferred venue/);
   assert.doesNotMatch(news, /Preparing an ICASSP 2027 manuscript/);

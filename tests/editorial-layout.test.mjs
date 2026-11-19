@@ -177,7 +177,7 @@ test("homepage opens with a real portrait and bilingual identity, then news and 
   }
 });
 
-test("News shows three recent updates and keeps seven historical entries in a closed native archive", () => {
+test("News shows three recent updates and keeps ten historical entries in a closed native archive", () => {
   const news = byId(pages.home, "updates");
   assert.equal(news.tag, "section");
   assert.ok(hasClass(news, "news-card"));
@@ -199,9 +199,9 @@ test("News shows three recent updates and keeps seven historical entries in a cl
   assert.equal(all(archive[0], (node) => node.tag === "summary").length, 1);
   assert.equal(all(archiveChildren[0], (node) => node.tag === "button" || node.tag === "a").length, 0,
     "the native summary must not contain competing nested controls");
-  assert.match(normalizedText(archiveChildren[0]), /Show all 10 updates/);
+  assert.match(normalizedText(archiveChildren[0]), /Show all 13 updates/);
   assert.match(normalizedText(archiveChildren[0]), /Show fewer/);
-  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 10 updates");
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 13 updates");
   assert.equal(normalizedText(withClass(archiveChildren[0], "news-collapse-label")[0]), "Show fewer");
   assert.equal(withClass(archiveChildren[0], "news-toggle-icon")[0].attrs["aria-hidden"], "true");
   const archivedList = withClass(archive[0], "news-list-archive");
@@ -209,16 +209,19 @@ test("News shows three recent updates and keeps seven historical entries in a cl
   const previewItems = withClass(preview[0], "news-item");
   const archivedItems = withClass(archivedList[0], "news-item");
   assert.equal(previewItems.length, 3);
-  assert.equal(archivedItems.length, 7);
+  assert.equal(archivedItems.length, 10);
   assert.ok(preview[0].start < archive[0].start, "the latest three updates appear before the older archive");
   const items = withClass(news, "news-item");
   assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
-  const expectedDates = ["2026-11-14", "2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"];
-  const expectedStates = ["Updated", "Accepted", "Accepted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Preprint", "Career"];
+  const expectedDates = ["2026-11-14", "2026-11-13", "2026-11-10", "2026-10-27", "2026-10-10", "2026-10-08", "2026-10-03", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"];
+  const expectedStates = ["Updated", "Accepted", "Updated", "Preprint", "Preprint", "Preprint", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Preprint", "Career"];
   const expectedText = [
     "CICL was accepted at ICONIP 2026. The chapter is at the proof stage for Springer CCIS 3202.",
-    "SILICA was accepted to Findings of EACL 2027. The paper, code, and dataset are available on the project page.",
-    "Nominate-then-Adjudicate has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on arXiv.",
+    "SILICA was accepted to Findings of EACL 2027. The author PDF and project materials are available.",
+    "Nominate-then-Adjudicate was accepted as a short paper at IEEE BigData 2026. The revised arXiv v3 is available.",
+    "QESChunker is available as an arXiv preprint.",
+    "The Runtime Stack survey is available on HEP Preprint.",
+    "The LoRA attribution study is available as an arXiv preprint.",
     "TIMBRE, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on arXiv.",
     "Updated the ICONIP 2026 camera-ready version of Decision-Aware Memory Cards on arXiv.",
     "Nominate-then-Adjudicate, our LLM-assisted MIP solver-tuning manuscript, has been submitted to IEEE BigData 2026.",
@@ -228,9 +231,12 @@ test("News shows three recent updates and keeps seven historical entries in a cl
     "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
   ];
   const expectedLinks = [
-    ["#paper-cicl"],
-    ["#paper-silica", "https://explcre.github.io/silica/"],
-    ["#paper-nominate-adjudicate", "https://arxiv.org/abs/2610.29391"],
+    ["#paper-cicl", "https://link.springer.com/book/9789819281398"],
+    ["#paper-silica", "https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf", "https://explcre.github.io/silica/"],
+    ["#paper-nominate-adjudicate", "https://arxiv.org/abs/2610.29391v3"],
+    ["#paper-qeschunker", "https://arxiv.org/abs/2610.36557"],
+    ["#paper-runtime-survey", "https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"],
+    ["#paper-lora-attribution", "https://arxiv.org/abs/2610.12744"],
     ["#paper-timbre", "https://arxiv.org/abs/2610.04795"],
     ["https://arxiv.org/abs/2606.08151"], ["#paper-nominate-adjudicate"], ["https://arxiv.org/abs/2606.08151"],
     [], ["https://arxiv.org/abs/2606.08151"], ["#experience"],
