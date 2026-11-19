@@ -792,14 +792,14 @@ test("provides the five named patent records and their statuses to Workers AI", 
   assert.match(systemMessage, /Co-Inventor of the granted patent "A Database Drag Behavior Detection Method Based on Time Series"[^.]*June 2024/i);
   assert.notEqual(userMessage, question);
   assert.match(userMessage, /use the five titles listed below and their corresponding statuses/i);
-  assert.match(systemMessage, /five patent records, including two application drafts being prepared for filing/i);
+  assert.match(systemMessage, /five patent records, including two drafts in review before filing/i);
   assert.match(userMessage, /patent total is five records/i);
   for (const draftTitle of [
     "A Method for Building a Fully Automated Multi-Agent Data Flywheel to Capture Photographic Evidence of Secondhand Goods",
     "A Cognitive Game-Driven Adaptive Tree Search Method for Optimizing Quality Inspection Rules",
   ]) {
     assert.ok(systemMessage.includes(draftTitle));
-    assert.ok(userMessage.includes('"' + draftTitle + '" — 准备提交 (In preparation).'));
+    assert.ok(userMessage.includes('"' + draftTitle + '" — Under Review (pre-filing review).'));
   }
   assert.match(userMessage, /for the three filed records, state the inventor role and legal status/i);
   assert.match(userMessage, /第一发明人/);

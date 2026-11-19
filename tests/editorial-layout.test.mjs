@@ -374,10 +374,10 @@ test("the homepage displays a single total for papers, manuscripts, and all pate
 
   assert.equal(new Set(titles).size, cards.length);
   const patentRows = all(withClass(papers, "patents-block")[0], (node) => node.tag === "li");
-  const drafts = patentRows.filter((row) => normalizedText(all(row, (node) => node.tag === "span")[0]) === "In preparation");
+  const drafts = patentRows.filter((row) => all(row, (node) => node.tag === "span")[0].attrs.title === "Pre-filing review");
   assert.deepEqual(drafts.map(normalizedText), [
-    "In preparation A Method for Building a Fully Automated Multi-Agent Data Flywheel to Capture Photographic Evidence of Secondhand Goods",
-    "In preparation A Cognitive Game-Driven Adaptive Tree Search Method for Optimizing Quality Inspection Rules",
+    "Under Review A Method for Building a Fully Automated Multi-Agent Data Flywheel to Capture Photographic Evidence of Secondhand Goods",
+    "Under Review A Cognitive Game-Driven Adaptive Tree Search Method for Optimizing Quality Inspection Rules",
   ]);
   const patentCount = patentRows.length;
   assert.equal(patentCount, 5);
