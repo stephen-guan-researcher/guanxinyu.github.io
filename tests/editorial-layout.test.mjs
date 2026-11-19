@@ -229,7 +229,7 @@ test("News shows three recent updates and keeps eight historical entries in a cl
   const expectedDates = ["2026-11-14", "2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
   const expectedStates = ["Updated", "Accepted", "Accepted", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
   const expectedText = [
-    "CICL was accepted at ICONIP 2026. The chapter is now in production for Springer CCIS 3202.",
+    "CICL was accepted at ICONIP 2026. The chapter is at the proof stage for Springer CCIS 3202.",
     "SILICA was accepted to Findings of EACL 2027. The paper, code, and dataset are available on the project page.",
     "Nominate-then-Adjudicate has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on arXiv.",
     "TIMBRE, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on arXiv.",
@@ -412,7 +412,7 @@ test("verified public paper destinations and conservative manuscript states stay
     [knownPapers[2][0], "Under review", /Submitted to ICLR 2027/],
     [knownPapers[3][0], "Under review", /Submitted to ICLR 2027/],
     [knownPapers[4][0], "Accepted", /EACL 2027.*Findings.*Accepted Nov 2026/],
-    [knownPapers[5][0], "Submitted", /Submitted to AAAI 2027/],
+    [knownPapers[5][0], "Under review", /Submitted to AAAI 2027/],
     [knownPapers[6][0], "Accepted", /ICONIP 2026.*Springer CCIS/],
     [knownPapers[7][0], "Preprint", /arXiv:2512\.16927/],
     [knownPapers[8][0], "Published", /ICASSP 2025/],
@@ -461,7 +461,7 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
       `${title} must retain its original caption-free figure`);
   }
   const pendingFigures = [
-    [surveyTitle, "Runtime Stack survey: Frontiers of Computer Science", "Frontiers of Computer Science"],
+    [surveyTitle, "Runtime Stack survey: Multi-agent infrastructure", "Multi-agent infrastructure"],
     ...newManuscripts.map(([title, , , , accessibleLabel, visibleLabel]) => [title, accessibleLabel, visibleLabel]),
   ];
   for (const [title, accessibleLabel, visibleLabel] of pendingFigures) {
@@ -551,18 +551,16 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
   }
 });
 
-test("TIMBRE stays public and the HEP survey preserves submission status and verified authors", () => {
+test("TIMBRE stays public and the HEP survey has its preprint label and verified authors", () => {
   const timbre = publication(knownPapers[0][0]);
   assert.ok(all(timbre, (node) => node.tag === "a" && node.attrs.href === "https://arxiv.org/abs/2610.04795").length > 0);
   assert.doesNotMatch(normalizedText(timbre), /(?:paper )?not yet public/i);
   const survey = publication(surveyTitle);
-  assert.match(normalizedText(survey), /Submitted to Frontiers of Computer Science · Oct 2026/);
-  assert.match(normalizedText(survey), /\bSubmitted\b/);
-  assert.doesNotMatch(normalizedText(survey), /Frontiers in Computer Science|Previous submission|\b(?:Accepted|Published)\b|currently under review|external peer review|FCS-262084/i);
+  assert.doesNotMatch(normalizedText(survey), /Frontiers (?:in|of) Computer Science|\b(?:Submitted|Accepted|Published)\b|currently under review|FCS-262084/i);
   assert.equal(normalizedText(withClass(survey, "publication-authors")[0]),
     "Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, Hailu Xu");
-  assert.equal(normalizedText(withClass(survey, "status-label")[0]), "Submitted");
-  assert.match(normalizedText(withClass(survey, "publication-meta")[0]), /HEP Preprint/);
+  assert.equal(normalizedText(withClass(survey, "status-label")[0]), "Preprint");
+  assert.match(normalizedText(withClass(survey, "publication-meta")[0]), /HEP Preprint · Oct 10, 2026/);
 });
 
 test("new arXiv and HEP preprints expose canonical landing pages and PDFs without status promotion", () => {
@@ -584,7 +582,7 @@ test("new arXiv and HEP preprints expose canonical landing pages and PDFs withou
   ];
   for (const [title, links] of contracts) {
     const card = publication(title);
-    assert.equal(normalizedText(withClass(card, "status-label")[0]), title === surveyTitle ? "Submitted" : "Under review");
+    assert.equal(normalizedText(withClass(card, "status-label")[0]), title === surveyTitle ? "Preprint" : "Under review");
     assert.doesNotMatch(normalizedText(card), /\bAccepted\b|\bPublished\b|currently under review/i);
     for (const [label, href] of links) {
       const link = withClass(card, "publication-inline-link").find((node) => node.attrs.href === href);

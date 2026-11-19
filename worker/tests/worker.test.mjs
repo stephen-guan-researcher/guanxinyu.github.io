@@ -221,7 +221,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(systemMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
   assert.match(systemMessage, /camera-ready availability does not establish proceedings publication/i);
-  assert.match(systemMessage, /The chapter is in production for Springer CCIS 3202/i);
+  assert.match(systemMessage, /The chapter is at the proof stage for Springer CCIS 3202/i);
   assert.doesNotMatch(systemMessage, /Decision-Aware Memory Cards[^.]*was published/i);
   const researchParagraph = systemMessage.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.match(
@@ -314,7 +314,7 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.match(systemMessage, /SILICA[^\n]*accepted to Findings of EACL 2027 on November 13, 2026/);
   assert.match(systemMessage, /SILICA[^\n]*https:\/\/pengcheng-xu\.com\/files\/SILICA_EACL2027_Findings\.pdf/);
   assert.match(systemMessage, /SILICA[^\n]*Its authors are Pengcheng Xu and Xinyu Guan, in that order/i);
-  assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[\s\S]*submitted to AAAI 2027 in July 2026/i);
+  assert.match(invocation.options.messages[0].content, /Advantage Scale Calibration[^\n]*under review at AAAI 2027 following its July 2026 submission/i);
   for (const [title, authors, forumId] of [
     [
       "How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit",
@@ -390,7 +390,7 @@ test("grounds TIMBRE in its public arXiv record while retaining submission-only 
   assert.doesNotMatch(record, /not yet public|was accepted|was published at ICASSP/i);
 });
 
-test("includes verified HEP survey preprint authors while retaining the confirmed FCS submission state", async () => {
+test("includes verified authors and the current public status of the HEP survey preprint", async () => {
   let context;
   const response = await handleRequest(request("/api/chat", {
     method: "POST",
@@ -405,26 +405,20 @@ test("includes verified HEP survey preprint authors while retaining the confirme
   assert.equal(response.status, 200);
   const title = "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack";
   const record = context.split("\n\n").find((entry) => entry.startsWith(`"${title}"`));
-  assert.ok(record, "The verified Frontiers survey must be a separate manuscript record");
-  assert.match(record, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
-  assert.match(record, /homepage label is Submitted/);
-  assert.match(record, /does not confirm external peer review, acceptance, or publication/);
-  assert.match(record, /current live system status has not been checked/);
+  assert.ok(record, "The Runtime Stack survey must have its own public record");
+  assert.match(record, /homepage label is Preprint/);
   assert.match(record, /Its authors are Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order/);
   assert.match(record, /public HEP preprint was released on October 10, 2026/);
   assert.ok(record.includes("https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"));
   assert.ok(record.includes("https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1"));
   assert.match(record, /DOI 10\.3868\/HEPPreprint20261010\.19328/);
   assert.match(record, /Public preprint availability does not establish journal acceptance or journal publication/);
-  assert.match(record, /not another separate planned survey/);
+  assert.match(record, /survey referenced in the research section/);
   assert.doesNotMatch(record, /author list and public paper URL are not verified|was accepted|was published|FCS-262084/i);
-  assert.doesNotMatch(context, /Frontiers in Computer Science|homepage label (?:is|remains) Manuscript|received a rejection decision/i);
+  assert.doesNotMatch(context, /Frontiers (?:in|of) Computer Science|FCS-262084|received a rejection decision/i);
   const research = context.match(/Research:[\s\S]*?(?=\n\nPublications:)/)?.[0] ?? "";
   assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
-  assert.match(research, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
-  assert.match(research, /does not confirm external peer review, acceptance, or publication/);
-  assert.match(research, /current live system status has not been checked/);
-  assert.match(research, /homepage label is Submitted/);
+  assert.match(research, /available as an October 2026 HEP preprint/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
   assert.match(context, /The homepage lists 18 works\b/);
 });
@@ -562,7 +556,7 @@ test("expands CICL shorthand into the verified ICONIP publication record", async
   );
   assert.match(userMessage, /accepted at ICONIP 2026/i);
   assert.match(userMessage, /Springer Communications in Computer and Information Science \(CCIS\) proceedings/i);
-  assert.match(userMessage, /The chapter is in production for Springer CCIS 3202/i);
+  assert.match(userMessage, /The chapter is at the proof stage for Springer CCIS 3202/i);
   assert.match(userMessage, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(userMessage, /camera-ready preprint is arXiv v4, revised on September 21, 2026/);
   assert.match(userMessage, /does not establish proceedings publication/i);

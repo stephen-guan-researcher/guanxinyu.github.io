@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261119-manuscripts-1";
+const releaseToken = "20261119-paper-status-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -110,7 +110,7 @@ test("News presents the Findings announcement and the retained milestones in rev
 
   assert.equal(items.length, 12, "News includes the proof update and retains earlier milestones");
   assert.deepEqual(dates, ["2026-11-14", "2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
-  assert.match(items[0], /href="#paper-cicl"[^>]*>CICL<\/a> was accepted at ICONIP 2026.*in production for Springer CCIS 3202/);
+  assert.match(items[0], /href="#paper-cicl"[^>]*>CICL<\/a> was accepted at ICONIP 2026.*at the proof stage for Springer CCIS 3202/);
   assert.match(items[1], /href="#paper-silica"[^>]*>SILICA<\/a> was accepted to Findings of EACL 2027/);
   assert.match(items[2], /accepted as a short paper at IEEE BigData 2026/);
   assert.match(items[2], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
@@ -279,8 +279,9 @@ test("CICL is a linked ICONIP 2026 acceptance with conservative publication word
   assert.ok(card, "CICL must retain its own publication card");
   assert.match(card, /class="publication-card publication-card-linked"/);
   assert.match(card, /class="status-label">Accepted/);
-  assert.match(card, /ICONIP 2026 · Springer CCIS 3202 · In production/);
+  assert.match(card, /ICONIP 2026 · Springer CCIS 3202 · Proof stage/);
   assert.match(card, /href="https:\/\/arxiv\.org\/abs\/2606\.08151"/);
+  assert.match(card, /href="https:\/\/link\.springer\.com\/book\/9789819281398"/);
   assert.match(card, /<strong>Xinyu Guan<\/strong>, Qianyang Zhao, Yuming Deng/);
   assert.doesNotMatch(card, /class="status-label">(?:Preprint|Published)/);
   assert.equal(
@@ -873,7 +874,7 @@ test("unpublished papers retain distinct venues and conservative public states",
 
   const contracts = [
     [silicaTitle, /class="status-label">Accepted/, /EACL 2027 · Findings · Accepted Nov 2026/],
-    [advantageTitle, /Submitted/, /Submitted to AAAI 2027 · Jul 2026/],
+    [advantageTitle, /class="status-label">Under review/, /Submitted to AAAI 2027 · Jul 2026/],
   ];
   for (const [title, status, venue] of contracts) {
     const card = cardWithText("publication-card", title);

@@ -553,7 +553,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
     "Static Gradient Attribution",
     "ACL ARR",
     "Tell me about CVPR",
-    "Which survey was submitted to Frontiers of Computer Science?",
+    "Which survey is available as a HEP preprint?",
     "What is the runtime stack survey?",
     "Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems",
   ]) {
@@ -565,7 +565,7 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   const reply = site.buildAgentReply("Summarize your latest papers");
   assert.doesNotMatch(reply.answer, /PIVOT|Choosing When to Refine Prompts/);
   assert.match(reply.answer, /was accepted to Findings of EACL 2027 on November 13, 2026/);
-  assert.match(reply.answer, /submitted to AAAI 2027 in July 2026/);
+  assert.match(reply.answer, /Advantage Scale Calibration is under review at AAAI 2027 following its July 2026 submission/);
   assert.doesNotMatch(reply.answer, /KL regularization|ZCPO|1RCulySJU5/i,
     "browser publication facts must not attribute the unresolved KL manuscript to the owner");
   assert.match(reply.answer, /TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile/);
@@ -578,8 +578,8 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   const timbreSummary = reply.answer.split(" TIMBRE:")[1]?.split(" Three ICLR")[0] ?? "";
   assert.doesNotMatch(timbreSummary, /paper is not yet public|paper not yet public/i);
   assert.match(reply.answer, /Diagnostics and Infrastructure for Foundation Model-Based Multi-Agent Systems: A Review of the Runtime Stack/);
-  assert.match(reply.answer, /was successfully submitted to Frontiers of Computer Science on October 6, 2026/i);
-  assert.match(reply.answer, /does not confirm external peer review, acceptance, or publication/i);
+  assert.match(reply.answer, /A Review of the Runtime Stack” is listed as a preprint/);
+  assert.doesNotMatch(reply.answer, /submitted to Frontiers of Computer Science/);
   assert.doesNotMatch(reply.answer, /ChronoMem is in preparation/);
   assert.match(reply.answer, /Three ICLR 2027 submissions from September 2026/);
   for (const [title, forumId] of [
@@ -601,37 +601,29 @@ test("buildAgentReply classifies the corrected manuscript venues as publications
   assert.match(reply.answer, /publicly available on arXiv/);
   assert.match(reply.answer, /https:\/\/arxiv\.org\/abs\/2606\.08151/);
   assert.match(reply.answer, /camera-ready v4 was revised on September 21, 2026/);
-  assert.match(reply.answer, /The ICONIP 2026 chapter is in production for Springer CCIS 3202\./);
+  assert.match(reply.answer, /The ICONIP 2026 chapter is at the proof stage for Springer CCIS 3202\./);
   assert.doesNotMatch(
     reply.answer,
     /Decision-Aware Memory Cards: Counterfactual-Inspired Context Selection and Compression for Tool-Using LLM Agents[^.]*\b(?:is|was) published\b/i,
   );
 });
 
-test("buildAgentReply preserves the confirmed FCS survey submission without inventing live review status", () => {
-  const reply = site.buildAgentReply("Which journal did the runtime stack survey go to?");
-  const surveySummary = reply.answer.split("The survey “")[1]?.split(" My public papers")[0] ?? "";
-  assert.match(surveySummary, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
-  assert.match(surveySummary, /homepage label is Submitted/);
-  assert.match(surveySummary, /does not confirm external peer review, acceptance, or publication/);
-  assert.match(surveySummary, /current live system status has not been checked/);
+test("buildAgentReply reports the current public preprint status of the Runtime Stack survey", () => {
+  const reply = site.buildAgentReply("What is the current status of the runtime stack survey?");
+  const surveySummary = reply.answer.split("The Agent Research Survey “")[1]?.split(" My public papers")[0] ?? "";
+  assert.match(surveySummary, /is listed as a preprint/);
   assert.match(surveySummary, /Its authors are Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order/);
   assert.match(surveySummary, /preprint was released on October 10, 2026/);
   assert.ok(surveySummary.includes("https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"));
   assert.ok(surveySummary.includes("https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1"));
-  assert.match(surveySummary, /Public preprint availability does not establish journal acceptance or journal publication/);
-  assert.doesNotMatch(surveySummary, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|exact submission date.*unverified|author list and public paper URL are unverified|was accepted|was published|FCS-262084/i);
+  assert.doesNotMatch(surveySummary, /Frontiers (?:in|of) Computer Science|received a rejection decision|exact submission date.*unverified|author list and public paper URL are unverified|was accepted|was published|FCS-262084/i);
 
   const research = site.buildAgentReply("What is your research direction?");
   assert.equal(research.topic, "research");
-  assert.match(research.answer, /was successfully submitted to Frontiers of Computer Science on October 6, 2026, as confirmed by the owner-provided submission receipt/);
-  assert.match(research.answer, /homepage label is Submitted/);
-  assert.match(research.answer, /does not confirm external peer review, acceptance, or publication/);
-  assert.match(research.answer, /current live system status has not been checked/);
+  assert.match(research.answer, /is listed as a preprint/);
   assert.match(research.answer, /Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, and Hailu Xu, in that order/);
   assert.ok(research.answer.includes("https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1"));
-  assert.match(research.answer, /Public preprint availability does not establish journal acceptance or journal publication/);
-  assert.doesNotMatch(research.answer, /Frontiers in Computer Science|homepage label is Manuscript|received a rejection decision|FCS-262084/i);
+  assert.doesNotMatch(research.answer, /Frontiers (?:in|of) Computer Science|received a rejection decision|FCS-262084/i);
 });
 
 test("buildAgentReply exposes the QESChunker arXiv preprint without promoting ICLR status", () => {
