@@ -769,7 +769,7 @@ test("resolves first-person graduate-school questions with canonical institution
   assert.match(userMessage, /Original question: 我研究生是哪个大学毕业的/);
 });
 
-test("provides the named patent records and two application drafts to Workers AI", async () => {
+test("provides the five named patent records and their statuses to Workers AI", async () => {
   let invocation;
   const env = createEnv({
     onRun(model, options) {
@@ -791,11 +791,17 @@ test("provides the named patent records and two application drafts to Workers AI
   assert.match(systemMessage, /First Inventor of the granted patent "A Generative Large Model Watermarking Tool Based on Probability Perturbation Encryption"[^.]*July 2024/i);
   assert.match(systemMessage, /Co-Inventor of the granted patent "A Database Drag Behavior Detection Method Based on Time Series"[^.]*June 2024/i);
   assert.notEqual(userMessage, question);
-  assert.match(userMessage, /include all three named patent records and the two application drafts as a group/i);
+  assert.match(userMessage, /use the five titles listed below and their corresponding statuses/i);
   assert.match(systemMessage, /five patent records, including two application drafts being prepared for filing/i);
   assert.match(userMessage, /patent total is five records/i);
-  assert.match(userMessage, /Two application drafts — 准备提交/);
-  assert.match(userMessage, /for each named record, state the inventor role and legal status/i);
+  for (const draftTitle of [
+    "A Method for Building a Fully Automated Multi-Agent Data Flywheel to Capture Photographic Evidence of Secondhand Goods",
+    "A Cognitive Game-Driven Adaptive Tree Search Method for Optimizing Quality Inspection Rules",
+  ]) {
+    assert.ok(systemMessage.includes(draftTitle));
+    assert.ok(userMessage.includes('"' + draftTitle + '" — 准备提交 (In preparation).'));
+  }
+  assert.match(userMessage, /for the three filed records, state the inventor role and legal status/i);
   assert.match(userMessage, /第一发明人/);
   assert.match(userMessage, /共同发明人/);
   for (const title of [

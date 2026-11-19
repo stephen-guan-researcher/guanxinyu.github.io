@@ -374,10 +374,12 @@ test("the homepage displays a single total for papers, manuscripts, and all pate
 
   assert.equal(new Set(titles).size, cards.length);
   const patentRows = all(withClass(papers, "patents-block")[0], (node) => node.tag === "li");
-  const draft = patentRows.find((row) => Object.hasOwn(row.attrs, "data-work-count"));
-  assert.equal(normalizedText(draft), "In preparation 2 patent applications");
-  assert.equal(draft.attrs["data-work-count"], "2");
-  const patentCount = patentRows.reduce((sum, row) => sum + Number(row.attrs["data-work-count"] ?? 1), 0);
+  const drafts = patentRows.filter((row) => normalizedText(all(row, (node) => node.tag === "span")[0]) === "In preparation");
+  assert.deepEqual(drafts.map(normalizedText), [
+    "In preparation A Method for Building a Fully Automated Multi-Agent Data Flywheel to Capture Photographic Evidence of Secondhand Goods",
+    "In preparation A Cognitive Game-Driven Adaptive Tree Search Method for Optimizing Quality Inspection Rules",
+  ]);
+  const patentCount = patentRows.length;
   assert.equal(patentCount, 5);
   assert.equal(normalizedText(displayed), String(cards.length + patentCount) + " works");
   assert.equal(withClass(papers, "manuscript-status").length, 0);
