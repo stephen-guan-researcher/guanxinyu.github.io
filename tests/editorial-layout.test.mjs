@@ -207,16 +207,16 @@ test("News shows three recent updates and keeps eight historical entries in a cl
   assert.equal(preview.length, 1);
   assert.equal(archive.length, 1);
   assert.equal(archive[0].tag, "details", "older updates must use native disclosure semantics");
-  assert.ok(!Object.hasOwn(archive[0].attrs, "open"), "the older eight updates must be collapsed by default");
+  assert.ok(!Object.hasOwn(archive[0].attrs, "open"), "older updates must be collapsed by default");
   assert.ok(!Object.hasOwn(preview[0].attrs, "hidden"), "recent updates remain visible without interaction");
   const archiveChildren = archive[0].children.filter((node) => typeof node !== "string");
   assert.equal(archiveChildren[0].tag, "summary", "the first details child is the native keyboard-accessible toggle");
   assert.equal(all(archive[0], (node) => node.tag === "summary").length, 1);
   assert.equal(all(archiveChildren[0], (node) => node.tag === "button" || node.tag === "a").length, 0,
     "the native summary must not contain competing nested controls");
-  assert.match(normalizedText(archiveChildren[0]), /Show all 11 updates/);
+  assert.match(normalizedText(archiveChildren[0]), /Show all 12 updates/);
   assert.match(normalizedText(archiveChildren[0]), /Show fewer/);
-  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 11 updates");
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 12 updates");
   assert.equal(normalizedText(withClass(archiveChildren[0], "news-collapse-label")[0]), "Show fewer");
   assert.equal(withClass(archiveChildren[0], "news-toggle-icon")[0].attrs["aria-hidden"], "true");
   const archivedList = withClass(archive[0], "news-list-archive");
@@ -224,14 +224,15 @@ test("News shows three recent updates and keeps eight historical entries in a cl
   const previewItems = withClass(preview[0], "news-item");
   const archivedItems = withClass(archivedList[0], "news-item");
   assert.equal(previewItems.length, 3);
-  assert.equal(archivedItems.length, 8);
+  assert.equal(archivedItems.length, 9);
   assert.ok(preview[0].start < archive[0].start, "the latest three updates appear before the older archive");
   const items = withClass(news, "news-item");
   assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
-  const expectedDates = ["2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
-  const expectedStates = ["Accepted", "Accepted", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
+  const expectedDates = ["2026-11-14", "2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"];
+  const expectedStates = ["Updated", "Accepted", "Accepted", "Submitted", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Submitted", "Preprint", "Career"];
   const expectedText = [
-    "SILICA was accepted to Findings of EACL 2027.",
+    "CICL was accepted at ICONIP 2026. The chapter is now in production for Springer CCIS 3202.",
+    "SILICA was accepted to Findings of EACL 2027. The paper, code, and dataset are available on the project page.",
     "Nominate-then-Adjudicate has been accepted as a short paper at IEEE BigData 2026. The preprint is now available on arXiv.",
     "TIMBRE, my first-author time-series forecasting manuscript, has been submitted to ICASSP 2027. The preprint is publicly available on arXiv.",
     "Three ICLR 2027 submissions: VLA Early Exit, LoRA Attribution, and QESChunker.",
@@ -244,7 +245,8 @@ test("News shows three recent updates and keeps eight historical entries in a cl
     "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
   ];
   const expectedLinks = [
-    ["#paper-silica"],
+    ["#paper-cicl"],
+    ["#paper-silica", "https://explcre.github.io/silica/"],
     ["#paper-nominate-adjudicate", "https://arxiv.org/abs/2610.29391"],
     ["#paper-timbre", "https://arxiv.org/abs/2610.04795"],
     ["https://openreview.net/forum?id=x6BEwIFvUc", "https://openreview.net/forum?id=g54eVrFPPI", "https://openreview.net/forum?id=pvrvPinZif"],
@@ -364,14 +366,20 @@ test("the work list follows submission time with November manuscripts first", ()
   assert.deepEqual(dates, dates.toSorted().reverse());
 });
 
-test("the homepage displays only the total count of distinct listed works", () => {
+test("the homepage displays a single total for papers, manuscripts, and all patent records", () => {
   const papers = byId(pages.home, "papers");
   const cards = withClass(papers, "publication-card");
   const displayed = withClass(papers, "publication-count")[0];
   const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
 
   assert.equal(new Set(titles).size, cards.length);
-  assert.equal(normalizedText(displayed), `${cards.length} works`);
+  const patentRows = all(withClass(papers, "patents-block")[0], (node) => node.tag === "li");
+  const draft = patentRows.find((row) => Object.hasOwn(row.attrs, "data-work-count"));
+  assert.equal(normalizedText(draft), "In preparation 2 patent applications");
+  assert.equal(draft.attrs["data-work-count"], "2");
+  const patentCount = patentRows.reduce((sum, row) => sum + Number(row.attrs["data-work-count"] ?? 1), 0);
+  assert.equal(patentCount, 5);
+  assert.equal(normalizedText(displayed), String(cards.length + patentCount) + " works");
   assert.equal(withClass(papers, "manuscript-status").length, 0);
   assert.doesNotMatch(read("worker/src/index.mjs"), /When KL Regularization Fails|ZCPO/i);
 });

@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261119-publications-2";
+const releaseToken = "20261119-patents-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -82,7 +82,7 @@ test("homepage keeps recent news after its introduction and career before public
   const sectionIds = [...index.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
   assert.deepEqual(sectionIds, ["home", "updates", "experience", "papers", "research", "about", "research-experience", "education"]);
   for (const [id, title] of [
-    ["experience", "Work experience"], ["papers", "Publications &amp; Manuscripts"],
+    ["experience", "Work experience"], ["papers", "Publications, Manuscripts &amp; Patents"],
     ["research", "Current research"], ["research-experience", "Research experience"], ["education", "Education"],
   ]) {
     assert.match(contentSection(id), new RegExp(`<h2[^>]*>${title}<\\/h2>`));
@@ -108,24 +108,25 @@ test("News presents the Findings announcement and the retained milestones in rev
   const items = news.match(/<article class="news-item">[\s\S]*?<\/article>/g) ?? [];
   const dates = [...news.matchAll(/<time datetime="([^"]+)">/g)].map((match) => match[1]);
 
-  assert.equal(items.length, 11, "News must include the Findings acceptance and retained milestones");
-  assert.deepEqual(dates, ["2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
-  assert.match(items[0], /href="#paper-silica"[^>]*>SILICA<\/a> was accepted to Findings of EACL 2027/);
-  assert.match(items[1], /accepted as a short paper at IEEE BigData 2026/);
-  assert.match(items[1], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
+  assert.equal(items.length, 12, "News includes the proof update and retains earlier milestones");
+  assert.deepEqual(dates, ["2026-11-14", "2026-11-13", "2026-10-22", "2026-10", "2026-09", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-07", "2026-06", "2026-02"]);
+  assert.match(items[0], /href="#paper-cicl"[^>]*>CICL<\/a> was accepted at ICONIP 2026.*in production for Springer CCIS 3202/);
+  assert.match(items[1], /href="#paper-silica"[^>]*>SILICA<\/a> was accepted to Findings of EACL 2027/);
+  assert.match(items[2], /accepted as a short paper at IEEE BigData 2026/);
+  assert.match(items[2], /https:\/\/arxiv\.org\/abs\/2610\.29391/);
   for (const status of ["Accepted", "Updated", "Submitted", "Preprint", "Career"]) {
     assert.match(news, new RegExp(`<span>${status}<\\/span>`));
   }
   assert.match(
-    items[6],
+    items[7],
     /Decision-Aware Memory Cards was accepted for publication in the Springer CCIS proceedings of ICONIP 2026\./,
   );
-  assert.match(items[6], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
-  assert.match(items[5], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
+  assert.match(items[7], /href="https:\/\/arxiv\.org\/abs\/2606\.08151"[^>]*target="_blank"[^>]*rel="noopener"/);
+  assert.match(items[6], /href="#paper-nominate-adjudicate"[\s\S]*Nominate-then-Adjudicate[\s\S]*submitted to IEEE BigData 2026/);
   assert.doesNotMatch(news, /Preparing[^<]*<a[^>]*>PIVOT|CVPR/);
-  assert.match(items[2], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
-  assert.match(items[3], /Three ICLR 2027 submissions/);
-  assert.match(items[4], /ICONIP 2026 camera-ready/);
+  assert.match(items[3], /TIMBRE[\s\S]*first-author[\s\S]*ICASSP 2027/);
+  assert.match(items[4], /Three ICLR 2027 submissions/);
+  assert.match(items[5], /ICONIP 2026 camera-ready/);
   assert.ok(news.indexOf("Decision-Aware Memory Cards was accepted") < news.indexOf("Submitted SILICA"));
   assert.match(news, /August 2026 ACL ARR cycle, with EACL as the preferred venue/);
   assert.doesNotMatch(news, /Preparing an ICASSP 2027 manuscript/);
