@@ -126,24 +126,7 @@ const knownPapers = [
   ],
 ];
 
-const submittedPapers = [
-  [
-    "PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch",
-    "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng",
-  ],
-  [
-    "RateGS: Learning Motion Rates for 4D Gaussian Forecasting",
-    "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao",
-  ],
-  [
-    "How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit",
-    "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan",
-  ],
-  [
-    "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery",
-    "Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, Xinyu Guan, Huiming Yang",
-  ],
-];
+const anonymousSubmission = "Submitted anonymously to a conference";
 
 test("both pages use the shared editorial skin and retain semantic landmarks", () => {
   for (const [name, page] of Object.entries(pages)) {
@@ -329,15 +312,16 @@ test("four compact career rows preserve all six original scopes and complete exp
   assert.equal(withClass(byId(pages.home, "education"), "education-item").length, 2);
 });
 
-test("the main list uses full cards for all thirteen papers and manuscripts", () => {
+test("the main list keeps public and anonymous manuscripts as cards", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => {
     const headings = all(card, (node) => node.tag === "h3");
     assert.equal(headings.length, 1, "each paper row must have one complete title");
     return normalizedText(headings[0]);
   });
-  const expectedTitles = [...knownPapers, ...submittedPapers].map(([title]) => title);
-  assert.deepEqual(titles.toSorted(), [...expectedTitles, surveyTitle].toSorted());
+  const publicTitles = knownPapers.map(([title]) => title);
+  const maskedTitles = Array(4).fill(anonymousSubmission);
+  assert.deepEqual(titles.toSorted(), [...publicTitles, surveyTitle, ...maskedTitles].toSorted());
   assert.equal(cards.length, 13);
   assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
@@ -346,12 +330,20 @@ test("the main list uses full cards for all thirteen papers and manuscripts", ()
     const bodies = withClass(card, "publication-body");
     assert.equal(bodies.length, 1, "each row must group its full text in .publication-body");
     assert.equal(all(bodies[0], (node) => node.tag === "h3").length, 1);
+    if (hasClass(card, "publication-card-anonymous")) {
+      assert.deepEqual(Object.keys(card.attrs), ["class"]);
+      assert.equal(normalizedText(bodies[0]), anonymousSubmission);
+      assert.equal(all(card, (node) => ["a", "img", "picture", "source", "time"].includes(node.tag)).length, 0);
+      assert.equal(withClass(card, "publication-authors").length, 0);
+      assert.equal(withClass(card, "publication-summary").length, 0);
+      continue;
+    }
     assert.ok(normalizedText(withClass(bodies[0], "publication-meta")[0]).length > 0,
       "each row must expose bibliographic or timeline metadata");
     assert.ok(normalizedText(withClass(bodies[0], "publication-summary")[0]).length >= 50,
       "each row must retain a substantive description, not just a title");
   }
-  for (const [title, authors] of [...knownPapers, ...submittedPapers]) {
+  for (const [title, authors] of knownPapers) {
     assert.equal(normalizedText(withClass(publication(title), "publication-authors")[0]), authors,
       `${title} must preserve its verified author order`);
   }
@@ -361,40 +353,36 @@ test("the work list follows submission time with the current public records", ()
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
   assert.deepEqual(titles, [
-    submittedPapers[0][0],
-    submittedPapers[1][0],
+    anonymousSubmission,
+    anonymousSubmission,
     knownPapers[0][0],
     surveyTitle,
-    submittedPapers[2][0],
+    anonymousSubmission,
     knownPapers[1][0],
     knownPapers[2][0],
     knownPapers[7][0],
     knownPapers[3][0],
-    submittedPapers[3][0],
+    anonymousSubmission,
     knownPapers[4][0],
     knownPapers[5][0],
     knownPapers[6][0],
   ]);
-  const dates = cards.map((card) => {
+  const dates = cards.filter((card) => !hasClass(card, "publication-card-anonymous")).map((card) => {
     const datesInCard = all(card, (node) => node.tag === "time");
     assert.equal(datesInCard.length, 1, "each card needs one timeline date");
     return datesInCard[0].attrs.datetime;
   });
   assert.deepEqual(dates, dates.toSorted().reverse());
-  for (const [title] of submittedPapers) {
-    const card = publication(title);
-    assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
-    assert.equal(all(card, (node) => node.tag === "a").length, 0);
-  }
 });
 
 test("the homepage displays a single total for papers, manuscripts, and all patent records", () => {
   const papers = byId(pages.home, "papers");
   const cards = withClass(papers, "publication-card");
   const displayed = withClass(papers, "publication-count")[0];
-  const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
+  const publicCards = cards.filter((card) => !hasClass(card, "publication-card-anonymous"));
+  const titles = publicCards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
 
-  assert.equal(new Set(titles).size, cards.length);
+  assert.equal(new Set(titles).size, publicCards.length);
   const patentRows = all(withClass(papers, "patents-block")[0], (node) => node.tag === "li");
   const drafts = patentRows.filter((row) => all(row, (node) => node.tag === "span")[0].attrs.title === "Pre-filing review");
   assert.deepEqual(drafts.map(normalizedText), [
@@ -456,10 +444,6 @@ test("publication cards use their corresponding paper figures", () => {
     [knownPapers[5][0], "images/paper2-suffix-tree.png"],
     [knownPapers[6][0], "images/paper1-hypergraph.png"],
     [knownPapers[7][0], "images/paper-nominate-adjudicate-overview.png"],
-    [submittedPapers[0][0], "images/paper-praxislab-overview.png"],
-    [submittedPapers[1][0], "images/paper-rategs-overview.png"],
-    [submittedPapers[2][0], "images/paper-vla-early-exit-overview.png"],
-    [submittedPapers[3][0], "images/paper-advantage-calibration-overview.png"],
     [surveyTitle, "images/paper-runtime-stack-overview.png"],
   ];
   for (const [title, src] of figures) {
@@ -482,10 +466,16 @@ test("publication cards use their corresponding paper figures", () => {
   assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|Concept illustration|待补充|示意配图|Figure coming soon/,
     "concept cover assets must not be requested by the active homepage");
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
-    "every article must have a real figure");
+    "every article has a figure or an anonymous mask");
   for (const card of cards) {
     const figures = withClass(card, "publication-card-figure");
-    assert.equal(figures.length, 1, "each publication article must have exactly one figure");
+    assert.equal(figures.length, 1, "each publication article must have exactly one visual panel");
+    if (hasClass(card, "publication-card-anonymous")) {
+      assert.ok(hasClass(figures[0], "publication-mask"));
+      assert.equal(figures[0].attrs["aria-hidden"], "true");
+      assert.equal(normalizedText(figures[0]), "");
+      continue;
+    }
     assert.equal(figures[0].tag, "figure");
     assert.equal(all(figures[0], (node) => node.tag === "picture").length, 1);
     const sources = all(figures[0], (node) => node.tag === "source");

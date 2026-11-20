@@ -47,9 +47,9 @@ The first-page titles were checked before matching these PDFs to homepage rows. 
 - Method: built-in Image Gen, one separate call per asset in editorial-4. Each original is preserved, and site PNG fallbacks are resized to 1200 × 800.
 - Each cover has `data-figure-status="illustration"`, descriptive alternative text ending with “not an original paper figure”, and a visible “Concept illustration” caption. No formulas, results, or author metadata are invented.
 - Each remaining cover has 320px, 640px, and 960px WebP variants. The largest is 28374 bytes. Browser clients use these variants rather than downloading the full PNG by default.
-- Exact prompts and original generated-image paths: [PIVOT and VLA](publication-cover-prompts-a.md), [LoRA and QESChunker](publication-cover-prompts-b.md), [ZCPO and Runtime](publication-cover-prompts-c.md).
+- Exact prompts and original generated-image paths: [PIVOT](publication-cover-prompts-a.md), [LoRA and QESChunker](publication-cover-prompts-b.md), [ZCPO and Runtime](publication-cover-prompts-c.md).
 - When authentic source figures become available, replace the corresponding cover while retaining the verified paper metadata. Existing six real figures were not replaced.
-- All first-version concept-cover files (PIVOT, VLA, LoRA, QESChunker, KL/ZCPO, and Runtime Stack) and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list. The two editorial-8 illustrations use distinct `concept-v2` filenames.
+- All first-version concept-cover files (PIVOT, LoRA, QESChunker, KL/ZCPO, and Runtime Stack) and their prompts remain as recoverable history, but are not referenced by the current homepage or the active paper-image generation list. The two editorial-8 illustrations use distinct `concept-v2` filenames.
 
 ## Retired placeholder asset — editorial-3 history
 

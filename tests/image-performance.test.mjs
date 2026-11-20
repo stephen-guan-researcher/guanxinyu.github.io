@@ -102,7 +102,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261120-publications-chronological-1";
+const releaseToken = "20261120-anonymous-submissions-1";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === `images/generated/${avatarStem}-528.jpg`);
@@ -129,7 +129,7 @@ test("paper figures are responsive and lazy", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 13, "all thirteen articles have a real figure");
+  assert.equal(figures.length, 9, "all nine public articles have a real figure");
   assert.doesNotMatch(index, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const figure of figures) {
@@ -150,16 +150,12 @@ test("paper figures are responsive and lazy", () => {
       "real paper figures retain their caption-free container");
   }
   assert.doesNotMatch(index, /publication-card-figure-pending/);
-  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 13);
+  assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 9);
   assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|publication-card-figure-illustration|Concept illustration|待补充|示意配图|Figure coming soon/,
     "the active homepage must not load archived concept covers");
 
   const candidates = {
     "paper-silica-identifiability": [320, 640, 960],
-    "paper-praxislab-overview": [320, 640, 960],
-    "paper-rategs-overview": [320, 640, 960],
-    "paper-vla-early-exit-overview": [320, 640, 960],
-    "paper-advantage-calibration-overview": [320, 640, 960],
     "paper-runtime-stack-overview": [320, 640, 960],
     "paper-timbre-overview": [320, 640, 960],
     "paper3-cicl-pipeline": [320, 640, 850],

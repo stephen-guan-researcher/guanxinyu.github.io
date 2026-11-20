@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261120-publications-chronological-1";
+const releaseToken = "20261120-anonymous-submissions-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -113,7 +113,7 @@ test("News presents the Findings announcement and the retained milestones in rev
   assert.match(items[0], /<span>Submitted<\/span>/);
   assert.match(items[1], /<span>Revised<\/span>/);
   for (const update of items.slice(0, 2)) {
-    assert.doesNotMatch(update, /PraxisLab|RateGS|VLA|(?:CVPR|ICLR|AAAI) 2027|<a\b|submission #[0-9]+/i);
+    assert.doesNotMatch(update, /(?:CVPR|ICLR|AAAI) 2027|<a\b|submission #[0-9]+/i);
   }
   for (const update of items.slice(2, 5)) {
     assert.match(update, /<span>Accepted<\/span>/);
@@ -311,7 +311,7 @@ test("publication author lines use names only and preserve SILICA order", () => 
   assert.doesNotMatch(publications, /(?:First|Second) Author/);
 });
 
-test("public paper links stay keyboard accessible alongside submitted manuscript titles", () => {
+test("public paper links stay keyboard accessible alongside anonymous submissions", () => {
   const cards = cardsWithClass("publication-card");
   const linkedCards = cards.filter((card) => /<h3><a\b[^>]*href=/.test(card));
 
@@ -387,7 +387,9 @@ test("publication metadata keeps an explicit visual order", () => {
   }
   assert.doesNotMatch(css, /\.publication-card\s*>\s*p:nth-of-type/);
   assert.doesNotMatch(css, /\.publication-card\s*>\s*p:last-of-type/);
-  for (const card of cardsWithClass("publication-card")) {
+  const publicCards = cardsWithClass("publication-card")
+    .filter((card) => !card.includes("publication-card-anonymous"));
+  for (const card of publicCards) {
     assert.match(card, /class="publication-body"/);
     assertInOrder(card, ["<h3", 'class="publication-authors"', 'class="publication-metadata"', 'class="publication-summary"']
       .filter((token) => token !== 'class="publication-authors"' || card.includes(token)));

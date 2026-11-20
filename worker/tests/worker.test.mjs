@@ -304,11 +304,9 @@ test("returns a Workers AI answer for a valid question", async () => {
     "unresolved KL authorship must not be included in the Agent's verified facts");
   assert.match(systemMessage, /The homepage lists 18 works\b/);
   assert.match(systemMessage, /This includes 13 papers and manuscripts/);
-  for (const prefix of ["PraxisLab:", "RateGS:", "How Deep Should a VLA Think", "Advantage Scale Calibration"]) {
-    const manuscript = systemMessage.split("\n").find((line) => line.startsWith(`"${prefix}`)) ?? "";
-    assert.match(manuscript, /is listed as Submitted/);
-    assert.doesNotMatch(manuscript, /openreview|arxiv|CVPR|ICLR|AAAI/i);
-  }
+  assert.match(systemMessage, /Four anonymous manuscripts have been submitted to conferences/);
+  assert.match(systemMessage, /Report only the count and submission status for these manuscripts/);
+  assert.doesNotMatch(systemMessage, /is listed as Submitted\. Its authors are/);
   assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
   assert.match(systemMessage, /November 2023 to February 2024/);
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
