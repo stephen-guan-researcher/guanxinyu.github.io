@@ -174,7 +174,7 @@ test("homepage opens with a real portrait and bilingual identity, then news and 
   assert.ok(experience && papers, "career and publication sections must remain directly linkable");
   assert.ok(news && hero.start < news.start && news.start < experience.start && experience.start < papers.start,
     "the homepage reading order must be introduction, news, career, then papers");
-  for (const employer of ["TaoTian Group @ Alibaba", "Baidu", "Tencent", "Chinese Academy of Sciences", "Mico World"]) {
+  for (const employer of ["Alibaba · TaoTian Group", "Baidu", "Tencent", "Chinese Academy of Sciences", "Mico World"]) {
     assert.ok(normalizedText(experience).includes(employer), `career must retain ${employer}`);
   }
 });
@@ -256,7 +256,7 @@ test("News shows five recent updates and keeps ten historical entries in a close
 
 test("four compact career rows preserve all six original scopes and complete expandable details", () => {
   const contracts = [
-    ["TaoTian Group @ Alibaba", "AI Agent Researcher · P6", "Feb 2026 — Present", 2],
+    ["Alibaba · TaoTian Group", "AI Agent Researcher · P6", "Feb 2026 — Present", 2],
     ["Baidu · ERNIE Foundation Model", "Senior Research Scientist · T4+", "Oct — Dec 2025", 2],
     ["Tencent · Hunyuan Foundation Model", "Research Scientist · T5", "Feb 2024 — Sep 2025", 8],
     ["Chinese Academy of Sciences", "Research Assistant Intern", "Nov 2023 — Feb 2024", 2],

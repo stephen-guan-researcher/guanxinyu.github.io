@@ -704,7 +704,7 @@ test("homepage locks the current research program, career, and thirteen independ
 
 test("verified career levels stay attached to their corresponding appointments", () => {
   const contracts = [
-    ["TaoTian Group @ Alibaba", "AI Agent Researcher · P6"],
+    ["Alibaba · TaoTian Group", "AI Agent Researcher · P6"],
     ["Baidu / ERNIE Foundation Model Core Team", "Senior Research Scientist · T4+"],
     ["Tencent / Hunyuan Text-to-Text Pipeline Team", "Research Scientist · T5"],
     ["Tencent / Hunyuan Strategy Group 4", "Research Scientist · T5"],
@@ -729,7 +729,7 @@ test("compact work history preserves all six original scopes including both Tenc
   assert.equal((index.match(/<section class="experience-team">/g) ?? []).length, 2);
   assert.match(contentSection("experience"), /<details class="earlier-career">[\s\S]*?Mico World \/ Yoho Department[\s\S]*?<\/details>/);
   for (const title of [
-    "TaoTian Group @ Alibaba",
+    "Alibaba · TaoTian Group",
     "Baidu / ERNIE Foundation Model Core Team",
     "Tencent / Hunyuan Text-to-Text Pipeline Team",
     "Tencent / Hunyuan Strategy Group 4",
@@ -769,7 +769,7 @@ test("detailed work metrics remain attached to their source appointments", () =>
 });
 
 test("Alibaba appointment presents the approved two-workstream scope and claim boundaries", () => {
-  const alibaba = cardWithText("experience-item", "TaoTian Group @ Alibaba");
+  const alibaba = cardWithText("experience-item", "Alibaba · TaoTian Group");
   assert.ok(alibaba, "Alibaba appointment must remain a distinct career card");
 
   const summary = alibaba.match(/<p class="experience-intro">([^<]*)<\/p>/)?.[1] ?? "";
