@@ -125,55 +125,14 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
   assert.equal(tags(life, "img").length, 33, "Life must not fetch an additional profile portrait");
 });
 
-test("paper figures and the shared decorative background are responsive and lazy", () => {
-  const pendingLabelByAria = new Map([
-    ["PraxisLab: Visual AutoResearch", "Visual AutoResearch"],
-    ["RateGS: Dynamic scene forecasting", "Dynamic scene forecasting"],
-    ["VLA Early Exit: Adaptive inference", "Adaptive inference"],
-    ["Advantage Scale Calibration: Reward calibration", "Reward calibration"],
-    ["Runtime Stack survey: Multi-agent infrastructure", "Multi-agent infrastructure"],
-  ]);
+test("paper figures are responsive and lazy", () => {
   const figures = (index.match(/<figure\b[^>]*>[\s\S]*?<\/figure>/gi) ?? []).filter((figure) =>
     (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure"),
   );
-  assert.equal(figures.length, 13, "all thirteen articles have a real figure or a labeled decorative slot");
+  assert.equal(figures.length, 13, "all thirteen articles have a real figure");
   assert.doesNotMatch(index, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const figure of figures) {
-    const figureTag = tags(figure, "figure")[0];
-    const isPending = (attribute(figureTag, "class") ?? "")
-      .split(/\s+/).includes("publication-card-figure-pending");
-    if (isPending) {
-      assert.equal(attribute(figureTag, "data-figure-status"), "pending");
-      const expectedLabel = pendingLabelByAria.get(attribute(figureTag, "aria-label"));
-      assert.ok(expectedLabel, "each decorative background must expose its own exact venue label");
-      assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), expectedLabel);
-      const labels = tags(figure, "span").filter((tag) =>
-        (attribute(tag, "class") ?? "").split(/\s+/).includes("publication-figure-pending-label"));
-      assert.equal(labels.length, 1);
-      assert.notEqual(attribute(labels[0], "aria-hidden"), "true");
-      const pictures = tags(figure, "picture");
-      assert.equal(pictures.length, 1);
-      assert.equal(attribute(pictures[0], "aria-hidden"), "true");
-      const images = tags(figure, "img");
-      assert.equal(images.length, 1);
-      assert.equal(attribute(images[0], "src"), `images/${pendingBackgroundStem}.png`);
-      assert.equal(attribute(images[0], "alt"), "");
-      assert.equal(attribute(images[0], "aria-hidden"), "true");
-      assert.equal(attribute(images[0], "width"), "1200");
-      assert.equal(attribute(images[0], "height"), "800");
-      assert.equal(attribute(images[0], "loading"), "lazy");
-      assert.equal(attribute(images[0], "decoding"), "async");
-      const sources = tags(figure, "source");
-      assert.equal(sources.length, 1);
-      assert.equal(attribute(sources[0], "type"), "image/webp");
-      assert.deepEqual(srcsetCandidates(sources[0]),
-        [320, 640, 960].map((width) => `images/generated/${pendingBackgroundStem}-${width}.webp ${width}w`));
-      assert.equal(normalizeSpace(attribute(sources[0], "sizes")),
-        "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
-      assert.equal(tags(figure, "figcaption").length, 0);
-      continue;
-    }
     assert.equal(tags(figure, "picture").length, 1);
     const sources = tags(figure, "source");
     assert.equal(sources.length, 1);
@@ -190,21 +149,18 @@ test("paper figures and the shared decorative background are responsive and lazy
     assert.equal(normalizeSpace(figure.replace(/<[^>]*>/g, "")), "",
       "real paper figures retain their caption-free container");
   }
-  const pendingFigures = figures.filter((figure) =>
-    (attribute(tags(figure, "figure")[0], "class") ?? "").split(/\s+/).includes("publication-card-figure-pending"),
-  );
-  assert.equal(pendingFigures.length, pendingLabelByAria.size);
-  assert.deepEqual(pendingFigures.map((figure) => attribute(tags(figure, "figure")[0], "aria-label")).toSorted(),
-    [...pendingLabelByAria.keys()].toSorted());
-  assert.equal(figures.length - pendingFigures.length, 8);
+  assert.doesNotMatch(index, /publication-card-figure-pending/);
   assert.equal(figures.reduce((total, figure) => total + tags(figure, "img").length, 0), 13);
-  assert.deepEqual([...new Set(pendingFigures.map((figure) => attribute(tags(figure, "img")[0], "src")))],
-    [`images/${pendingBackgroundStem}.png`], "all pending slots use one cacheable decorative asset");
   assert.doesNotMatch(index, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|publication-card-figure-illustration|Concept illustration|待补充|示意配图|Figure coming soon/,
     "the active homepage must not load archived concept covers");
 
   const candidates = {
     "paper-silica-identifiability": [320, 640, 960],
+    "paper-praxislab-overview": [320, 640, 960],
+    "paper-rategs-overview": [320, 640, 960],
+    "paper-vla-early-exit-overview": [320, 640, 960],
+    "paper-advantage-calibration-overview": [320, 640, 960],
+    "paper-runtime-stack-overview": [320, 640, 960],
     "paper-timbre-overview": [320, 640, 960],
     "paper3-cicl-pipeline": [320, 640, 850],
     "paper2-suffix-tree": [320, 640, 678],

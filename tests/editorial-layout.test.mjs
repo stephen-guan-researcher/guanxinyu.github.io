@@ -196,7 +196,7 @@ test("homepage opens with a real portrait and bilingual identity, then news and 
   }
 });
 
-test("News shows three recent updates and keeps ten historical entries in a closed native archive", () => {
+test("News shows five recent updates and keeps ten historical entries in a closed native archive", () => {
   const news = byId(pages.home, "updates");
   assert.equal(news.tag, "section");
   assert.ok(hasClass(news, "news-card"));
@@ -218,23 +218,25 @@ test("News shows three recent updates and keeps ten historical entries in a clos
   assert.equal(all(archive[0], (node) => node.tag === "summary").length, 1);
   assert.equal(all(archiveChildren[0], (node) => node.tag === "button" || node.tag === "a").length, 0,
     "the native summary must not contain competing nested controls");
-  assert.match(normalizedText(archiveChildren[0]), /Show all 13 updates/);
+  assert.match(normalizedText(archiveChildren[0]), /Show all 15 updates/);
   assert.match(normalizedText(archiveChildren[0]), /Show fewer/);
-  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 13 updates");
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 15 updates");
   assert.equal(normalizedText(withClass(archiveChildren[0], "news-collapse-label")[0]), "Show fewer");
   assert.equal(withClass(archiveChildren[0], "news-toggle-icon")[0].attrs["aria-hidden"], "true");
   const archivedList = withClass(archive[0], "news-list-archive");
   assert.equal(archivedList.length, 1);
   const previewItems = withClass(preview[0], "news-item");
   const archivedItems = withClass(archivedList[0], "news-item");
-  assert.equal(previewItems.length, 3);
+  assert.equal(previewItems.length, 5);
   assert.equal(archivedItems.length, 10);
-  assert.ok(preview[0].start < archive[0].start, "the latest three updates appear before the older archive");
+  assert.ok(preview[0].start < archive[0].start, "the latest five updates appear before the older archive");
   const items = withClass(news, "news-item");
   assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
-  const expectedDates = ["2026-11-14", "2026-11-13", "2026-11-10", "2026-10-27", "2026-10-10", "2026-10-08", "2026-10-03", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"];
-  const expectedStates = ["Updated", "Accepted", "Updated", "Preprint", "Preprint", "Preprint", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Preprint", "Career"];
+  const expectedDates = ["2026-11", "2026-11", "2026-11-14", "2026-11-13", "2026-11-10", "2026-10-27", "2026-10-10", "2026-10-08", "2026-10-03", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"];
+  const expectedStates = ["Submitted", "Revised", "Accepted", "Accepted", "Accepted", "Preprint", "Preprint", "Preprint", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Preprint", "Career"];
   const expectedText = [
+    "Submitted two full manuscripts for peer review this month and posted revisions.",
+    "Revised a manuscript and posted responses to reviewers.",
     "CICL was accepted at ICONIP 2026. The chapter is at the proof stage for Springer CCIS 3202.",
     "SILICA was accepted to Findings of EACL 2027. The author PDF and project materials are available.",
     "Nominate-then-Adjudicate was accepted as a short paper at IEEE BigData 2026. The revised arXiv v3 is available.",
@@ -250,6 +252,8 @@ test("News shows three recent updates and keeps ten historical entries in a clos
     "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
   ];
   const expectedLinks = [
+    [],
+    [],
     ["#paper-cicl", "https://link.springer.com/book/9789819281398"],
     ["#paper-silica", "https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf", "https://explcre.github.io/silica/"],
     ["#paper-nominate-adjudicate", "https://arxiv.org/abs/2610.29391v3"],
@@ -359,12 +363,12 @@ test("the work list follows submission time with the current public records", ()
   assert.deepEqual(titles, [
     submittedPapers[0][0],
     submittedPapers[1][0],
-    knownPapers[7][0],
     knownPapers[0][0],
     surveyTitle,
     submittedPapers[2][0],
     knownPapers[1][0],
     knownPapers[2][0],
+    knownPapers[7][0],
     knownPapers[3][0],
     submittedPapers[3][0],
     knownPapers[4][0],
@@ -442,7 +446,7 @@ test("verified public paper destinations and conservative manuscript states stay
   }
 });
 
-test("publication cards use real figures or labeled decorative backgrounds", () => {
+test("publication cards use their corresponding paper figures", () => {
   const figures = [
     [knownPapers[0][0], "images/paper-timbre-overview.png"],
     [knownPapers[1][0], "images/paper-lora-attribution.png"],
@@ -452,6 +456,11 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
     [knownPapers[5][0], "images/paper2-suffix-tree.png"],
     [knownPapers[6][0], "images/paper1-hypergraph.png"],
     [knownPapers[7][0], "images/paper-nominate-adjudicate-overview.png"],
+    [submittedPapers[0][0], "images/paper-praxislab-overview.png"],
+    [submittedPapers[1][0], "images/paper-rategs-overview.png"],
+    [submittedPapers[2][0], "images/paper-vla-early-exit-overview.png"],
+    [submittedPapers[3][0], "images/paper-advantage-calibration-overview.png"],
+    [surveyTitle, "images/paper-runtime-stack-overview.png"],
   ];
   for (const [title, src] of figures) {
     const card = publication(title);
@@ -464,71 +473,20 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
     assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0,
       `${title} must retain its original caption-free figure`);
   }
-  const pendingFigures = [
-    [submittedPapers[0][0], "PraxisLab: Visual AutoResearch", "Visual AutoResearch"],
-    [submittedPapers[1][0], "RateGS: Dynamic scene forecasting", "Dynamic scene forecasting"],
-    [submittedPapers[2][0], "VLA Early Exit: Adaptive inference", "Adaptive inference"],
-    [submittedPapers[3][0], "Advantage Scale Calibration: Reward calibration", "Reward calibration"],
-    [surveyTitle, "Runtime Stack survey: Multi-agent infrastructure", "Multi-agent infrastructure"],
-  ];
-  for (const [title, accessibleLabel, visibleLabel] of pendingFigures) {
-    const figure = withClass(publication(title), "publication-card-figure")[0];
-    assert.ok(figure && hasClass(figure, "publication-card-figure-pending"),
-      `${title} must disclose missing artwork instead of showing a concept cover`);
-    assert.equal(figure.attrs["data-figure-status"], "pending");
-    assert.equal(figure.attrs["aria-label"], accessibleLabel);
-    assert.ok(!Object.hasOwn(figure.attrs, "hidden"));
-    assert.notEqual(figure.attrs["aria-hidden"], "true");
-    const labels = withClass(figure, "publication-figure-pending-label");
-    assert.equal(labels.length, 1);
-    assert.equal(labels[0].tag, "span");
-    assert.equal(normalizedText(labels[0]), visibleLabel);
-    assert.ok(!Object.hasOwn(labels[0].attrs, "hidden"));
-    assert.notEqual(labels[0].attrs["aria-hidden"], "true");
-    assert.equal(normalizedText(figure), visibleLabel);
-    const pictures = all(figure, (node) => node.tag === "picture");
-    assert.equal(pictures.length, 1);
-    assert.equal(pictures[0].attrs["aria-hidden"], "true",
-      "the pending background is decorative, not paper evidence");
-    const images = all(pictures[0], (node) => node.tag === "img");
-    assert.equal(images.length, 1);
-    assert.equal(images[0].attrs.src, "images/paper-figure-pending-background.png");
-    assert.ok(existsSync(asset(images[0].attrs.src)));
-    assert.equal(images[0].attrs.alt, "");
-    assert.equal(images[0].attrs["aria-hidden"], "true");
-    assert.equal(images[0].attrs.width, "1200");
-    assert.equal(images[0].attrs.height, "800");
-    assert.equal(images[0].attrs.loading, "lazy");
-    assert.equal(images[0].attrs.decoding, "async");
-    const sources = all(pictures[0], (node) => node.tag === "source");
-    assert.equal(sources.length, 1);
-    assert.equal(sources[0].attrs.type, "image/webp");
-    assert.deepEqual((sources[0].attrs.srcset ?? "").split(",").map((candidate) => candidate.replace(/\s+/g, " ").trim()),
-      [320, 640, 960].map((width) => `images/generated/paper-figure-pending-background-${width}.webp ${width}w`));
-    assert.equal((sources[0].attrs.sizes ?? "").replace(/\s+/g, " ").trim(),
-      "(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw");
-    assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0);
-  }
   const cards = withClass(pages.home, "publication-card");
   assert.equal(cards.length, 13);
   const allFigures = withClass(pages.home, "publication-card-figure");
   assert.equal(allFigures.length, 13);
   assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
-  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, pendingFigures.length);
-  assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 8);
+  assert.equal(withClass(pages.home, "publication-card-figure-pending").length, 0);
   assert.doesNotMatch(source.home, /paper-(?:vla|lora|qeschunker|pivot|runtime)-cover|paper-(?:pivot|runtime)-concept-v2|Concept illustration|待补充|示意配图|Figure coming soon/,
     "concept cover assets must not be requested by the active homepage");
   assert.equal(withClass(pages.home, "publication-card-no-image").length, 0,
-    "every article must retain a real figure or an explicitly labeled pending slot");
+    "every article must have a real figure");
   for (const card of cards) {
     const figures = withClass(card, "publication-card-figure");
     assert.equal(figures.length, 1, "each publication article must have exactly one figure");
     assert.equal(figures[0].tag, "figure");
-    if (hasClass(figures[0], "publication-card-figure-pending")) {
-      assert.equal(all(card, (node) => node.tag === "img").length, 1,
-        "each pending slot reuses the one decorative background asset");
-      continue;
-    }
     assert.equal(all(figures[0], (node) => node.tag === "picture").length, 1);
     const sources = all(figures[0], (node) => node.tag === "source");
     assert.equal(sources.length, 1);
