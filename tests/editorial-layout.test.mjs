@@ -201,25 +201,24 @@ test("News shows five recent updates and keeps ten historical entries in a close
   assert.equal(all(archive[0], (node) => node.tag === "summary").length, 1);
   assert.equal(all(archiveChildren[0], (node) => node.tag === "button" || node.tag === "a").length, 0,
     "the native summary must not contain competing nested controls");
-  assert.match(normalizedText(archiveChildren[0]), /Show all 15 updates/);
+  assert.match(normalizedText(archiveChildren[0]), /Show all 14 updates/);
   assert.match(normalizedText(archiveChildren[0]), /Show fewer/);
-  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 15 updates");
+  assert.equal(normalizedText(withClass(archiveChildren[0], "news-expand-label")[0]), "Show all 14 updates");
   assert.equal(normalizedText(withClass(archiveChildren[0], "news-collapse-label")[0]), "Show fewer");
   assert.equal(withClass(archiveChildren[0], "news-toggle-icon")[0].attrs["aria-hidden"], "true");
   const archivedList = withClass(archive[0], "news-list-archive");
   assert.equal(archivedList.length, 1);
   const previewItems = withClass(preview[0], "news-item");
   const archivedItems = withClass(archivedList[0], "news-item");
-  assert.equal(previewItems.length, 5);
+  assert.equal(previewItems.length, 4);
   assert.equal(archivedItems.length, 10);
-  assert.ok(preview[0].start < archive[0].start, "the latest five updates appear before the older archive");
+  assert.ok(preview[0].start < archive[0].start, "the latest four updates appear before the older archive");
   const items = withClass(news, "news-item");
   assert.deepEqual(items, [...previewItems, ...archivedItems], "splitting lists must not duplicate or reorder any update");
-  const expectedDates = ["2026-11", "2026-11", "2026-11-14", "2026-11-13", "2026-11-10", "2026-10-27", "2026-10-10", "2026-10-08", "2026-10-03", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"];
-  const expectedStates = ["Submitted", "Revised", "Accepted", "Accepted", "Accepted", "Preprint", "Preprint", "Preprint", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Preprint", "Career"];
+  const expectedDates = ["2026-11", "2026-11-14", "2026-11-13", "2026-11-10", "2026-10-27", "2026-10-10", "2026-10-08", "2026-10-03", "2026-09", "2026-08-21", "2026-08", "2026-08", "2026-06", "2026-02"];
+  const expectedStates = ["Submitted", "Accepted", "Accepted", "Accepted", "Preprint", "Preprint", "Preprint", "Submitted", "Updated", "Submitted", "Accepted", "Submitted", "Preprint", "Career"];
   const expectedText = [
-    "Submitted two full manuscripts for peer review this month and posted revisions.",
-    "Revised a manuscript and posted responses to reviewers.",
+    "Submitted two papers to CVPR 2027.",
     "CICL was accepted at ICONIP 2026. The chapter is at the proof stage for Springer CCIS 3202.",
     "SILICA was accepted to Findings of EACL 2027. The author PDF and project materials are available.",
     "Nominate-then-Adjudicate was accepted as a short paper at IEEE BigData 2026. The revised arXiv v3 is available.",
@@ -235,7 +234,6 @@ test("News shows five recent updates and keeps ten historical entries in a close
     "Joined TaoTian Group @ Alibaba as an AI Agent Researcher.",
   ];
   const expectedLinks = [
-    [],
     [],
     ["#paper-cicl", "https://link.springer.com/book/9789819281398"],
     ["#paper-silica", "https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf", "https://explcre.github.io/silica/"],
