@@ -7,8 +7,8 @@
   <meta name="description" content="Personal academic homepage of Xinyu Guan, an AI Agent Researcher at TaoTian Group @ Alibaba working on AutoResearch, post-training, and agentic reinforcement learning." />
   <meta name="xinyu-agent-api" content="https://xinyu-agent-api.798750933strikerg.workers.dev/api/chat" />
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.6.0/fonts/remixicon.css" rel="stylesheet" />
-  <link rel="stylesheet" href="phd-styles.css?v=20261119-publications-privacy-1" />
-  <link rel="stylesheet" href="editorial-styles.css?v=20261119-publications-privacy-1" />
+  <link rel="stylesheet" href="phd-styles.css?v=20261120-publications-chronological-1" />
+  <link rel="stylesheet" href="editorial-styles.css?v=20261120-publications-chronological-1" />
 </head>
 <body class="profile-page editorial-page">
   <dialog class="site-entry" id="site-entry" aria-labelledby="entry-name" aria-describedby="entry-role entry-company">
@@ -247,24 +247,80 @@
         <section class="content-card publications-card" id="papers" aria-labelledby="papers-title">
           <header class="card-heading">
             <h2 id="papers-title">Publications, Manuscripts &amp; Patents</h2>
-            <p class="publication-count">14 works</p>
+            <p class="publication-count">18 works</p>
           </header>
           <div class="publication-list">
-            <article class="publication-card publication-card-linked" id="paper-silica">
+            <article class="publication-card" id="paper-praxislab">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="PraxisLab: Visual AutoResearch">
+                <picture aria-hidden="true">
+                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                </picture>
+                <span class="publication-figure-pending-label">Visual AutoResearch</span>
+              </figure>
+              <div class="publication-body">
+                <h3>PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch</h3>
+                <p class="publication-authors"><strong>Xinyu Guan</strong>, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Submitted</p>
+                  <p class="publication-meta"><time datetime="2026-11-11">Nov 11, 2026</time></p>
+                </div>
+                <p class="publication-summary">Uses measured outcomes from past image restoration experiments to adapt code edits and select candidates for further testing.</p>
+              </div>
+            </article>
+
+            <article class="publication-card" id="paper-lietwist-gs">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="RateGS: Dynamic scene forecasting">
+                <picture aria-hidden="true">
+                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                </picture>
+                <span class="publication-figure-pending-label">Dynamic scene forecasting</span>
+              </figure>
+              <div class="publication-body">
+                <h3>RateGS: Learning Motion Rates for 4D Gaussian Forecasting</h3>
+                <p class="publication-authors">Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong>, Kexin Cao</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Submitted</p>
+                  <p class="publication-meta"><time datetime="2026-11-10">Nov 10, 2026</time></p>
+                </div>
+                <p class="publication-summary">Forecasts future 4D Gaussian poses by predicting instantaneous motion rates and integrating them over time.</p>
+              </div>
+            </article>
+
+            <article class="publication-card publication-card-linked" id="paper-nominate-adjudicate">
               <figure class="publication-card-figure">
                 <picture>
-                  <source type="image/webp" srcset="images/generated/paper-silica-identifiability-320.webp 320w, images/generated/paper-silica-identifiability-640.webp 640w, images/generated/paper-silica-identifiability-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-silica-identifiability.png" width="1200" height="525" alt="SILICA shared-state counterfactual identifiability evaluation" loading="lazy" decoding="async" />
+                  <source type="image/webp" srcset="images/generated/paper-nominate-adjudicate-overview-320.webp 320w, images/generated/paper-nominate-adjudicate-overview-640.webp 640w, images/generated/paper-nominate-adjudicate-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-nominate-adjudicate-overview.png" width="2048" height="432" alt="Nominate-then-Adjudicate Figure 1: fixed-portfolio EPM nomination, compressed instance structure, and LLM adjudication with offline textual skill memory" loading="lazy" decoding="async" />
                 </picture>
               </figure>
               <div class="publication-body">
-                <h3><a href="https://explcre.github.io/silica/" target="_blank" rel="noopener">SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</a></h3>
-                <p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan</strong></p>
+                <h3><a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</a></h3>
+                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, Kai Wei, Yuming Deng</p>
                 <div class="publication-metadata">
                   <p class="status-label">Accepted</p>
-                  <p class="publication-meta">EACL 2027 · Findings · Accepted Nov 2026</p>
+                  <p class="publication-meta">IEEE BigData 2026 · Short Paper · arXiv:2610.29391v3 · First preprint <time datetime="2026-10-21">Oct 21, 2026</time></p>
                 </div>
-                <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions. <a class="publication-inline-link" href="https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/explcre/silica" target="_blank" rel="noopener">Code</a> · <a class="publication-inline-link" href="https://huggingface.co/datasets/ryan1025-x/silica" target="_blank" rel="noopener">Dataset</a></p>
+                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.29391" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/cyberaz/nominate-then-adjudicate" target="_blank" rel="noopener">Code</a></p>
+              </div>
+            </article>
+
+            <article class="publication-card publication-card-linked" id="paper-timbre">
+              <figure class="publication-card-figure">
+                <picture>
+                  <source type="image/webp" srcset="images/generated/paper-timbre-overview-320.webp 320w, images/generated/paper-timbre-overview-640.webp 640w, images/generated/paper-timbre-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-timbre-overview.png" width="2200" height="929" alt="TIMBRE source-aware evidence, historical response memory, and reliability-guided fusion" loading="lazy" decoding="async" />
+                </picture>
+              </figure>
+              <div class="publication-body">
+                <h3><a href="https://arxiv.org/abs/2610.04795" target="_blank" rel="noopener">TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile</a></h3>
+                <p class="publication-authors"><strong>Xinyu Guan</strong>, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, Qianyang Zhao</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Submitted</p>
+                  <p class="publication-meta">Submitted to ICASSP 2027 · arXiv:2610.04795 · First preprint <time datetime="2026-10-03">Oct 3, 2026</time></p>
+                </div>
+                <p class="publication-summary">Combines source-aware evidence organization, state-conditioned historical response transfer, and reliability-guided fusion for event-informed time-series forecasting. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.04795" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.04795" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/stephen-guan-researcher/TIMBRE" target="_blank" rel="noopener">Code</a></p>
               </div>
             </article>
 
@@ -281,27 +337,28 @@
                 <p class="publication-authors">Yu Sun, Zuodong Xiang, Yike Zhang, <strong>Xinyu Guan</strong>, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, Hailu Xu</p>
                 <div class="publication-metadata">
                   <p class="status-label">Preprint</p>
-                  <p class="publication-meta">HEP Preprint · <time datetime="2026-10-10">Oct 10, 2026</time></p>
+                  <p class="publication-meta">HEP Preprint · Oct 10, 2026 · First submitted <time datetime="2026-10-01">Oct 1, 2026</time></p>
                 </div>
                 <p class="publication-summary">Reviews diagnostics, infrastructure, and the runtime stack of foundation-model-based multi-agent systems. <a class="publication-inline-link" href="https://preprint.hep.com.cn/10.3868/HEPPreprint20261010.19328.V1" target="_blank" rel="noopener">HEP Preprint</a> · <a class="publication-inline-link" href="https://preprint.hep.com.cn/pdf/10.3868/HEPPreprint20261010.19328.V1" target="_blank" rel="noopener">PDF</a></p>
               </div>
             </article>
 
-            <article class="publication-card publication-card-linked" id="paper-timbre">
-              <figure class="publication-card-figure">
-                <picture>
-                  <source type="image/webp" srcset="images/generated/paper-timbre-overview-320.webp 320w, images/generated/paper-timbre-overview-640.webp 640w, images/generated/paper-timbre-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-timbre-overview.png" width="2200" height="929" alt="TIMBRE source-aware evidence, historical response memory, and reliability-guided fusion" loading="lazy" decoding="async" />
+            <article class="publication-card" id="paper-vla-early-exit">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="VLA Early Exit: Adaptive inference">
+                <picture aria-hidden="true">
+                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
                 </picture>
+                <span class="publication-figure-pending-label">Adaptive inference</span>
               </figure>
               <div class="publication-body">
-                <h3><a href="https://arxiv.org/abs/2610.04795" target="_blank" rel="noopener">TIMBRE: Teaching Time Series Forecasters to Read, Remember, and Reconcile</a></h3>
-                <p class="publication-authors"><strong>Xinyu Guan</strong>, Zhirong Zhang, Hongyuan Liu, Pengcheng Xu, Yu Sun, Chen Song, Qianyang Zhao</p>
+                <h3>How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit</h3>
+                <p class="publication-authors">Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, <strong>Xinyu Guan</strong></p>
                 <div class="publication-metadata">
                   <p class="status-label">Submitted</p>
-                  <p class="publication-meta">Submitted to ICASSP 2027 · arXiv:2610.04795</p>
+                  <p class="publication-meta"><time datetime="2026-09-17">Sep 17, 2026</time></p>
                 </div>
-                <p class="publication-summary">Combines source-aware evidence organization, state-conditioned historical response transfer, and reliability-guided fusion for event-informed time-series forecasting. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.04795" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.04795" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/stephen-guan-researcher/TIMBRE" target="_blank" rel="noopener">Code</a></p>
+                <p class="publication-summary">Learns when a frozen vision-language-action model should exit early or keep computing, using budget-constrained RL while the simulated environment continues to evolve.</p>
               </div>
             </article>
 
@@ -317,7 +374,7 @@
                 <p class="publication-authors">Yu Sun, Junwei Zhou, Zuodong Xiang, Yike Zhang, Pengcheng Xu, <strong>Xinyu Guan</strong>, Ruoyun Ma, Hailu Xu</p>
                 <div class="publication-metadata">
                   <p class="status-label">Preprint</p>
-                  <p class="publication-meta">arXiv:2610.12744 · Oct 8, 2026</p>
+                  <p class="publication-meta">arXiv:2610.12744 · Oct 8, 2026 · First submitted <time datetime="2026-09-15">Sep 15, 2026</time></p>
                 </div>
                 <p class="publication-summary">Isolates a parameter-pool confound in LoRA masking: density-matched random B-matrix masks reduce loss-based forgetting across seven seeds, while accuracy evidence remains inconclusive. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.12744" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.12744" target="_blank" rel="noopener">PDF</a></p>
               </div>
@@ -335,27 +392,46 @@
                 <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, kai wei, Yuming Deng</p>
                 <div class="publication-metadata">
                   <p class="status-label">Preprint</p>
-                  <p class="publication-meta">arXiv:2610.36557 · Oct 27, 2026</p>
+                  <p class="publication-meta">arXiv:2610.36557 · Oct 27, 2026 · First submitted <time datetime="2026-09-14">Sep 14, 2026</time></p>
                 </div>
                 <p class="publication-summary">Builds static RAG chunk indices from question–evidence supervision, unifying overlapping and non-overlapping chunking as budget-aware utility maximization. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.36557" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.36557" target="_blank" rel="noopener">PDF</a></p>
               </div>
             </article>
 
-            <article class="publication-card publication-card-linked" id="paper-nominate-adjudicate">
+            <article class="publication-card publication-card-linked" id="paper-silica">
               <figure class="publication-card-figure">
                 <picture>
-                  <source type="image/webp" srcset="images/generated/paper-nominate-adjudicate-overview-320.webp 320w, images/generated/paper-nominate-adjudicate-overview-640.webp 640w, images/generated/paper-nominate-adjudicate-overview-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
-                  <img src="images/paper-nominate-adjudicate-overview.png" width="2048" height="432" alt="Nominate-then-Adjudicate Figure 1: fixed-portfolio EPM nomination, compressed instance structure, and LLM adjudication with offline textual skill memory" loading="lazy" decoding="async" />
+                  <source type="image/webp" srcset="images/generated/paper-silica-identifiability-320.webp 320w, images/generated/paper-silica-identifiability-640.webp 640w, images/generated/paper-silica-identifiability-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-silica-identifiability.png" width="1200" height="525" alt="SILICA shared-state counterfactual identifiability evaluation" loading="lazy" decoding="async" />
                 </picture>
               </figure>
               <div class="publication-body">
-                <h3><a href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">Nominate-then-Adjudicate: LLM-Assisted One-Pass and Per-Instance MIP Solver Tuning</a></h3>
-                <p class="publication-authors">Yifan Zhao, Qianyang Zhao, <strong>Xinyu Guan</strong>, Kai Wei, Yuming Deng</p>
+                <h3><a href="https://explcre.github.io/silica/" target="_blank" rel="noopener">SILICA: Certified Counterfactual Evaluation of Identifiability in Unseen-Language Induction</a></h3>
+                <p class="publication-authors">Pengcheng Xu, <strong>Xinyu Guan</strong></p>
                 <div class="publication-metadata">
                   <p class="status-label">Accepted</p>
-                  <p class="publication-meta">IEEE BigData 2026 · Short Paper · arXiv:2610.29391v3</p>
+                  <p class="publication-meta">EACL 2027 · Findings · Accepted Nov 2026 · First submitted <time datetime="2026-08-04">Aug 4, 2026</time></p>
                 </div>
-                <p class="publication-summary">Combines fixed-portfolio nomination with structure-aware LLM adjudication for per-instance MIP solver tuning, using one model call and zero solver calls at inference. <a class="publication-inline-link" href="https://arxiv.org/abs/2610.29391" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2610.29391" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/cyberaz/nominate-then-adjudicate" target="_blank" rel="noopener">Code</a></p>
+                <p class="publication-summary">Evaluates whether an unseen-language task is identifiable by constructing same-state counterfactual queries with provably different correct actions. <a class="publication-inline-link" href="https://pengcheng-xu.com/files/SILICA_EACL2027_Findings.pdf" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/explcre/silica" target="_blank" rel="noopener">Code</a> · <a class="publication-inline-link" href="https://huggingface.co/datasets/ryan1025-x/silica" target="_blank" rel="noopener">Dataset</a></p>
+              </div>
+            </article>
+
+            <article class="publication-card" id="paper-advantage-calibration">
+              <figure class="publication-card-figure publication-card-figure-pending" data-figure-status="pending" aria-label="Advantage Scale Calibration: Reward calibration">
+                <picture aria-hidden="true">
+                  <source type="image/webp" srcset="images/generated/paper-figure-pending-background-320.webp 320w, images/generated/paper-figure-pending-background-640.webp 640w, images/generated/paper-figure-pending-background-960.webp 960w" sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 1150px) 220px, 40vw" />
+                  <img src="images/paper-figure-pending-background.png" width="1200" height="800" alt="" aria-hidden="true" loading="lazy" decoding="async" />
+                </picture>
+                <span class="publication-figure-pending-label">Reward calibration</span>
+              </figure>
+              <div class="publication-body">
+                <h3>Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery</h3>
+                <p class="publication-authors">Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, <strong>Xinyu Guan</strong>, Huiming Yang</p>
+                <div class="publication-metadata">
+                  <p class="status-label">Submitted</p>
+                  <p class="publication-meta"><time datetime="2026-07">Jul 2026</time></p>
+                </div>
+                <p class="publication-summary">Diagnoses calibration imbalance under low-variance rewards and introduces bounded recovery for credible small reward gaps.</p>
               </div>
             </article>
 
@@ -371,7 +447,7 @@
                 <p class="publication-authors"><strong>Xinyu Guan</strong>, Qianyang Zhao, Yuming Deng</p>
                 <div class="publication-metadata">
                   <p class="status-label">Accepted</p>
-                  <p class="publication-meta">ICONIP 2026 · Springer CCIS 3202 · Proof stage</p>
+                  <p class="publication-meta">ICONIP 2026 · Springer CCIS 3202 · Proof stage · First preprint <time datetime="2026-06-06">Jun 6, 2026</time></p>
                 </div>
                 <p class="publication-summary">Introduces CICL, a decision-aware context layer that selects evidence by its expected effect on an agent's next action. <a class="publication-inline-link" href="https://arxiv.org/abs/2606.08151" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2606.08151" target="_blank" rel="noopener">PDF</a> · <a class="publication-inline-link" href="https://github.com/stephen-guan-researcher/CICL" target="_blank" rel="noopener">Code</a> · <a class="publication-inline-link" href="https://link.springer.com/book/9789819281398" target="_blank" rel="noopener">Springer volume</a></p>
               </div>
@@ -389,7 +465,7 @@
                 <p class="publication-authors"><strong>Xinyu Guan</strong>, Shaohua Zhang</p>
                 <div class="publication-metadata">
                   <p class="status-label">Preprint</p>
-                  <p class="publication-meta">arXiv:2512.16927 [cs.DS] · Nov 2025</p>
+                  <p class="publication-meta">arXiv:2512.16927 [cs.DS] · First preprint <time datetime="2025-11-29">Nov 29, 2025</time></p>
                 </div>
                 <p class="publication-summary">Presents a pattern-matching approach based on Ukkonen's construction for efficient text search. <a class="publication-inline-link" href="https://arxiv.org/abs/2512.16927" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2512.16927" target="_blank" rel="noopener">PDF</a></p>
               </div>
@@ -407,7 +483,7 @@
                 <p class="publication-authors">Yuening Zhou, Yulin Wang, Qian Cui, <strong>Xinyu Guan</strong>, Francisco Cisternas</p>
                 <div class="publication-metadata">
                   <p class="status-label">Published</p>
-                  <p class="publication-meta">ICASSP 2025 · Apr 2025</p>
+                  <p class="publication-meta">ICASSP 2025 · Apr 2025 · First preprint <time datetime="2024-09-18">Sep 18, 2024</time></p>
                 </div>
                 <p class="publication-summary">Introduces a basket-enhanced heterogeneous hypergraph for price-sensitive next-basket recommendation. <a class="publication-inline-link" href="https://arxiv.org/abs/2409.11695" target="_blank" rel="noopener">arXiv</a> · <a class="publication-inline-link" href="https://arxiv.org/pdf/2409.11695" target="_blank" rel="noopener">PDF</a></p>
               </div>
@@ -595,7 +671,7 @@
   </dialog>
 
   <button class="back-to-top" type="button" data-back-to-top aria-label="Back to top" title="Back to top" hidden><span aria-hidden="true">↑</span></button>
-  <script type="module" src="phd-main.js?v=20261119-publications-privacy-1"></script>
-  <script type="module" src="editorial-interactions.js?v=20261119-publications-privacy-1"></script>
+  <script type="module" src="phd-main.js?v=20261120-publications-chronological-1"></script>
+  <script type="module" src="editorial-interactions.js?v=20261120-publications-chronological-1"></script>
 </body>
 </html>

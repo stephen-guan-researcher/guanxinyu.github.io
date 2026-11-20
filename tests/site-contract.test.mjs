@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261119-publications-privacy-1";
+const releaseToken = "20261120-publications-chronological-1";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -190,7 +190,7 @@ test("verified public metadata and profile wording stay synchronized", () => {
   assert.ok(textSearch);
   assert.match(textSearch, /class="status-label">Preprint/);
   assert.match(textSearch, /<strong>Xinyu Guan<\/strong>, Shaohua Zhang/);
-  assert.match(textSearch, /arXiv:2512\.16927 \[cs\.DS\] · Nov 2025/);
+  assert.match(textSearch, /arXiv:2512\.16927 \[cs\.DS\] · First preprint <time datetime="2025-11-29">Nov 29, 2025<\/time>/);
   assert.match(textSearch, /href="https:\/\/arxiv\.org\/abs\/2512\.16927"/);
 
   const hypergraph = cardWithText(
@@ -303,11 +303,11 @@ test("publication author lines use names only and preserve SILICA order", () => 
   assert.doesNotMatch(publications, /(?:First|Second) Author/);
 });
 
-test("every verified paper title remains keyboard-accessible without swallowing secondary links", () => {
+test("public paper links stay keyboard accessible alongside submitted manuscript titles", () => {
   const cards = cardsWithClass("publication-card");
   const linkedCards = cards.filter((card) => /<h3><a\b[^>]*href=/.test(card));
 
-  assert.equal(linkedCards.length, cards.length, "every public paper should have a verified destination");
+  assert.equal(linkedCards.length, 9, "all titles with verified public destinations should link to them");
   for (const card of linkedCards) {
     assert.match(card, /class="[^\"]*\bpublication-card-linked\b[^\"]*"/);
     assert.match(card, /target="_blank"/);
@@ -675,7 +675,7 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and nine independent publication cards", () => {
+test("homepage locks the current research program, career, and thirteen independent publication cards", () => {
   const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "Agent Research Survey · Preprint"];
   const research = contentSection("research");
   const researchCards = cardsWithClass("research-core-item");
@@ -690,7 +690,7 @@ test("homepage locks the current research program, career, and nine independent 
   }
 
   assert.equal(cardsWithClass("experience-item").length, 5);
-  assert.equal(cardsWithClass("publication-card").length, 9);
+  assert.equal(cardsWithClass("publication-card").length, 13);
 });
 
 test("verified career levels stay attached to their corresponding appointments", () => {

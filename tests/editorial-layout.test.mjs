@@ -126,6 +126,25 @@ const knownPapers = [
   ],
 ];
 
+const submittedPapers = [
+  [
+    "PraxisLab: Learning When and How to Transfer Experience for Visual AutoResearch",
+    "Xinyu Guan, Pengcheng Xu, Yu Sun, Dingding, Qianyang Zhao, Kunjin Chen, Yuming Deng",
+  ],
+  [
+    "RateGS: Learning Motion Rates for 4D Gaussian Forecasting",
+    "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan, Kexin Cao",
+  ],
+  [
+    "How Deep Should a VLA Think When Thinking Costs Time? Budget-Constrained RL for Early Exit",
+    "Pengcheng Xu, Qinting Li, Weizhi Du, Yu Sun, Xinyu Guan",
+  ],
+  [
+    "Advantage Scale Calibration Imbalance in Group-Relative Optimization under Low-Variance Rewards: Diagnosis and Bounded Recovery",
+    "Dingding, Runhao Liu, Yongkang Zhang, Zijian Zeng, YUHAO LIAO, Xinyu Guan, Huiming Yang",
+  ],
+];
+
 test("both pages use the shared editorial skin and retain semantic landmarks", () => {
   for (const [name, page] of Object.entries(pages)) {
     const body = all(page, (node) => node.tag === "body")[0];
@@ -306,15 +325,16 @@ test("four compact career rows preserve all six original scopes and complete exp
   assert.equal(withClass(byId(pages.home, "education"), "education-item").length, 2);
 });
 
-test("the main list uses full cards for all nine papers and manuscripts", () => {
+test("the main list uses full cards for all thirteen papers and manuscripts", () => {
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => {
     const headings = all(card, (node) => node.tag === "h3");
     assert.equal(headings.length, 1, "each paper row must have one complete title");
     return normalizedText(headings[0]);
   });
-  assert.deepEqual(titles.toSorted(), [...knownPapers.map(([title]) => title), surveyTitle].toSorted());
-  assert.equal(cards.length, 9);
+  const expectedTitles = [...knownPapers, ...submittedPapers].map(([title]) => title);
+  assert.deepEqual(titles.toSorted(), [...expectedTitles, surveyTitle].toSorted());
+  assert.equal(cards.length, 13);
   assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
   for (const card of cards) {
@@ -322,12 +342,12 @@ test("the main list uses full cards for all nine papers and manuscripts", () => 
     const bodies = withClass(card, "publication-body");
     assert.equal(bodies.length, 1, "each row must group its full text in .publication-body");
     assert.equal(all(bodies[0], (node) => node.tag === "h3").length, 1);
-    assert.ok(normalizedText(withClass(bodies[0], "publication-meta")[0]).length > 10,
-      "each row must expose venue/status metadata");
+    assert.ok(normalizedText(withClass(bodies[0], "publication-meta")[0]).length > 0,
+      "each row must expose bibliographic or timeline metadata");
     assert.ok(normalizedText(withClass(bodies[0], "publication-summary")[0]).length >= 50,
       "each row must retain a substantive description, not just a title");
   }
-  for (const [title, authors] of knownPapers) {
+  for (const [title, authors] of [...knownPapers, ...submittedPapers]) {
     assert.equal(normalizedText(withClass(publication(title), "publication-authors")[0]), authors,
       `${title} must preserve its verified author order`);
   }
@@ -337,18 +357,31 @@ test("the work list follows submission time with the current public records", ()
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
   assert.deepEqual(titles, [
-    knownPapers[3][0],
-    surveyTitle,
+    submittedPapers[0][0],
+    submittedPapers[1][0],
+    knownPapers[7][0],
     knownPapers[0][0],
+    surveyTitle,
+    submittedPapers[2][0],
     knownPapers[1][0],
     knownPapers[2][0],
-    knownPapers[7][0],
+    knownPapers[3][0],
+    submittedPapers[3][0],
     knownPapers[4][0],
     knownPapers[5][0],
     knownPapers[6][0],
   ]);
-  const dates = cards.flatMap((card) => all(card, (node) => node.tag === "time").map((node) => node.attrs.datetime));
+  const dates = cards.map((card) => {
+    const datesInCard = all(card, (node) => node.tag === "time");
+    assert.equal(datesInCard.length, 1, "each card needs one timeline date");
+    return datesInCard[0].attrs.datetime;
+  });
   assert.deepEqual(dates, dates.toSorted().reverse());
+  for (const [title] of submittedPapers) {
+    const card = publication(title);
+    assert.equal(normalizedText(withClass(card, "status-label")[0]), "Submitted");
+    assert.equal(all(card, (node) => node.tag === "a").length, 0);
+  }
 });
 
 test("the homepage displays a single total for papers, manuscripts, and all patent records", () => {
@@ -432,6 +465,10 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
       `${title} must retain its original caption-free figure`);
   }
   const pendingFigures = [
+    [submittedPapers[0][0], "PraxisLab: Visual AutoResearch", "Visual AutoResearch"],
+    [submittedPapers[1][0], "RateGS: Dynamic scene forecasting", "Dynamic scene forecasting"],
+    [submittedPapers[2][0], "VLA Early Exit: Adaptive inference", "Adaptive inference"],
+    [submittedPapers[3][0], "Advantage Scale Calibration: Reward calibration", "Reward calibration"],
     [surveyTitle, "Runtime Stack survey: Multi-agent infrastructure", "Multi-agent infrastructure"],
   ];
   for (const [title, accessibleLabel, visibleLabel] of pendingFigures) {
@@ -473,9 +510,9 @@ test("publication cards use real figures or labeled decorative backgrounds", () 
     assert.equal(all(figure, (node) => node.tag === "figcaption").length, 0);
   }
   const cards = withClass(pages.home, "publication-card");
-  assert.equal(cards.length, 9);
+  assert.equal(cards.length, 13);
   const allFigures = withClass(pages.home, "publication-card-figure");
-  assert.equal(allFigures.length, 9);
+  assert.equal(allFigures.length, 13);
   assert.equal(withClass(pages.home, "publication-card-figure-illustration").length, 0);
   assert.equal(withClass(pages.home, "publication-card-figure-pending").length, pendingFigures.length);
   assert.equal(allFigures.filter((figure) => !hasClass(figure, "publication-card-figure-pending")).length, 8);
@@ -526,7 +563,7 @@ test("TIMBRE stays public and the HEP survey has its preprint label and verified
   assert.ok(all(timbre, (node) => node.tag === "a" && node.attrs.href === "https://arxiv.org/abs/2610.04795").length > 0);
   assert.doesNotMatch(normalizedText(timbre), /(?:paper )?not yet public/i);
   const survey = publication(surveyTitle);
-  assert.doesNotMatch(normalizedText(survey), /Frontiers (?:in|of) Computer Science|\b(?:Submitted|Accepted|Published)\b|currently under review|FCS-262084/i);
+  assert.doesNotMatch(normalizedText(survey), /Frontiers (?:in|of) Computer Science|\b(?:submitted to|accepted (?:to|at)|published (?:in|at))\b|currently under review|FCS-262084/i);
   assert.equal(normalizedText(withClass(survey, "publication-authors")[0]),
     "Yu Sun, Zuodong Xiang, Yike Zhang, Xinyu Guan, Pengcheng Xu, Yizirui Fang, Zhenhua Huang, Hailu Xu");
   assert.equal(normalizedText(withClass(survey, "status-label")[0]), "Preprint");
@@ -571,7 +608,7 @@ test("QESChunker adds its arXiv preprint without changing authors, overview, man
   assert.match(normalizedText(withClass(card, "publication-meta")[0]), /arXiv:2610\.36557 · Oct 27, 2026/);
   assert.match(normalizedText(card), /Builds static RAG chunk indices from question–evidence supervision/);
   assert.ok(all(card, (node) => node.tag === "img" && node.attrs.src === "images/paper-qeschunker-overview.png").length === 1);
-  assert.equal(withClass(pages.home, "publication-card").length, 9);
+  assert.equal(withClass(pages.home, "publication-card").length, 13);
   const bigdata = publication(knownPapers[7][0]);
   assert.equal(normalizedText(withClass(bigdata, "status-label")[0]), "Accepted");
   assert.match(normalizedText(withClass(bigdata, "publication-meta")[0]), /IEEE BigData 2026 · Short Paper · arXiv:2610\.29391v3/);

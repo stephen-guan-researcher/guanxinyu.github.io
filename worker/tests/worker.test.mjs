@@ -302,7 +302,13 @@ test("returns a Workers AI answer for a valid question", async () => {
   assert.doesNotMatch(systemMessage, /PIVOT|Choosing When to Refine Prompts/);
   assert.doesNotMatch(systemMessage, /When KL Regularization|ZCPO|1RCulySJU5/,
     "unresolved KL authorship must not be included in the Agent's verified facts");
-  assert.match(systemMessage, /The homepage lists 14 works\b/);
+  assert.match(systemMessage, /The homepage lists 18 works\b/);
+  assert.match(systemMessage, /This includes 13 papers and manuscripts/);
+  for (const prefix of ["PraxisLab:", "RateGS:", "How Deep Should a VLA Think", "Advantage Scale Calibration"]) {
+    const manuscript = systemMessage.split("\n").find((line) => line.startsWith(`"${prefix}`)) ?? "";
+    assert.match(manuscript, /is listed as Submitted/);
+    assert.doesNotMatch(manuscript, /openreview|arxiv|CVPR|ICLR|AAAI/i);
+  }
   assert.match(systemMessage, /do not infer ownership from a similar title or method name/);
   assert.match(systemMessage, /November 2023 to February 2024/);
   assert.doesNotMatch(systemMessage, /University of Oxford\) on efficient text search algorithms/);
@@ -392,7 +398,7 @@ test("includes verified authors and the current public status of the HEP survey 
   assert.ok(research.includes(`The Agent Research Survey is "${title}"`));
   assert.match(research, /available as an October 2026 HEP preprint/);
   assert.doesNotMatch(research, /An Agent Research Survey is also in progress; details will be shared when public/);
-  assert.match(context, /The homepage lists 14 works\b/);
+  assert.match(context, /The homepage lists 18 works\b/);
 });
 
 test("the QESChunker arXiv record keeps its public authors, v1 date, and links", async () => {
@@ -496,7 +502,7 @@ test("grounds English and Chinese BigData aliases in short-paper acceptance and 
     assert.match(routedQuestion, /Answer in the same language as the original question/);
     assert.match(routedQuestion, /中文问题请务必使用中文回答/);
     assert.match(routedQuestion, /Use the verified paper and code URLs\. Do not invent experimental results or proceedings metadata/);
-    assert.match(context, /The homepage lists 14 works\b/);
+    assert.match(context, /The homepage lists 18 works\b/);
   }
 });
 
