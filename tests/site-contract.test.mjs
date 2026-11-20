@@ -80,13 +80,15 @@ test("both pages expose the five approved destinations in order", () => {
 
 test("homepage keeps recent news after its introduction and career before publications", () => {
   const sectionIds = [...index.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(sectionIds, ["home", "updates", "experience", "papers", "research", "about", "research-experience", "education"]);
+  assert.deepEqual(sectionIds, ["home", "updates", "experience", "papers", "academic-service", "research", "about", "research-experience", "education"]);
   for (const [id, title] of [
     ["experience", "Work experience"], ["papers", "Publications, Manuscripts &amp; Patents"],
-    ["research", "Current research"], ["research-experience", "Research experience"], ["education", "Education"],
+    ["academic-service", "Academic Service"], ["research", "Current research"],
+    ["research-experience", "Research experience"], ["education", "Education"],
   ]) {
     assert.match(contentSection(id), new RegExp(`<h2[^>]*>${title}<\\/h2>`));
   }
+  assert.match(contentSection("academic-service"), /<p>Conference Reviewer · IEEE ICASSP 2027<\/p>/);
   assert.doesNotMatch(index, /class="section-index"/);
 });
 
