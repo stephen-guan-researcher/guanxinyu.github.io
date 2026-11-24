@@ -1,3 +1,23 @@
+/* Subset of Remix Icon 4.6.0, copyright RemixIcon.com. See fonts/remixicon-LICENSE.txt. */
+@font-face {
+  font-family: "Site Icons";
+  src: url("fonts/remixicon-4.6.0-subset.woff") format("woff");
+  font-display: swap;
+}
+
+[class^="ri-"], [class*=" ri-"] {
+  font-family: "Site Icons";
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.ri-arrow-down-s-line::before { content: "\ea4e"; }
+.ri-arrow-right-line::before { content: "\ea6c"; }
+.ri-arrow-up-s-line::before { content: "\ea78"; }
+.ri-lock-2-line::before { content: "\eecc"; }
+.ri-sparkling-2-line::before { content: "\f36b"; }
+
 /* Career-first editorial layout. The existing gallery and Agent stay intact. */
 .editorial-page {
   --editorial-rail: 200px;

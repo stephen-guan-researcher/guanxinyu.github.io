@@ -44,6 +44,12 @@ class ResponsiveImageAssetsTest(unittest.TestCase):
             self.assert_metadata_free(variant)
             with Image.open(variant) as image:
                 self.assertEqual(image.size, (width, width))
+        for width, max_bytes in ((208, 8_000), (256, 11_000), (352, 17_000), (528, 28_000)):
+            variant = ROOT / "images" / "generated" / f"{AVATAR_STEM}-{width}.avif"
+            self.assert_image(variant, "AVIF", width, max_bytes)
+            self.assert_metadata_free(variant)
+            with Image.open(variant) as image:
+                self.assertEqual(image.size, (width, width))
         fallback = ROOT / "images" / "generated" / f"{AVATAR_STEM}-528.jpg"
         self.assert_image(fallback, "JPEG", 528, 50_000)
         self.assert_metadata_free(fallback)
@@ -94,9 +100,28 @@ class ResponsiveImageAssetsTest(unittest.TestCase):
             with Image.open(source) as image:
                 self.assertEqual((int(attributes["width"]), int(attributes["height"])), image.size, source)
                 expected = sorted({min(width, image.width) for width in (320, 640, 960, 1280, image.width)})
-            declared = re.search(r'srcset="([^"]+)"', picture).group(1)
-            candidates = [candidate.strip() for candidate in declared.split(",")]
+            sources = re.findall(r'<source type="([^"]+)" srcset="([^"]+)"', picture)
+            self.assertEqual(sources[-1][0], "image/webp")
+            candidates = sources[-1][1].split(", ")
             self.assertEqual(candidates, [f"images/life/generated/{source.stem}-{width}.webp {width}w" for width in expected])
+
+            priority_widths = {
+                "sunny-patio": [320, 640, 800, 960, 1280, 1920],
+                "steaming-pool-boardwalk": [320, 400, 640, 800, 960, 1278],
+                "las-vegas-sign": [320, 400, 640, 800, 960, 1279],
+            }
+            if source.stem in priority_widths:
+                self.assertEqual([mime for mime, _ in sources], ["image/avif", "image/webp"])
+                widths = priority_widths[source.stem]
+                candidates = sources[0][1].split(", ")
+                self.assertEqual(candidates, [f"images/life/generated/{source.stem}-{width}.avif {width}w" for width in widths])
+                for width in widths:
+                    variant = ROOT / "images" / "life" / "generated" / f"{source.stem}-{width}.avif"
+                    self.assert_image(variant, "AVIF", width, 200_000)
+                    self.assert_metadata_free(variant)
+            else:
+                self.assertEqual(len(sources), 1)
+
 
 
 if __name__ == "__main__":

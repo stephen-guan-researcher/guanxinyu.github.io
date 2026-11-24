@@ -102,7 +102,7 @@ test("Life Photo JPEG fallbacks expose no private metadata blocks", () => {
 
 const index = readFileSync(asset("index.html"), "utf8");
 const life = readFileSync(asset("life.html"), "utf8");
-const releaseToken = "20261120-research-overview-4";
+const releaseToken = "20261124-photo-speed-1";
 
 test("homepage uses the prioritized responsive portrait while Life keeps gallery-only images", () => {
   const portraits = tags(index, "img").filter((tag) => attribute(tag, "src") === `images/generated/${avatarStem}-528.jpg`);
@@ -123,6 +123,26 @@ test("homepage uses the prioritized responsive portrait while Life keeps gallery
     "the homepage must not fetch the retired portrait variants");
   assert.doesNotMatch(life, /images\/generated\/avatar-/);
   assert.equal(tags(life, "img").length, 33, "Life must not fetch an additional profile portrait");
+});
+
+test("critical photos preload the same AVIF candidate that their picture selects", () => {
+  for (const [page, path, widths] of [
+    [index, `images/generated/${avatarStem}`, [208, 256, 352, 528]],
+    [life, "images/life/generated/sunny-patio", [320, 640, 800, 960, 1280, 1920]],
+  ]) {
+    const picture = page.match(/<picture>[\s\S]*?<\/picture>/)?.[0];
+    const primary = tags(picture, "source")[0];
+    assert.equal(attribute(primary, "type"), "image/avif");
+    assert.deepEqual(srcsetCandidates(primary), widths.map((width) => `${path}-${width}.avif ${width}w`));
+    const preloads = tags(page, "link").filter((tag) => attribute(tag, "as") === "image");
+    assert.equal(preloads.length, 1);
+    const [preload] = preloads;
+    assert.equal(attribute(preload, "rel"), "preload");
+    assert.equal(attribute(preload, "type"), "image/avif");
+    assert.equal(attribute(preload, "fetchpriority"), "high");
+    assert.equal(attribute(preload, "imagesrcset"), attribute(primary, "srcset"));
+    assert.equal(attribute(preload, "imagesizes"), attribute(primary, "sizes"));
+  }
 });
 
 test("paper figures are responsive and lazy", () => {
@@ -225,6 +245,7 @@ test("Life Photo sizes match every final mosaic slot without crossing image tier
 test("both pages use the release cache token for changed CSS and JavaScript", () => {
   for (const page of [index, life]) {
     const stylesheets = tags(page, "link").filter((tag) => attribute(tag, "rel") === "stylesheet");
+    assert.equal(stylesheets.length, 2, "initial rendering uses only local stylesheets");
     const siteStylesheets = stylesheets.filter((tag) => /^(?:phd|editorial)-styles\.css(?:\?|$)/.test(attribute(tag, "href") ?? ""));
     assert.deepEqual(siteStylesheets.map((tag) => attribute(tag, "href")), [
       `phd-styles.css?v=${releaseToken}`,
