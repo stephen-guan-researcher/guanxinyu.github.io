@@ -126,7 +126,8 @@ const knownPapers = [
   ],
 ];
 
-const anonymousSubmission = "Submitted anonymously to a conference";
+const anonymousSubmissions = ["CVPR 2027", "CVPR 2027", "ICLR 2027", "AAAI 2027"]
+  .map((venue) => "Submitted anonymously to " + venue);
 
 test("both pages use the shared editorial skin and retain semantic landmarks", () => {
   for (const [name, page] of Object.entries(pages)) {
@@ -157,9 +158,10 @@ test("homepage opens with a real portrait and bilingual identity, then news and 
   const leads = withClass(copy, "hero-lead");
   assert.equal(leads.length, 1, "hero must contain one concise first-person introduction");
   const introduction = normalizedText(leads[0]);
-  assert.match(introduction, /^I am an AI Agent Researcher at TaoTian Group @ Alibaba/);
-  assert.match(introduction, /general-purpose AutoResearch systems and multimodal quality-inspection agents for Xianyu/);
-  assert.match(introduction, /AutoResearch, post-training, and agentic reinforcement learning/);
+  assert.match(introduction, /^Thanks for visiting my homepage\. It’s nice to meet you! I’m an AI Agent Researcher at Alibaba’s TaoTian Group\./);
+  assert.match(introduction, /AutoResearch, Post-Training, and Agentic Reinforcement Learning/);
+  assert.match(introduction, /foundation model research at Tencent and Baidu/);
+  assert.equal(all(leads[0], (node) => node.tag === "p").length, 2);
   assert.match(introduction, /welcome academic collaboration/);
   assert.ok(introduction.split(/\s+/).length <= 90, "the introduction must stay compact");
   assert.equal(all(leads[0], (node) => node.tag === "a")[0]?.attrs.href, "mailto:xinyuguanphd@outlook.com");
@@ -318,8 +320,7 @@ test("the main list keeps public and anonymous manuscripts as cards", () => {
     return normalizedText(headings[0]);
   });
   const publicTitles = knownPapers.map(([title]) => title);
-  const maskedTitles = Array(4).fill(anonymousSubmission);
-  assert.deepEqual(titles.toSorted(), [...publicTitles, surveyTitle, ...maskedTitles].toSorted());
+  assert.deepEqual(titles.toSorted(), [...publicTitles, surveyTitle, ...anonymousSubmissions].toSorted());
   assert.equal(cards.length, 13);
   assert.doesNotMatch(source.home, /When KL Regularization Fails|ZCPO|paper-zcpo/i,
     "the unresolved KL manuscript must not remain in the public homepage");
@@ -330,7 +331,7 @@ test("the main list keeps public and anonymous manuscripts as cards", () => {
     assert.equal(all(bodies[0], (node) => node.tag === "h3").length, 1);
     if (hasClass(card, "publication-card-anonymous")) {
       assert.deepEqual(Object.keys(card.attrs), ["class"]);
-      assert.equal(normalizedText(bodies[0]), anonymousSubmission);
+      assert.ok(anonymousSubmissions.includes(normalizedText(bodies[0])));
       assert.equal(all(card, (node) => ["a", "img", "picture", "source", "time"].includes(node.tag)).length, 0);
       assert.equal(withClass(card, "publication-authors").length, 0);
       assert.equal(withClass(card, "publication-summary").length, 0);
@@ -351,16 +352,16 @@ test("the work list follows submission time with the current public records", ()
   const cards = withClass(byId(pages.home, "papers"), "publication-card");
   const titles = cards.map((card) => normalizedText(all(card, (node) => node.tag === "h3")[0]));
   assert.deepEqual(titles, [
-    anonymousSubmission,
-    anonymousSubmission,
+    anonymousSubmissions[0],
+    anonymousSubmissions[1],
     knownPapers[0][0],
     surveyTitle,
-    anonymousSubmission,
+    anonymousSubmissions[2],
     knownPapers[1][0],
     knownPapers[2][0],
     knownPapers[7][0],
     knownPapers[3][0],
-    anonymousSubmission,
+    anonymousSubmissions[3],
     knownPapers[4][0],
     knownPapers[5][0],
     knownPapers[6][0],

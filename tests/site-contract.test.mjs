@@ -10,7 +10,7 @@ const editorialBase = editorialCss.split("@media")[0];
 const behavior = read("phd-main.js");
 const lifeExists = existsSync(new URL("../life.html", import.meta.url));
 const life = lifeExists ? read("life.html") : "";
-const releaseToken = "20261120-anonymous-submissions-1";
+const releaseToken = "20261120-research-overview-4";
 const freshLifeFilenames = [
   "sunny-patio.jpg", "steaming-pool-boardwalk.jpg", "las-vegas-sign.jpg", "desert-road.jpg", "desert-house.jpg",
   "mirror-portrait.jpg", "living-room-reading.jpg", "patio-chair.jpg", "patio-red-drink.jpg", "poolside-closeup.jpg",
@@ -50,18 +50,16 @@ function assertInOrder(source, values) {
   }
 }
 
-test("both pages expose the five approved destinations in order", () => {
+test("both pages expose the four primary destinations in order", () => {
   const homeNavigation = [
     ["About", "#home"],
     ["Experience", "#experience"],
-    ["Research", "#research"],
     ["Publications", "#papers"],
     ["Life Photos", "life.html"],
   ];
   const lifeNavigation = [
     ["About", "index.html#home"],
     ["Experience", "index.html#experience"],
-    ["Research", "index.html#research"],
     ["Publications", "index.html#papers"],
     ["Life Photos", "life.html"],
   ];
@@ -74,16 +72,16 @@ test("both pages expose the five approved destinations in order", () => {
   for (const [label, href] of lifeNavigation) {
     assert.match(life, new RegExp(`href="${href.replace(".", "\\.")}"[^>]*>${label}<`));
   }
-  assert.doesNotMatch(index + life, />Beyond</);
+  assert.doesNotMatch(index + life, /data-section-link="research"|>Beyond</);
   assert.match(life, /aria-current="page"[^>]*>Life Photos</);
 });
 
 test("homepage keeps recent news after its introduction and career before publications", () => {
   const sectionIds = [...index.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map((match) => match[1]);
-  assert.deepEqual(sectionIds, ["home", "updates", "experience", "papers", "academic-service", "research", "about", "research-experience", "education"]);
+  assert.deepEqual(sectionIds, ["home", "updates", "experience", "papers", "academic-service", "research-experience", "education"]);
   for (const [id, title] of [
     ["experience", "Work experience"], ["papers", "Publications, Manuscripts &amp; Patents"],
-    ["academic-service", "Academic Service"], ["research", "Current research"],
+    ["academic-service", "Academic Service"],
     ["research-experience", "Research experience"], ["education", "Education"],
   ]) {
     assert.match(contentSection(id), new RegExp(`<h2[^>]*>${title}<\\/h2>`));
@@ -165,14 +163,16 @@ test("profile page preserves the approved identity and real assets", () => {
   }
 });
 
-test("homepage About Me reflects approved AI-agent and foundation-model work", () => {
-  const about = contentSection("about");
+test("the opening introduction includes a collapsed More about me disclosure", () => {
+  const home = contentSection("home");
+  const about = home.match(/<details class="about-details" id="about">[\s\S]*?<\/details>/)?.[0];
+  assert.ok(about);
+  assertInOrder(home, ['<div class="hero-lead" id="research">', '<details class="about-details" id="about">']);
+  assert.match(about, /<summary id="about-title">More about me<\/summary>/);
 
-  assert.match(about, /I research and build reliable AI agents/);
-  assert.match(about, /At <strong>TaoTian Group @ Alibaba<\/strong>, my current work focuses on <strong>AI agent research<\/strong>/);
-  assert.match(about, /<strong>Hunyuan Foundation Model<\/strong>/);
+  assert.match(about, /stable reasoning objectives and high-quality data systems/);
+  assert.doesNotMatch(about, /AutoResearch|post-training|agentic reinforcement learning/i);
   assert.match(about, /<strong>Yuanbao AI Search<\/strong>/);
-  assert.match(about, /<strong>ERNIE Bot 5 \(EB5\) Foundation Model<\/strong>/);
   assert.match(about, /<strong>knowledge graphs<\/strong>/);
   assert.match(about, /<strong>LLM-based security<\/strong>/);
 });
@@ -182,8 +182,7 @@ test("verified public metadata and profile wording stay synchronized", () => {
   assert.match(index, /AI Agent research spanning General AutoResearch and multimodal quality inspection for Xianyu\./);
   assert.doesNotMatch(index, /AI Agent research across AutoResearch, post-training, and agentic RL, applied in Xianyu AI systems/);
   assert.doesNotMatch(index, /Xianyu AI agents for photo-compliance detection and physical-defect inspection/);
-  assert.match(contentSection("about"), /apply these ideas in <strong>Xianyu AI systems<\/strong>/);
-  assert.match(contentSection("research"), /Xianyu AI as a practical application domain/);
+  assert.match(contentSection("home"), /DAPO-based multilingual post-training and alignment/);
   assert.match(
     contentSection("experience"),
     /AI Agent research spanning General AutoResearch and multimodal quality inspection for Xianyu\./,
@@ -272,7 +271,7 @@ test("homepage exposes the deployed no-secret Agent API endpoint", () => {
 test("Agent answers link back to the resume evidence", () => {
   const agent = agentDialog();
 
-  assert.match(agent, /href="#research"[^>]*>Current Research<\/a>/);
+  assert.match(agent, /href="#research"[^>]*>Research interests<\/a>/);
   assert.match(agent, /href="#experience"[^>]*>Work Experience<\/a>/);
   assert.match(agent, /href="#papers"[^>]*>Publications<\/a>/);
   assert.match(agent, /aria-live="polite"/);
@@ -686,19 +685,16 @@ function assertMultiColumnGrid(source, selector) {
   assert.ok(gridColumnsFor(source, selector) >= 2, `${selector} must have at least two grid columns`);
 }
 
-test("homepage locks the current research program, career, and thirteen independent publication cards", () => {
-  const researchTitles = ["AutoResearch", "Post-Training", "Agentic RL", "Agent Research Survey · Preprint"];
-  const research = contentSection("research");
-  const researchCards = cardsWithClass("research-core-item");
-  assert.equal(researchCards.length, 3);
-  assert.match(research, /class="research-progress"/);
-  for (const title of researchTitles) {
-    assert.equal(
-      (research.match(new RegExp(title, "g")) ?? []).length,
-      1,
-      `${title} must appear exactly once in Current research`,
-    );
-  }
+test("the hero consolidates research interests alongside the existing career and publication cards", () => {
+  const overview = contentSection("home");
+  const introduction = overview.match(/<div class="hero-lead" id="research">(.*?)<\/div>/s)?.[1];
+  assert.ok(introduction);
+  assert.deepEqual(
+    [...introduction.matchAll(/<strong>([^<]+)<\/strong>/g)].map((match) => match[1]),
+    ["AutoResearch", "Post-Training", "Agentic Reinforcement Learning", "Tencent’s Hunyuan", "Baidu’s ERNIE Bot 5 (EB5)"],
+  );
+  assert.doesNotMatch(introduction, /Xianyu|quality inspection/i);
+  assert.doesNotMatch(index, /id="research-title"|class="research-core-grid"/);
 
   assert.equal(cardsWithClass("experience-item").length, 5);
   assert.equal(cardsWithClass("publication-card").length, 13);
@@ -918,7 +914,9 @@ test("public preprint cards expose arXiv links without anonymous review associat
     assert.ok(card.includes('href="https://arxiv.org/abs/' + id + '"'));
     assert.ok(card.includes('href="https://arxiv.org/pdf/' + id + '"'));
   }
-  assert.doesNotMatch(contentSection("papers"), /(?:ICLR|CVPR|AAAI) 2027/i);
+  const namedCards = cardsWithClass("publication-card")
+    .filter((card) => !card.includes("publication-card-anonymous"));
+  assert.doesNotMatch(namedCards.join("\n"), /(?:ICLR|CVPR|AAAI) 2027/i);
   assert.doesNotMatch(index, /openreview\.net\/(?:forum|pdf)/i);
 });
 

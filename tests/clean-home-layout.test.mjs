@@ -113,14 +113,6 @@ test("the visual system is white, flat, and uses restrained active navigation ma
   assert.doesNotMatch(css, /#d9a7e7|#aa5eb8|#f5eafb/i);
 });
 
-test("current research retains three clear directions and stacks them on phones", () => {
-  assert.match(cssRule(sharedCss.split("@media")[0], ".research-core-grid"), /grid-template-columns:\s*repeat\(3,\s*minmax\(0,\s*1fr\)\)/);
-  assert.match(cssRule(desktop, ".research-progress"), /background:\s*#fff(?:fff)?\b/);
-  assert.equal(property(cssRule(mobile, ".research-core-grid"), "display"), "block");
-  assert.equal(property(cssRule(mobile, ".research-progress"), "display"), "block");
-  for (const title of ["AutoResearch", "Post-Training", "Agentic RL"]) assert.ok(index.includes(`<h3>${title}</h3>`));
-});
-
 test("Agent supporting copy stays readable and source links remain tappable outside content cards", () => {
   for (const selector of [".agent-sources", ".agent-grounding", ".agent-form input::placeholder"]) {
     assert.match(cssRule(sharedCss, selector), /color:\s*var\(--muted\)/);
@@ -185,7 +177,7 @@ test("the phone hero keeps a compact 104px portrait and full-width supporting co
   assert.match(cssRule(mobile, ".hero-focus"), /grid-column:\s*1\s*\/\s*-1/);
 });
 
-test("mobile navigation preserves five whole-word touch targets without masking overflow", () => {
+test("mobile navigation preserves four whole-word touch targets without masking overflow", () => {
   const navigation = cssRule(mobileRules, ".workspace-nav");
   const links = cssRule(mobileRules, ".workspace-nav a");
   assert.equal(property(navigation, "overflow-x"), "auto");
@@ -193,7 +185,7 @@ test("mobile navigation preserves five whole-word touch targets without masking 
   assert.equal(property(links, "white-space"), "nowrap");
   assert.equal(property(links, "flex-shrink"), "0");
   assert.doesNotMatch(links, /overflow-wrap:\s*anywhere|word-break:\s*break-all/);
-  for (const page of [index, life]) assert.equal((elementWithClass(page, "nav", "workspace-nav").match(/<a\b/g) ?? []).length, 5);
+  for (const page of [index, life]) assert.equal((elementWithClass(page, "nav", "workspace-nav").match(/<a\b/g) ?? []).length, 4);
 });
 
 test("mobile contact and Agent controls retain accessible touch targets and readable type", () => {
